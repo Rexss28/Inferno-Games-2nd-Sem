@@ -1,0 +1,35 @@
+{{ form_start(form, { attr: { class: 'game-edit-form' } }) }}
+    <div class="form-group">
+        {{ form_label(form.image, 'Image', { label_attr: { class: 'form-label' } }) }}
+        {{ form_widget(form.image, { attr: { class: 'form-control' } }) }}
+        {{ form_errors(form.image) }}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.title, 'Title', { label_attr: { class: 'form-label' } }) }}
+        {{ form_widget(form.title, { attr: { class: 'form-control' } }) }}
+        {{ form_errors(form.title) }}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.description, 'Description', { label_attr: { class: 'form-label' } }) }}
+        {{ form_widget(form.description, { attr: { class: 'form-control' } }) }}
+        {{ form_errors(form.description) }}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.price, 'Price', { label_attr: { class: 'form-label' } }) }}
+        {{ form_widget(form.price, { attr: { class: 'form-control' } }) }}
+        {{ form_errors(form.price) }}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.stock, 'Stock', { label_attr: { class: 'form-label' } }) }}
+        {{ form_widget(form.stock, { attr: { class: 'form-select' } }) }}
+        {{ form_errors(form.stock) }}
+    </div>
+
+    <div class="form-actions">
+        <button class="btn btn-primary">{{ button_label|default('Save') }}</button>
+    </div>
+{{ form_end(form) }}

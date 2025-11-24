@@ -1,0 +1,193 @@
+{% extends 'reusable/final_layout.html.twig' %}
+
+{% block title %}License Keys{% endblock %}
+{% block body_class %}licenseKey-Index-page{% endblock %}
+
+{% block stylesheets %}
+  {{ parent() }}
+  <!-- ✅ DataTables CSS -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/jquery.dataTables.min.css">
+  {{ encore_entry_link_tags('key_index') }}
+
+  <style>
+    /* 🎨 Dark DataTables Theme */
+    table.dataTable {
+        color: #fff;
+        background-color: #2E2E2E;
+        border-radius: 0.75rem;
+        width: 100% !important;
+    }
+
+    table.dataTable thead {
+        background: #1a1a1a;
+    }
+
+    table.dataTable thead th {
+        color: #B3B3B3;
+        border-bottom: 2px solid #FF2E2E !important;
+        font-weight: 600;
+    }
+
+    table.dataTable tbody tr:hover {
+        background-color: rgba(255, 46, 46, 0.08);
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+        background: #1a1a1a !important;
+        color: #fff !important;
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 6px;
+        margin: 0 2px;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+        background: linear-gradient(135deg, #FF2E2E, #FF6B2E) !important;
+        color: #fff !important;
+    }
+
+    .dataTables_wrapper .dataTables_filter input {
+        background: #1a1a1a;
+        border: 1px solid rgba(255,255,255,0.1);
+        color: #fff;
+        padding: 0.35rem 0.5rem;
+        border-radius: 6px;
+    }
+
+    .dataTables_wrapper .dataTables_length select {
+        background: #1a1a1a;
+        color: #fff;
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 6px;
+    }
+  </style>
+{% endblock %}
+
+{% block content %}
+<div class="licenseKey-container">
+    <!-- Header Section -->
+    <div class="header-section">
+        <div class="header-content">
+            <h1 class="page-title">License Key Management</h1>
+        </div>
+        <a href="{{ path('app_license_key_new') }}" class="btn-primary">
+            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+            </svg>
+            Add New License Key
+        </a>
+    </div>
+
+    <!-- Table Container -->
+    <div class="table-container">
+        <div class="table-wrapper">
+            <table id="myTable" class="licenseKey-table display">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Code</th>
+                        <th>Status</th>
+                        <th>Game</th>
+                        <th>Order</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for license_key in license_keys %}
+                    <tr>
+                        <td data-sort="{{ license_key.id }}">#{{ license_key.id }}</td>
+                        <td data-search="{{ license_key.code|lower }}">{{ license_key.code }}</td>
+
+                        <!-- ✅ Dynamic Status Display -->
+                        <td data-search="{{ license_key.status|lower }}">
+                            {% set statusClass = '' %}
+                            {% if license_key.status == 'Available' %}
+                                {% set statusClass = 'status-available' %}
+                            {% elseif license_key.status == 'Reserved' %}
+                                {% set statusClass = 'status-reserved' %}
+                            {% elseif license_key.status == 'Sold' %}
+                                {% set statusClass = 'status-sold' %}
+                            {% elseif license_key.status == 'Expired' %}
+                                {% set statusClass = 'status-expired' %}
+                            {% elseif license_key.status == 'Deactivated' %}
+                                {% set statusClass = 'status-deactivated' %}
+                            {% endif %}
+                            <span class="status-badge {{ statusClass }}">{{ license_key.status }}</span>
+                        </td>
+
+                        <td data-search="{{ license_key.game ? license_key.game.title|lower : 'n/a' }}">
+                            {{ license_key.game ? license_key.game.title : 'N/A' }}
+                        </td>
+
+                        <td data-search="{{ license_key.order ? license_key.order.orderNumber : 'n/a' }}">
+                            {{ license_key.order ? license_key.order.orderNumber : 'N/A' }}
+                        </td>
+
+                        <td>
+                            <div class="action-buttons">
+                                <a href="{{ path('app_license_key_show', {'id': license_key.id}) }}" class="btn-action btn-view" title="View">
+                                    👁️
+                                </a>
+                                <a href="{{ path('app_license_key_edit', {'id': license_key.id}) }}" class="btn-action btn-edit" title="Edit">
+                                    ✏️
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="6" class="empty-state">
+                            <div class="empty-content">
+                                <svg class="empty-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/>
+                                </svg>
+                                <h3>No License Keys Found</h3>
+                                <p>Start by adding your first license key</p>
+                                <a href="{{ path('app_license_key_new') }}" class="btn-primary-small">Add License Key</a>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+
+  <!-- ✅ jQuery -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+  <!-- ✅ DataTables -->
+  <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+
+  <script>
+    $(document).ready(function () {
+        if (!$.fn.DataTable.isDataTable('#myTable')) {
+            $('#myTable').DataTable({
+                pageLength: 10,
+                responsive: true,
+                language: {
+                    search: "_INPUT_",
+                    searchPlaceholder: "Search license keys..."
+                },
+                columnDefs: [
+                    { targets: 0, type: 'num' },      // ID
+                    { targets: 1, type: 'string' },   // Code
+                    { targets: 2, type: 'string' },   // Status
+                    { targets: 3, type: 'string' },   // Game
+                    { targets: 4, type: 'string' },   // Order
+                    { targets: 5, orderable: false, searchable: false } // Actions
+                ],
+                order: [[0, 'asc']]
+            });
+            console.log("✅ DataTable initialized successfully for License Keys!");
+        } else {
+            console.warn("⚠️ DataTable already initialized for License Keys, skipping...");
+        }
+    });
+  </script>
+{% endblock %}

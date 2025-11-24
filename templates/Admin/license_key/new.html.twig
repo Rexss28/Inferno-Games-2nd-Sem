@@ -1,0 +1,26 @@
+{% extends 'reusable/final_layout.html.twig' %}
+
+{% block title %}New LicenseKey{% endblock %}
+
+{% block body_class %}key-new-page{% endblock %}
+
+{% block stylesheets %}
+  {{ parent() }}
+  {{ encore_entry_link_tags('key_new') }}
+{% endblock %}
+
+{% block content %}
+<div class="key-new-container">
+  <div class="new-header">
+    <h1>Create New License Key</h1>
+  </div>
+
+  <div class="new-form-card">
+    {{ include('Admin/license_key/_form.html.twig') }}
+  </div>
+
+  <div class="new-actions">
+    <a href="{{ path('app_license_key_index') }}" class="btn-secondary">Back</a>
+  </div>
+</div>
+{% endblock %}

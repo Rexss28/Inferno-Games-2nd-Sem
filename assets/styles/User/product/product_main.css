@@ -1,0 +1,460 @@
+/* Product Index Styles */
+
+.product-page .title {
+      text-align: center;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 2rem;
+  color: #FF2E2E; /* Inferno Red */
+  margin-bottom: 1.5rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.home-page {
+    background: #0D0D0D;
+    min-height: 100vh;
+    padding: 2rem;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.home-page h1 {
+    color: #FFFFFF;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    text-align: center;
+    text-shadow: 0 0 30px rgba(255, 46, 46, 0.3);
+    letter-spacing: -0.02em;
+}
+
+/* Table Container */
+.table {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto 2rem;
+    background: #2E2E2E;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5),
+                0 0 0 1px rgba(255, 46, 46, 0.1);
+}
+
+/* Table Header */
+.table thead {
+    background: linear-gradient(135deg, #FF2E2E 0%, #FF6B2E 100%);
+}
+
+.table thead tr th {
+    padding: 1.25rem 1.5rem;
+    color: #FFFFFF;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.875rem;
+    letter-spacing: 0.08em;
+    text-align: left;
+    border: none;
+}
+
+/* Table Body */
+.table tbody tr {
+    transition: all 0.3s ease;
+    border-bottom: 1px solid rgba(179, 179, 179, 0.1);
+}
+
+.table tbody tr:last-child {
+    border-bottom: none;
+}
+
+.table tbody tr:hover {
+    background: rgba(255, 46, 46, 0.05);
+    box-shadow: inset 3px 0 0 #FF2E2E;
+}
+
+.table tbody tr td {
+    padding: 1.25rem 1.5rem;
+    color: #FFFFFF;
+    font-size: 0.95rem;
+    vertical-align: middle;
+}
+
+.table tbody tr td:first-child {
+    font-weight: 600;
+    color: #FF2E2E;
+    font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
+}
+
+.table tbody tr td:nth-child(3) {
+    color: #FF6B2E;
+    font-weight: 600;
+}
+
+.table tbody tr td:nth-child(4) {
+    color: #B3B3B3;
+    max-width: 300px;
+}
+
+/* Action Links */
+.table tbody tr td a {
+    display: inline-block;
+    padding: 0.5rem 1.25rem;
+    margin-right: 0.5rem;
+    background: #FF2E2E;
+    color: #FFFFFF;
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 15px rgba(255, 46, 46, 0.3);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.table tbody tr td a:hover {
+    background: #FF6B2E;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 107, 46, 0.4);
+}
+
+.table tbody tr td a:active {
+    transform: translateY(0);
+}
+
+.table tbody tr td a:last-child {
+    background: transparent;
+    border: 2px solid #FF2E2E;
+    box-shadow: none;
+}
+
+.table tbody tr td a:last-child:hover {
+    background: #FF2E2E;
+    border-color: #FF2E2E;
+    box-shadow: 0 6px 20px rgba(255, 46, 46, 0.3);
+}
+
+/* Empty State */
+.table tbody tr td[colspan] {
+    text-align: center;
+    color: #B3B3B3;
+    font-style: italic;
+    padding: 3rem;
+    font-size: 1rem;
+}
+
+/* Create New Button Container */
+.home-page > a[href*="new"] {
+    display: inline-block;
+    padding: 1.25rem 3.5rem;
+    background: linear-gradient(135deg, #FF2E2E 0%, #FF6B2E 100%);
+    color: #FFFFFF;
+    text-decoration: none;
+    border-radius: 14px;
+    font-weight: 700;
+    font-size: 1.125rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 10px 40px rgba(255, 46, 46, 0.5),
+                0 0 30px rgba(255, 46, 46, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    margin: 0 auto;
+    display: block;
+    width: fit-content;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    position: relative;
+    overflow: hidden;
+    border: 2px solid rgba(255, 46, 46, 0.3);
+}
+
+/* Animated shine effect */
+.home-page > a[href*="new"]::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+        45deg,
+        transparent 30%,
+        rgba(255, 255, 255, 0.1) 50%,
+        transparent 70%
+    );
+    transform: rotate(45deg);
+    animation: shine 3s infinite;
+}
+
+/* Pulsing glow effect */
+.home-page > a[href*="new"]::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, rgba(255, 46, 46, 0.4) 0%, transparent 70%);
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    transition: opacity 0.3s;
+    z-index: -1;
+    filter: blur(20px);
+}
+
+.home-page > a[href*="new"]:hover {
+    background: linear-gradient(135deg, #FF6B2E 0%, #FF2E2E 100%);
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 20px 60px rgba(255, 107, 46, 0.6),
+                0 0 50px rgba(255, 46, 46, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 107, 46, 0.5);
+}
+
+.home-page > a[href*="new"]:hover::after {
+    opacity: 1;
+}
+
+.home-page > a[href*="new"]:active {
+    transform: translateY(-2px) scale(1);
+    box-shadow: 0 10px 30px rgba(255, 46, 46, 0.4);
+}
+
+/* Plus icon with CSS */
+.home-page > a[href*="new"]::before {
+    content: '+ ';
+    font-size: 1.5rem;
+    font-weight: 300;
+    margin-right: 0.5rem;
+    vertical-align: middle;
+}
+
+@keyframes shine {
+    0% {
+        transform: translateX(-100%) translateY(-100%) rotate(45deg);
+    }
+    100% {
+        transform: translateX(100%) translateY(100%) rotate(45deg);
+    }
+}
+
+/* Scrollbar Styling */
+.table::-webkit-scrollbar {
+    height: 8px;
+}
+
+.table::-webkit-scrollbar-track {
+    background: #0D0D0D;
+}
+
+.table::-webkit-scrollbar-thumb {
+    background: #FF2E2E;
+    border-radius: 4px;
+}
+
+.table::-webkit-scrollbar-thumb:hover {
+    background: #FF6B2E;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .home-page {
+        padding: 1rem;
+    }
+
+    .home-page h1 {
+        font-size: 2rem;
+    }
+
+    .table thead tr th,
+    .table tbody tr td {
+        padding: 1rem;
+        font-size: 0.85rem;
+    }
+
+    .table tbody tr td a {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.75rem;
+        margin-bottom: 0.25rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .table {
+        border-radius: 12px;
+    }
+
+    .table thead tr th,
+    .table tbody tr td {
+        padding: 0.75rem 0.5rem;
+        font-size: 0.8rem;
+    }
+
+    .table tbody tr td a {
+        display: block;
+        margin: 0.25rem 0;
+    }
+
+    .home-page > a[href*="new"] {
+        padding: 1rem 2rem;
+        font-size: 0.9rem;
+    }
+}
+
+
+/* Create New Button - Fixed Version */
+.btn {
+    display: inline-block;
+    padding: 1.25rem 3.5rem;
+    background: linear-gradient(135deg, #FF2E2E 0%, #FF6B2E 100%);
+    color: #FFFFFF;
+    text-decoration: none;
+    border-radius: 14px;
+    font-weight: 700;
+    font-size: 1.125rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 10px 40px rgba(255, 46, 46, 0.5),
+                0 0 30px rgba(255, 46, 46, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    margin: 0 auto;
+    width: fit-content;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    position: relative;
+    overflow: hidden;
+    border: 2px solid rgba(255, 46, 46, 0.3);
+}
+
+/* Animated shine effect */
+.btn::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+        45deg,
+        transparent 30%,
+        rgba(255, 255, 255, 0.15) 50%,
+        transparent 70%
+    );
+    transform: rotate(45deg);
+    animation: btnShine 3s infinite;
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* Pulsing glow effect */
+.btn::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, rgba(255, 46, 46, 0.4) 0%, transparent 70%);
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    transition: opacity 0.3s;
+    z-index: -1;
+    filter: blur(20px);
+}
+
+/* Plus icon using inline styling */
+.btn {
+    position: relative;
+    padding-left: 4rem;
+}
+
+.btn > span,
+.btn {
+    position: relative;
+    z-index: 2;
+}
+
+/* Create plus icon with separate element approach */
+a.btn[href*="new"]::after {
+    content: '+';
+    position: absolute;
+    left: 1.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.8rem;
+    font-weight: 300;
+    z-index: 2;
+    opacity: 0.9;
+    transition: all 0.3s ease;
+}
+
+/* Hover States */
+.btn:hover {
+    background: linear-gradient(135deg, #FF6B2E 0%, #FF2E2E 100%);
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 20px 60px rgba(255, 107, 46, 0.6),
+                0 0 50px rgba(255, 46, 46, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 107, 46, 0.5);
+}
+
+.btn:hover::after {
+    opacity: 1;
+}
+
+a.btn[href*="new"]:hover::after {
+    transform: translateY(-50%) rotate(90deg);
+    opacity: 1;
+}
+
+/* Active State */
+.btn:active {
+    transform: translateY(-2px) scale(1);
+    box-shadow: 0 10px 30px rgba(255, 46, 46, 0.4);
+}
+
+/* Shine Animation */
+@keyframes btnShine {
+    0% {
+        transform: translateX(-100%) translateY(-100%) rotate(45deg);
+    }
+    100% {
+        transform: translateX(100%) translateY(100%) rotate(45deg);
+    }
+}
+
+/* Button centering helper */
+.product-page > .btn {
+    display: block;
+    margin: 2rem auto 0;
+}
+
+/* Additional centering for any context */
+a.btn[href*="new"] {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .btn {
+        padding: 1rem 2.5rem;
+        padding-left: 3.5rem;
+        font-size: 1rem;
+    }
+    
+    a.btn[href*="new"]::after {
+        left: 1.25rem;
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .btn {
+        padding: 1rem 2rem;
+        padding-left: 3rem;
+        font-size: 0.9rem;
+    }
+    
+    a.btn[href*="new"]::after {
+        left: 1rem;
+        font-size: 1.3rem;
+    }
+}

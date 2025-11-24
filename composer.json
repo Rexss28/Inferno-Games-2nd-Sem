@@ -41,8 +41,10 @@
         "symfony/ux-turbo": "^2.30",
         "symfony/validator": "7.3.*",
         "symfony/web-link": "7.3.*",
+        "symfony/webpack-encore-bundle": "^2.3",
         "symfony/yaml": "7.3.*",
         "twig/extra-bundle": "^2.12|^3.0",
+        "twig/string-extra": "^3.21",
         "twig/twig": "^2.12|^3.0"
     },
     "config": {

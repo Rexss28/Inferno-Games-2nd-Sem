@@ -1,0 +1,139 @@
+/* ===========================================
+   Stock New Page - Modern Compact Design
+   Inferno Theme
+   =========================================== */
+
+.stock-new-page .stock-new-container {
+  max-width: 580px;
+  margin: 3rem auto;
+  background: rgba(46, 46, 46, 0.85);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(179, 179, 179, 0.1);
+  border-radius: 1rem;
+  padding: 2rem;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+  color: #e5e5e5;
+  font-family: 'Inter', sans-serif;
+}
+
+/* ---------- Header ---------- */
+.stock-new-page .new-header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.stock-new-page .new-header h1 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  background: linear-gradient(90deg, #ff6b2e, #ff2e2e);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin: 0;
+}
+
+/* ---------- Form Card ---------- */
+.stock-new-page .new-form-card {
+  background: rgba(26, 26, 26, 0.85);
+  border-radius: 0.75rem;
+  padding: 1.5rem 1.75rem;
+  box-shadow: inset 0 0 6px rgba(255, 255, 255, 0.04);
+}
+
+.stock-new-page form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.stock-new-page label {
+  font-weight: 500;
+  color: #b3b3b3;
+  font-size: 0.9rem;
+  margin-bottom: 0.3rem;
+}
+
+.stock-new-page input,
+.stock-new-page textarea,
+.stock-new-page select {
+  background: #1e1e1e;
+  border: 1px solid #2b2b2b;
+  border-radius: 0.4rem;
+  padding: 0.6rem 0.75rem;
+  font-size: 0.9rem;
+  color: #fff;
+  transition: all 0.2s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.stock-new-page input:focus,
+.stock-new-page textarea:focus,
+.stock-new-page select:focus {
+  border-color: #ff6b2e;
+  background-color: #222;
+  outline: none;
+  box-shadow: 0 0 4px rgba(255, 107, 46, 0.5);
+}
+
+/* ---------- Buttons ---------- */
+.stock-new-page button,
+.stock-new-page .btn-primary {
+  background: linear-gradient(90deg, #ff2e2e, #ff6b2e);
+  color: #fff;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  font-size: 0.9rem;
+}
+
+.stock-new-page button:hover,
+.stock-new-page .btn-primary:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+}
+
+/* ---------- Secondary Button ---------- */
+.stock-new-page .btn-secondary {
+  background: transparent;
+  border: 1px solid #ff6b2e;
+  color: #ff6b2e;
+  padding: 0.55rem 1.1rem;
+  border-radius: 0.5rem;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all 0.25s ease;
+  display: inline-block;
+}
+
+.stock-new-page .btn-secondary:hover {
+  background: #ff6b2e;
+  color: #fff;
+}
+
+/* ---------- Actions ---------- */
+.stock-new-page .new-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 480px) {
+  .stock-new-page .stock-new-container {
+    padding: 1.5rem;
+  }
+
+  .stock-new-page .new-actions {
+    justify-content: center;
+  }
+
+  .stock-new-page .btn-secondary,
+  .stock-new-page button {
+    width: 100%;
+    text-align: center;
+  }
+}

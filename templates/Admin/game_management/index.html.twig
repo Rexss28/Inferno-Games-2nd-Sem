@@ -1,0 +1,286 @@
+{% extends 'reusable/final_layout.html.twig' %}
+
+{% block title %}Game Management{% endblock %}
+{% block body_class %}gameManagement-Index-page{% endblock %}
+
+{% block stylesheets %}
+  {{ parent() }}
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/jquery.dataTables.min.css">
+  {{ encore_entry_link_tags('index') }}
+
+  <style>
+    /* 🎨 Dark Mode Styling for DataTables */
+    table.dataTable {
+        color: #fff;
+        background-color: #2E2E2E;
+        border-radius: 0.75rem;
+        width: 100% !important;
+    }
+
+    table.dataTable thead {
+        background: #1a1a1a;
+    }
+
+    table.dataTable thead th {
+        color: #B3B3B3;
+        border-bottom: 2px solid #FF2E2E !important;
+        font-weight: 600;
+    }
+
+    table.dataTable tbody tr:hover {
+        background-color: rgba(255, 46, 46, 0.08);
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+        background: #1a1a1a !important;
+        color: #fff !important;
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 6px;
+        margin: 0 2px;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+        background: linear-gradient(135deg, #FF2E2E, #FF6B2E) !important;
+        color: #fff !important;
+    }
+
+    .dataTables_wrapper .dataTables_filter input {
+        background: #1a1a1a;
+        border: 1px solid rgba(255,255,255,0.1);
+        color: #fff;
+        padding: 0.35rem 0.5rem;
+        border-radius: 6px;
+    }
+
+    .dataTables_wrapper .dataTables_length select {
+        background: #1a1a1a;
+        color: #fff;
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 6px;
+    }
+
+    .game-image-wrapper {
+        width: 3rem;
+        height: 3rem;
+        border-radius: 6px;
+        overflow: hidden;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: #111;
+        margin-right: 0.5rem;
+    }
+
+    .game-image-wrapper img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .game-info {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .game-title {
+        font-weight: 500;
+        color: #fff;
+    }
+
+    /* Hide the original content and use data-sort attribute */
+    .sort-data {
+        display: none;
+    }
+    /* ✅ Fix DataTables layout without horizontal scrollbar */
+.dataTables_wrapper {
+    overflow-x: hidden !important;
+}
+
+.table-container,
+.table-wrapper {
+    width: 100%;
+    overflow-x: hidden;
+}
+
+/* Ensure table fits neatly in the wrapper */
+.games-table {
+    table-layout: auto;
+    width: 100% !important;
+    white-space: nowrap;
+}
+
+/* Prevent last column (Actions) from overflowing */
+.games-table td:last-child,
+.games-table th:last-child {
+    width: 1%;
+    white-space: nowrap;
+}
+
+/* Slightly reduce padding to prevent overflow */
+.games-table th,
+.games-table td {
+    padding: 0.65rem 0.75rem;
+}
+
+  </style>
+{% endblock %}
+
+{% block content %}
+<div class="game-management-container">
+    <!-- Header -->
+    <div class="header-section">
+        <div class="header-content">
+            <h1 class="page-title">Game Management</h1>
+        </div>
+        <a href="{{ path('app_game_management_new') }}" class="btn-primary">
+            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+            </svg>
+            Add New Game
+        </a>
+    </div>
+
+    <!-- Table -->
+    <div class="table-container">
+        <div class="table-wrapper">
+            <table id="myTable" class="games-table display">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Game</th>
+                        <th>Description</th>
+                        <th>Price</th>
+                        <th>Stock</th>
+                        <th>Keys</th>
+                        <th>Orders</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for game_management in game_managements %}
+                    <tr>
+                        <td data-sort="{{ game_management.id }}">#{{ game_management.id }}</td>
+                        <td data-search="{{ game_management.title|lower }}">
+                            <div class="game-info">
+                                <div class="game-image-wrapper">
+                                    {% if game_management.image %}
+                                        <img src="{{ asset('images/games/' ~ game_management.image) }}" alt="{{ game_management.title }}">
+                                    {% else %}
+                                        <div class="game-image-placeholder text-gray-500 flex items-center justify-center w-full h-full">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                            </svg>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <span class="game-title">{{ game_management.title }}</span>
+                                <!-- Hidden sort data -->
+                                <span class="sort-data">{{ game_management.title|lower }}</span>
+                            </div>
+                        </td>
+                        <td>{{ game_management.description|u.truncate(60) }}</td>
+                        <td>${{ game_management.price|number_format(2) }}</td>
+                        <td data-sort="{{ game_management.stock ? game_management.stock.availableQuantity : 0 }}">
+                            {% if game_management.stock %}
+                                {{ game_management.stock.availableQuantity }}/{{ game_management.stock.totalQuantity }}
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </td>
+                        <td data-sort="{{ game_management.licenseKeys|length }}">{{ game_management.licenseKeys|length }}</td>
+                        <td data-sort="{{ game_management.orders|length }}">{{ game_management.orders|length }}</td>
+                        <td>
+                            <div class="action-buttons">
+                                <a href="{{ path('app_game_management_show', {'id': game_management.id}) }}" class="btn-action btn-view">👁️</a>
+                                <a href="{{ path('app_game_management_edit', {'id': game_management.id}) }}" class="btn-action btn-edit">✏️</a>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+
+  <!-- ✅ jQuery first -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+  <!-- ✅ DataTables (jQuery version) -->
+  <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+
+  <script>
+    $(document).ready(function () {
+        if (!$.fn.DataTable.isDataTable('#myTable')) {
+            $('#myTable').DataTable({
+                pageLength: 10,
+                responsive: true,
+                language: {
+                    search: "_INPUT_",
+                    searchPlaceholder: "Search games..."
+                },
+                columnDefs: [
+                    { 
+                        // ID column - numeric sorting
+                        targets: 0,
+                        type: 'num'
+                    },
+                    { 
+                        // Game column - custom sorting based on text content
+                        targets: 1,
+                        type: 'string'
+                    },
+                    { 
+                        // Description column - string sorting
+                        targets: 2,
+                        type: 'string'
+                    },
+                    { 
+                        // Price column - custom numeric sorting
+                        targets: 3,
+                        type: 'num',
+                        render: function(data, type, row) {
+                            if (type === 'sort' || type === 'type') {
+                                // Remove $ and commas, then convert to number for sorting
+                                return parseFloat(data.replace('$', '').replace(/,/g, ''));
+                            }
+                            return data; // display value remains unchanged
+                        }
+                    },
+                    { 
+                        // Stock column - numeric sorting using data-sort attribute
+                        targets: 4,
+                        type: 'num'
+                    },
+                    { 
+                        // Keys column - numeric sorting using data-sort attribute
+                        targets: 5,
+                        type: 'num'
+                    },
+                    { 
+                        // Orders column - numeric sorting using data-sort attribute
+                        targets: 6,
+                        type: 'num'
+                    },
+                    { 
+                        // Actions column - disable sorting
+                        targets: 7,
+                        orderable: false,
+                        searchable: false
+                    }
+                ],
+                order: [[0, 'asc']] // Default sort by ID ascending
+            });
+            console.log("✅ DataTable initialized successfully!");
+        } else {
+            console.warn("⚠️ DataTable already initialized, skipping...");
+        }
+    });
+  </script>
+{% endblock %}

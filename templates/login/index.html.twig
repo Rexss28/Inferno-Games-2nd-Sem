@@ -1,0 +1,59 @@
+{% extends 'base.html.twig' %}
+
+
+{% block title %}Login{% endblock %}
+
+
+ {# direct link to public css (no Encore) #}
+{% block stylesheets %}
+  <link rel="stylesheet" href="{{ asset('styles/global/login.css') }}">
+{% endblock %}
+
+
+{# {% block stylesheets %}
+  {{ encore_entry_link_tags('login') }}
+{% endblock %} #}
+
+
+{% block body %}
+
+<div class="login">
+{# left side panel #}
+<div class="login-left_panel">
+  <div class="logo-inline">
+    <h1>INFERN</h1>
+    <img src="{{ asset('images/logo_1.png') }}" alt="Inferno Flame Logo" class="logo-inline-image">
+  </div>
+  <p>GAMES</p>
+</div>
+
+
+  {# right side panel #}
+  <div class="login-right_panel">
+    <div class="login-container" role="main" aria-labelledby="login-heading">
+      <h1 id="login-heading">LOGIN</h1>
+
+      <form class="login-form">
+        <div class="login-row">
+          <label for="username">Username</label>
+          <input id="username" name="username" type="text" placeholder="your.username">
+        </div>
+
+        <div class="login-row">
+          <label for="password">Password</label>
+          <input id="password" name="password" type="password" placeholder="••••••••">
+        </div>
+
+        <button class="button" type="submit">Sign in</button>
+
+        <div class="helper">This form is static — for visuals only.</div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+
+{% block javascripts %}
+    <script src="{{ asset('js/login.js') }}"></script>
+{% endblock %}

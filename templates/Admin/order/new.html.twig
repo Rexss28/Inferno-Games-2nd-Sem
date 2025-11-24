@@ -1,0 +1,11 @@
+{# {% extends 'reusable/final_layout.html.twig' %} #}
+
+{% block title %}New Order{% endblock %}
+
+{% block content %}
+    <h1>Create new Order</h1>
+
+    {{ include('Admin/order/_form.html.twig') }}
+
+    <a href="{{ path('app_order_index') }}">back to list</a>
+{% endblock %}

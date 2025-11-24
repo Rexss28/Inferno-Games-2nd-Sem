@@ -1,0 +1,59 @@
+/* ================================
+   Inferno Games – Home Page Styles
+   Applies only when <body class="home-page">
+================================ */
+
+
+.home-page .page-content {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.home-page .hero {
+  grid-column: span 3;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-hover));
+  color: var(--color-text);
+  padding: 40px;
+  border-radius: 16px;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.8rem;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.home-page .carousel {
+  grid-column: span 3;
+  background: var(--color-surface);
+  border-radius: 12px;
+  padding: 20px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.home-page .card.featured {
+  grid-column: span 2;
+  border-radius: 16px;
+  background: var(--color-surface);
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.home-page .card.featured h3 {
+  font-family: 'Orbitron', sans-serif;
+  color: var(--color-primary);
+  margin-bottom: 10px;
+}
+
+.home-page .card.activity {
+  background: var(--color-surface);
+  border-left: 4px solid var(--color-primary);
+  text-align: left;
+}
+
+/* .home-page .card.downloads {
+  background: white;
+  text-align: center;
+} */

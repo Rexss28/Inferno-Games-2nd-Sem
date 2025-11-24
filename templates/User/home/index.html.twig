@@ -1,0 +1,40 @@
+{# {% extends 'reusable/layout.html.twig' %} #}
+{% extends 'reusable/final_layout.html.twig' %}
+
+
+{% block body_class %}home-page{% endblock %}
+
+{% block stylesheets %}
+  {{ parent() }}
+  {{ encore_entry_link_tags('home') }}
+{% endblock %}
+
+{% block content %}
+
+  <section class="hero">
+    Welcome Back, User!
+  </section>
+
+  <section class="carousel">
+    <!-- Carousel slides go here -->
+    Carousel Section
+  </section>
+
+  <div class="card featured">
+    <h3>Featured Game</h3>
+    <p>Some game details here...</p>
+  </div>
+
+  <div class="card activity">
+    <h3>Recent Activity</h3>
+    <ul>
+      <li>Played Game A</li>
+      <li>Unlocked Achievement in Game B</li>
+    </ul>
+  </div>
+
+  <div class="card downloads">
+    <h3>Downloads</h3>
+    <p>Currently downloading: Game C</p>
+  </div>
+{% endblock %}

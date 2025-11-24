@@ -1,0 +1,243 @@
+/* =============================
+   🎨 Edit Product Page Styles
+   Design System: Dark Futuristic
+   ============================= */
+
+/* Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Inter:wght@400;600&display=swap');
+
+.product-page-edit {
+  background-color: #0D0D0D; /* Midnight Black */
+  color: #FFFFFF; /* White */
+  font-family: 'Inter', sans-serif;
+  /* padding: 2rem; */
+}
+
+/* Headings */
+.product-page-edit h1 {
+  text-align: center;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 2rem;
+  color: #FF2E2E; /* Inferno Red */
+  margin-bottom: 1.5rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* =============================
+   FORM CARD
+   ============================= */
+.product-page-edit .form-card {
+  background-color: #2E2E2E; /* Charcoal Gray */
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  margin-bottom: 2rem;
+}
+
+/* Labels */
+.product-page-edit label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #B3B3B3; /* Ash Gray */
+}
+
+/* Inputs & Textareas */
+.product-page-edit form input[type="text"],
+.product-page-edit form input[type="number"],
+.product-page-edit form textarea,
+.product-page-edit form select {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  border: none;
+  background-color: #0D0D0D;
+  color: #FFFFFF;
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+}
+
+.product-page-edit form input:focus,
+.product-page-edit form textarea:focus,
+.product-page-edit form select:focus {
+  outline: 2px solid #FF6B2E; /* Flame Orange */
+  background-color: #1A1A1A;
+}
+
+/* =============================
+   BUTTONS
+   ============================= */
+.product-page-edit .button,
+.product-page-edit button,
+.product-page-edit input[type="submit"] {
+  background-color: #FF2E2E; /* Inferno Red */
+  color: #FFFFFF;
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 600;
+  text-transform: uppercase;
+  border: none;
+  border-radius: 10px;
+  padding: 0.75rem 1.5rem;
+  cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.product-page-edit .button:hover,
+.product-page-edit button:hover,
+.product-page-edit input[type="submit"]:hover {
+  background-color: #FF6B2E; /* Flame Orange */
+  transform: translateY(-2px);
+  box-shadow: 0 0 10px rgba(255, 107, 46, 0.5);
+}
+
+/* =============================
+   FOOTER ACTIONS
+   ============================= */
+.product-page-edit .form-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+/* Back to list */
+.product-page-edit .back-link {
+  font-size: 0.95rem;
+  padding: 0.6rem 1rem;
+  background: transparent;
+  color: #B3B3B3;
+  border-radius: 8px;
+  border: 1px solid rgba(179,179,179,0.1);
+  transition: background-color 0.18s ease, color 0.18s ease, transform 0.12s ease;
+  text-decoration: none;
+}
+
+.product-page-edit .back-link:hover {
+  color: #FFFFFF;
+  background-color: rgba(255,255,255,0.05);
+  transform: translateY(-2px);
+}
+
+/* Delete button */
+.product-page-edit form[name="delete_form"] button {
+  background-color: #FF2E2E;
+  color: #FFFFFF;
+  border: none;
+  padding: 0.6rem 1.25rem;
+  border-radius: 8px;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.product-page-edit form[name="delete_form"] button:hover {
+  background-color: #FF6B2E;
+  transform: translateY(-2px);
+  box-shadow: 0 0 12px rgba(255, 46, 46, 0.4);
+}
+
+/* =============================
+   LINKS (inline)
+   ============================= */
+.product-page-edit a {
+  color: #FF6B2E;
+  font-weight: 500;
+  transition: color 0.2s ease;
+  text-decoration: none;
+}
+
+.product-page-edit a:hover {
+  color: #FF2E2E;
+  text-decoration: underline;
+}
+
+/* =============================
+   TABLES (resized for edit page)
+   ============================= */
+.product-page-edit table {
+  width: auto;           /* let table size to content */
+  max-width: 700px;      /* reduce max width */
+  margin: 2rem auto;     /* center it horizontally */
+  border-collapse: collapse;
+  background-color: #2E2E2E;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+
+/* Ensure table cells don’t force width */
+.product-page-edit table th,
+.product-page-edit table td {
+  white-space: nowrap;   /* prevent cells from stretching too wide */
+  padding: 0.85rem 1rem;
+}
+
+
+.product-page-edit table thead {
+  background-color: #0D0D0D; /* Midnight Black */
+}
+
+.product-page-edit table th {
+  font-family: 'Orbitron', sans-serif;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #FF6B2E; /* Flame Orange */
+  padding: 0.9rem 1rem;
+  text-align: left;
+}
+
+.product-page-edit table td {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95rem;
+  color: #FFFFFF;
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.product-page-edit table tr:hover td {
+  background-color: rgba(255,255,255,0.05);
+}
+
+/* =============================
+   RESPONSIVE
+   ============================= */
+@media (max-width: 768px) {
+  .product-page-edit {
+    padding: 1rem;
+  }
+
+  .product-page-edit .form-card {
+    padding: 1.25rem;
+  }
+
+  .product-page-edit .form-footer {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .product-page-edit .form-footer a,
+  .product-page-edit .form-footer button {
+    width: 100%;
+    text-align: center;
+  }
+
+  .product-page-edit table {
+    display: block;
+    overflow-x: auto;
+    max-width: 100%;
+  }
+
+  .product-page-edit table th,
+  .product-page-edit table td {
+    padding: 0.65rem;
+    font-size: 0.85rem;
+  }
+}

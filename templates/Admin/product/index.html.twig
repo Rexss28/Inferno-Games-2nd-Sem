@@ -1,0 +1,46 @@
+{% extends 'reusable/final_layout.html.twig' %}
+
+{% block body_class %}product-page{% endblock %}
+
+{% block title %}Product index{% endblock %}
+
+{% block stylesheets %}
+  {{ parent() }}
+  {{ encore_entry_link_tags('product_main') }}
+{% endblock %}
+
+{% block content %}
+    <h1 class="title">Game Management</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Description</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for product in products %}
+            <tr>
+                <td>{{ product.id }}</td>
+                <td>{{ product.Name }}</td>
+                <td>{{ product.Price }}</td>
+                <td>{{ product.Description }}</td>
+                <td>
+                    <a href="{{ path('app_product_show', {'id': product.id}) }}">show</a>
+                    <a href="{{ path('app_product_edit', {'id': product.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a class="btn" href="{{ path('app_product_new') }}">Create new</a>
+{% endblock %}

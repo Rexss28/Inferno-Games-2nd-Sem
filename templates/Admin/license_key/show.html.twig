@@ -1,0 +1,49 @@
+{% extends 'reusable/final_layout.html.twig' %}
+
+{% block title %}License Key Details{% endblock %}
+
+{% block body_class %}key-Show-page{% endblock %}
+
+{% block stylesheets %}
+  {{ parent() }}
+  {{ encore_entry_link_tags('key_show') }}
+{% endblock %}
+
+{% block content %}
+    <div class="key-show-container">
+        <h1>License Key Details</h1>
+
+        <div class="table-wrapper">
+            <table class="table key-details-table">
+                <tbody>
+                    <tr>
+                        <th>ID</th>
+                        <td>{{ license_key.id }}</td>
+                    </tr>
+                    <tr>
+                        <th>Code</th>
+                        <td>{{ license_key.code }}</td>
+                    </tr>
+                    <tr>
+                        <th>Status</th>
+                        <td>{{ license_key.status }}</td>
+                    </tr>
+                    <tr>
+                        <th>Game</th>
+                        <td>{{ license_key.game ? license_key.game.title : 'N/A' }}</td>
+                    </tr>
+                    <tr>
+                        <th>Order</th>
+                        <td>{{ license_key.order ? license_key.order.orderNumber : 'N/A' }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="action-buttons">
+            <a href="{{ path('app_license_key_index') }}" class="btn btn-secondary">Back to List</a>
+            <a href="{{ path('app_license_key_edit', {'id': license_key.id}) }}" class="btn btn-primary">Edit</a>
+            {{ include('Admin/license_key/_delete_form.html.twig') }}
+        </div>
+    </div>
+{% endblock %}

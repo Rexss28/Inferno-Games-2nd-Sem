@@ -1,0 +1,50 @@
+{% extends 'reusable/final_layout.html.twig' %}
+
+{% block title %}UserManagement index{% endblock %}
+{% block body_class %}UserIndex-page{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('user_index') }}
+{% endblock %}
+
+
+{% block content %}
+    <div class="UserIndex-content">
+        <h1>User Management</h1>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Username</th>
+                    <th>Password</th>
+                    <th>Roles</th>
+                    <th>Status</th>
+                    <th>actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for user_management in user_managements %}
+                <tr>
+                    <td>{{ user_management.id }}</td>
+                    <td>{{ user_management.username }}</td>
+                    <td>{{ user_management.password }}</td>
+                    <td>{{ user_management.roles ? user_management.roles|json_encode : '' }}</td>
+                    <td>{{ user_management.status }}</td>
+                    <td>
+                        <a href="{{ path('app_user_management_show', {'id': user_management.id}) }}">show</a>
+                        <a href="{{ path('app_user_management_edit', {'id': user_management.id}) }}">edit</a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="6">no records found</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        {# <a href="{{ path('app_user_management_new') }}">Create new</a> #}
+    </div>
+{% endblock %}

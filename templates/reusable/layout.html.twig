@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Inferno Games{% endblock %}</title>
+
+  {# Global CSS (base styles) #}
+  {{ encore_entry_link_tags('base') }}
+
+  {# Page-specific CSS can be injected here #}
+  {% block stylesheets %}{% endblock %}
+</head>
+<body class="{% block body_class %}{% endblock %}">
+ <div class="sidebar">
+  <h2>Inferno Games</h2>
+  <nav>
+
+    <a href="{{ path('app_home') }}" class="nav-link">
+      <svg xmlns="http://www.w3.org/2000/svg" class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l9-9 9 9M4 10v10h16V10" />
+      </svg>
+      Home
+    </a>
+
+    <a href="{{ path('app_library') }}" class="nav-link">
+      <svg xmlns="http://www.w3.org/2000/svg" class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+      </svg>
+      Library
+    </a>
+
+    <a href="store.html" class="nav-link">
+      <svg xmlns="http://www.w3.org/2000/svg" class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13l-2 9m12-9l2 9M7 13l6 0" />
+      </svg>
+      Store
+    </a>
+
+    <a href="{{ path('app_product_index') }}" class="nav-link">
+      <svg xmlns="http://www.w3.org/2000/svg" class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 11V3h2v8h-2zm-4 8H5V9h2v10zm8 0V5h2v14h-2z" />
+      </svg>
+      Management
+    </a>
+  </nav>
+
+  <a href="logout.html" class="nav-link logout">
+    <svg xmlns="http://www.w3.org/2000/svg" class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4-4-4m4 4H7m6 4v1m0-10V5" />
+    </svg>
+    Logout
+  </a>
+</div>
+
+
+  <div class="main">
+    <div class="topbar">
+      <span>Search...</span>
+      <span>Notifications | Profile</span>
+    </div>
+
+    <!-- Page-specific content goes here -->
+    <div class="page-content">
+      {% block content %}{% endblock %}
+    </div>
+  </div>
+
+  {{ encore_entry_script_tags('base') }}
+  {% block javascripts %}{% endblock %}
+</body>
+</html>

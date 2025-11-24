@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Inferno Games{% endblock %}</title>
+  <link rel="stylesheet" href="https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css" />
+
+  {# Global CSS (base styles) #}
+  {{ encore_entry_link_tags('base') }}
+
+  {# Page-specific CSS can be injected here #}
+  {% block stylesheets %}{% endblock %}
+</head>
+<body class="{% block body_class %}{% endblock %}">
+ <div class="min-h-screen flex flex-row">
+  <div class="sidebar">
+    <div class="sidebar-brand">
+      <h1 style="font-size: 1.5rem; font-weight: 800; background: linear-gradient(135deg, #FF2E2E 0%, #FF6B2E 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 0; letter-spacing: -0.02em; line-height: 1;">INFERNO</h1>
+      <h2 style="font-size: 1rem; font-weight: 800; background: linear-gradient(135deg, #FF2E2E 0%, #FF6B2E 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin: 0; letter-spacing: -0.02em; line-height: 1;">GAMES</h2>
+    </div>
+
+    <nav>
+      <ul style="list-style: none; padding: 0; margin: 0;">
+        <li>
+          <a href="{{ path('app_admin_dashboard') }}" class="nav-link">
+            <span class="nav-icon"><i class="bx bx-home"></i></span>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <li>
+          <a href="{{ path('app_admin_analytics_index') }}" class="nav-link">
+            <span class="nav-icon"><i class="bx bx-music"></i></span>
+            <span>Analytics</span>
+          </a>
+        </li>
+        <li>
+          <a href="{{ path('app_game_management_index') }}" class="nav-link">
+            <span class="nav-icon"><i class="bx bx-drink"></i></span>
+            <span>Game Management</span>
+          </a>
+        </li>
+        <li>
+          <a href="{{ path('app_stock_index') }}" class="nav-link">
+            <span class="nav-icon"><i class="bx bx-shopping-bag"></i></span>
+            <span>Stocks</span>
+          </a>
+        </li>
+        <li>
+          <a href="{{ path('app_license_key_index') }}" class="nav-link">
+            <span class="nav-icon"><i class="bx bx-key"></i></span>
+            <span>License Keys</span>
+          </a>
+        </li>
+        <li>
+         <a href="{{ path('app_order_index') }}" class="nav-link">
+            <span class="nav-icon"><i class="bx bx-cart"></i></span>
+            <span>Orders</span>
+          </a>
+        </li>
+        <li>
+          <a href="{{ path('app_user_management_index') }}" class="nav-link">
+            <span class="nav-icon"><i class="bx bx-user"></i></span>
+            <span>User Management</span>
+          </a>
+        </li>
+        <li>
+          <a href="{{ path('app_login') }}" class="nav-link">
+            <span class="nav-icon"><i class="bx bx-log-out"></i></span>
+            <span>Logout</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</div>
+
+
+<div class="main">
+    {# <div class="topbar">
+      <span style="color: #B3B3B3; font-size: 0.875rem;">Search...</span>
+      <span style="color: #B3B3B3; font-size: 0.875rem;">Notifications | Profile</span>
+    </div> #}
+
+    <!-- Page-specific content goes here -->
+    <div class="main-content">
+      <div class="page-content">
+        {% block content %}{% endblock %}
+      </div>
+    </div>
+  </div>
+
+  {# {{ encore_entry_script_tags('base') }} #}
+  {% block javascripts %}{% endblock %}
+</body>
+</html>

@@ -3,12 +3,48 @@
     <head>
         <meta charset="UTF-8">
         <title>{% block title %}Welcome!{% endblock %}</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
+        
         {% block stylesheets %}
+            {{ encore_entry_link_tags('app') }}
+            {{ encore_entry_link_tags('login') }}
+            {{ encore_entry_link_tags('home') }}
+            {{ encore_entry_link_tags('base') }}
+            {{ encore_entry_link_tags('library') }}
+            {{ encore_entry_link_tags('product_main') }}
+            {{ encore_entry_link_tags('edit') }}
+            {{ encore_entry_link_tags('new') }}
+            {{ encore_entry_link_tags('show') }}
+
+            {# admin #}
+            {{ encore_entry_link_tags('index') }}
+            {{ encore_entry_link_tags('show_gameManagement') }}
+            {{ encore_entry_link_tags('game_edit') }}
+            {{ encore_entry_link_tags('game_new') }}
+            {{ encore_entry_link_tags('stock_index') }}
+            {{ encore_entry_link_tags('stock_show') }}
+            {{ encore_entry_link_tags('stock_edit') }}
+            {{ encore_entry_link_tags('stock_new') }}
+            {{ encore_entry_link_tags('key_index') }}
+            {{ encore_entry_link_tags('key_edit') }}
+            {{ encore_entry_link_tags('key_show') }}
+            {{ encore_entry_link_tags('key_new') }}
+
+            {# analytics #}
+            {{ encore_entry_link_tags('analytics_page') }}
+            {{ encore_entry_link_tags('admin_dashboard') }}
+            {# order #}
+            {{ encore_entry_link_tags('order_index') }}
+            {# user management #}
+            {{ encore_entry_link_tags('user_index') }}
+
+
+
+
         {% endblock %}
 
         {% block javascripts %}
-            {% block importmap %}{{ importmap('app') }}{% endblock %}
+            {{ encore_entry_script_tags('base') }}
         {% endblock %}
     </head>
     <body>

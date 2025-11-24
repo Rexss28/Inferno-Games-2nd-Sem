@@ -1,0 +1,51 @@
+{% extends 'reusable/final_layout.html.twig' %}
+
+{% block title %}Order{% endblock %}
+
+{% block content %}
+    <h1>Order</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ order.id }}</td>
+            </tr>
+            <tr>
+                <th>OrderNumber</th>
+                <td>{{ order.orderNumber }}</td>
+            </tr>
+            <tr>
+                <th>Quantity</th>
+                <td>{{ order.quantity }}</td>
+            </tr>
+            <tr>
+                <th>TotalAmount</th>
+                <td>{{ order.totalAmount }}</td>
+            </tr>
+            <tr>
+                <th>Status</th>
+                <td>{{ order.status }}</td>
+            </tr>
+            <tr>
+                <th>Game</th>
+                <td>{{ order.game ? order.game.title : 'N/A' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+     <h3>License Keys</h3>
+    <ul>
+        {% for key in order.licenseKeys %}
+            <li>{{ key.code }} - {{ key.status }}</li>
+        {% else %}
+            <li><em>No license keys assigned to this order.</em></li>
+        {% endfor %}
+    </ul>
+
+    <a href="{{ path('app_order_index') }}">back to list</a>
+
+    <a href="{{ path('app_order_edit', {'id': order.id}) }}">edit</a>
+
+    {{ include('Admin/order/_delete_form.html.twig') }}
+{% endblock %}

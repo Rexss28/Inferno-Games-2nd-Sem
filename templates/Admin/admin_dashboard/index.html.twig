@@ -1,0 +1,230 @@
+{% extends 'reusable/final_layout.html.twig' %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block stylesheets %}
+  {{ parent() }}
+  {{ encore_entry_link_tags('admin_dashboard') }}
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <!-- Header Section -->
+    <div class="dashboard-header">
+        <div>
+            <h1 class="dashboard-title">Admin Dashboard</h1>
+        </div>
+        <div class="header-badge">
+            <span class="pulse-dot"></span>
+            Live
+        </div>
+    </div>
+
+    <!-- KPI CARDS -->
+    <div class="kpi-grid">
+        <div class="kpi-card kpi-indigo">
+            <div class="kpi-icon">🎮</div>
+            <div class="kpi-content">
+                <p class="kpi-label">Total Games</p>
+                <p class="kpi-value">{{ totalGames }}</p>
+                <div class="kpi-trend">
+                    <span class="trend-up">↑ Active</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="kpi-card kpi-blue">
+            <div class="kpi-icon">📦</div>
+            <div class="kpi-content">
+                <p class="kpi-label">Total Orders</p>
+                <p class="kpi-value">{{ totalOrders }}</p>
+                <div class="kpi-trend">
+                    <span class="trend-up">↑ All time</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="kpi-card kpi-yellow">
+            <div class="kpi-icon">⏳</div>
+            <div class="kpi-content">
+                <p class="kpi-label">Pending Orders</p>
+                <p class="kpi-value">{{ pendingCount }}</p>
+                <div class="kpi-trend">
+                    <span class="trend-neutral">→ Awaiting</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="kpi-card kpi-emerald">
+            <div class="kpi-icon">💰</div>
+            <div class="kpi-content">
+                <p class="kpi-label">Total Revenue</p>
+                <p class="kpi-value">${{ totalRevenue|number_format(2, '.', ',') }}</p>
+                <div class="kpi-trend">
+                    <span class="trend-up">↑ Growing</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- QUICK ACTIONS -->
+    <div class="action-section">
+        <div class="section-header">
+            <h2 class="section-title">⚡ Quick Actions</h2>
+            <p class="section-subtitle">Streamline your workflow</p>
+        </div>
+        <div class="action-grid">
+            <a href="{{ path('app_game_management_new') }}" class="action-btn action-indigo">
+                <span class="action-icon">➕</span>
+                <span class="action-text">Add New Game</span>
+            </a>
+            <a href="{{ path('app_stock_new') }}" class="action-btn action-blue">
+                <span class="action-icon">🧱</span>
+                <span class="action-text">Add Stock</span>
+            </a>
+            <a href="{{ path('app_license_key_new') }}" class="action-btn action-purple">
+                <span class="action-icon">🔑</span>
+                <span class="action-text">Add License Key</span>
+            </a>
+            <a href="{{ path('app_order_index') }}" class="action-btn action-emerald">
+                <span class="action-icon">📋</span>
+                <span class="action-text">View Orders</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- LOW STOCK ALERT -->
+    <div class="alert-section">
+        <div class="section-header">
+            <h2 class="section-title section-title-alert">⚠️ Low Stock Alerts</h2>
+            <p class="section-subtitle">Items requiring attention</p>
+        </div>
+        {% if lowStockGames is not empty %}
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Stock ID</th>
+                            <th>Available</th>
+                            <th>Total</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for stock in lowStockGames %}
+                            <tr class="table-row-hover">
+                                <td>
+                                    <span class="stock-id">#{{ stock.id }}</span>
+                                </td>
+                                <td>
+                                    <span class="badge badge-danger">{{ stock.availableQuantity }}</span>
+                                </td>
+                                <td>{{ stock.totalQuantity }}</td>
+                                <td>
+                                    <span class="status-badge status-low">{{ stock.status }}</span>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <div class="empty-icon">✅</div>
+                <p class="empty-text">All stocks are sufficient</p>
+                <p class="empty-subtext">No action required at this time</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- RECENT ACTIVITY -->
+    <div class="activity-grid">
+        <!-- Recent Orders -->
+        <div class="activity-card">
+            <div class="section-header">
+                <h2 class="section-title section-title-blue">🧾 Recent Orders</h2>
+                <a href="{{ path('app_order_index') }}" class="view-all-link">View all →</a>
+            </div>
+            {% if recentOrders is not empty %}
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Order #</th>
+                                <th>Game</th>
+                                <th>Status</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for order in recentOrders %}
+                                <tr class="table-row-hover">
+                                    <td>
+                                        <span class="order-number">{{ order.orderNumber }}</span>
+                                    </td>
+                                    <td class="game-title">{{ order.game ? order.game.title : 'N/A' }}</td>
+                                    <td>
+                                        <span class="status-badge status-{{ order.status|lower }}">{{ order.status }}</span>
+                                    </td>
+                                    <td>
+                                        <span class="amount">${{ order.totalAmount }}</span>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="empty-state empty-state-compact">
+                    <p class="empty-text">No recent orders available</p>
+                </div>
+            {% endif %}
+        </div>
+
+       <!-- Recent Games -->
+        <div class="activity-card">
+            <div class="section-header">
+                <h2 class="section-title section-title-indigo">🎮 Recently Added Games</h2>
+                <a href="{{ path('app_game_management_new') }}" class="view-all-link">Add new →</a>
+            </div>
+            {% if recentGames is not empty %}
+                <ul class="game-list">
+                    {% for game in recentGames %}
+                        <li class="game-item">
+                            <div class="game-info-wrapper">
+                                <div class="game-thumb">
+                                    {% if game.image %}
+                                        <img 
+                                            src="{{ asset('images/games/' ~ game.image) }}" 
+                                            alt="{{ game.title }}"
+                                        >
+                                    {% else %}
+                                        <div class="image-placeholder">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                                <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                            </svg>
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="game-info">
+                                    <span class="game-title-text">{{ game.title }}</span>
+                                    <span class="game-id">ID: {{ game.id }}</span>
+                                </div>
+                            </div>
+                            <div class="game-badge">New</div>
+                        </li>
+
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <div class="empty-state empty-state-compact">
+                    <p class="empty-text">No recent games added</p>
+                </div>
+            {% endif %}
+        </div>
+
+    </div>
+</div>
+{% endblock %}

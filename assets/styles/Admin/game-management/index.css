@@ -1,0 +1,394 @@
+/* ============================
+   Game Management Index Page
+   Inferno Theme
+   ============================ */
+
+.gameManagement-Index-page .game-management-container {
+    padding: 1.5rem 2rem;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Header */
+.gameManagement-Index-page .header-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.gameManagement-Index-page .header-content {
+    flex: 1;
+}
+
+.gameManagement-Index-page .page-title {
+    font-size: 1.75rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #FF2E2E 0%, #FF6B2E 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin: 0 0 0.25rem 0;
+    letter-spacing: -0.02em;
+}
+
+/* Primary Buttons */
+.gameManagement-Index-page .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: linear-gradient(135deg, #FF2E2E 0%, #d92626 100%);
+    color: #FFFFFF;
+    padding: 0.75rem 1.25rem;
+    border-radius: 0.75rem;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.875rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: none;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.gameManagement-Index-page .btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left 0.5s ease;
+}
+
+.gameManagement-Index-page .btn-primary:hover::before {
+    left: 100%;
+}
+
+.gameManagement-Index-page .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 12px rgba(255, 46, 46, 0.4);
+}
+
+.gameManagement-Index-page .btn-primary .icon {
+    width: 18px;
+    height: 18px;
+}
+
+.gameManagement-Index-page .btn-primary-small {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    background: linear-gradient(135deg, #FF2E2E 0%, #d92626 100%);
+    color: #FFFFFF;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    font-size: 0.8125rem;
+    margin-top: 0.875rem;
+}
+
+.gameManagement-Index-page .btn-primary-small:hover {
+    background: linear-gradient(135deg, #FF6B2E 0%, #d95a26 100%);
+    transform: translateY(-2px);
+}
+
+/* Table Container */
+.gameManagement-Index-page .table-container {
+    background: #2E2E2E;
+    border-radius: 0.875rem;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
+    width: 100%;
+    max-width: 100%;
+    border: 1px solid rgba(179, 179, 179, 0.1);
+}
+
+.gameManagement-Index-page .table-wrapper {
+    overflow-x: auto;
+}
+
+/* Table */
+.gameManagement-Index-page .games-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8125rem;
+}
+
+.gameManagement-Index-page .games-table thead {
+    background: #1a1a1a;
+}
+
+.gameManagement-Index-page .games-table th {
+    padding: 0.875rem;
+    text-align: left;
+    font-weight: 600;
+    color: #B3B3B3;
+    text-transform: uppercase;
+    font-size: 0.6875rem;
+    letter-spacing: 0.05em;
+    border-bottom: 2px solid #FF2E2E;
+}
+
+.gameManagement-Index-page .games-table tbody tr {
+    border-bottom: 1px solid rgba(179, 179, 179, 0.1);
+    transition: all 0.2s ease;
+}
+
+.gameManagement-Index-page .games-table tbody tr:hover {
+    background: rgba(255, 46, 46, 0.05);
+}
+
+.gameManagement-Index-page .games-table td {
+    padding: 0.875rem;
+    color: #FFFFFF;
+    vertical-align: middle;
+}
+
+/* ID Cell */
+.gameManagement-Index-page .id-badge {
+    display: inline-block;
+    background: #1a1a1a;
+    color: #B3B3B3;
+    padding: 0.25rem 0.625rem;
+    border-radius: 0.375rem;
+    font-weight: 600;
+    font-size: 0.6875rem;
+    border: 1px solid rgba(179, 179, 179, 0.2);
+}
+
+/* Game Cell */
+.gameManagement-Index-page .game-info {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+}
+
+.gameManagement-Index-page .game-image-wrapper {
+    flex-shrink: 0;
+    width: 50px;
+    height: 50px;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    background: #1a1a1a;
+    border: 1px solid rgba(179, 179, 179, 0.1);
+}
+
+.gameManagement-Index-page .game-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.gameManagement-Index-page .game-image-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #B3B3B3;
+}
+
+.gameManagement-Index-page .game-image-placeholder svg {
+    width: 20px;
+    height: 20px;
+}
+
+.gameManagement-Index-page .game-title {
+    font-weight: 600;
+    color: #FFFFFF;
+    font-size: 0.875rem;
+}
+
+/* Description Cell */
+.gameManagement-Index-page .description-text {
+    color: #B3B3B3;
+    line-height: 1.5;
+    font-size: 0.8125rem;
+}
+
+/* Price Cell */
+.gameManagement-Index-page .price-tag {
+    display: inline-block;
+    background: linear-gradient(135deg, #FF2E2E, #FF6B2E);
+    color: #FFFFFF;
+    padding: 0.375rem 0.75rem;
+    border-radius: 0.5rem;
+    font-weight: 700;
+    font-size: 0.8125rem;
+    box-shadow: 0 2px 4px rgba(255, 46, 46, 0.2);
+}
+
+/* Stock Cell */
+.gameManagement-Index-page .stock-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+    min-width: 90px;
+}
+
+.gameManagement-Index-page .stock-numbers {
+    font-weight: 600;
+    color: #FFFFFF;
+    font-size: 0.8125rem;
+}
+
+.gameManagement-Index-page .stock-bar {
+    height: 5px;
+    background: #1a1a1a;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.gameManagement-Index-page .stock-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #FF2E2E, #FF6B2E);
+    border-radius: 3px;
+    transition: width 0.3s ease;
+    box-shadow: 0 0 8px rgba(255, 46, 46, 0.3);
+}
+
+.gameManagement-Index-page .stock-na {
+    color: #B3B3B3;
+    font-style: italic;
+    font-size: 0.8125rem;
+}
+
+/* Count Badges */
+.gameManagement-Index-page .count-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.875rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.375rem;
+    font-weight: 700;
+    font-size: 0.8125rem;
+}
+
+.gameManagement-Index-page .keys-badge {
+    background: rgba(255, 107, 46, 0.15);
+    color: #FF6B2E;
+    border: 1px solid rgba(255, 107, 46, 0.3);
+}
+
+.gameManagement-Index-page .orders-badge {
+    background: rgba(255, 46, 46, 0.15);
+    color: #FF2E2E;
+    border: 1px solid rgba(255, 46, 46, 0.3);
+}
+
+/* Actions Cell */
+.gameManagement-Index-page .action-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.gameManagement-Index-page .btn-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 0.375rem;
+    transition: all 0.2s ease;
+    text-decoration: none;
+}
+
+.gameManagement-Index-page .btn-action svg {
+    width: 16px;
+    height: 16px;
+}
+
+.gameManagement-Index-page .btn-view {
+    background: rgba(179, 179, 179, 0.1);
+    color: #B3B3B3;
+    border: 1px solid rgba(179, 179, 179, 0.2);
+}
+
+.gameManagement-Index-page .btn-view:hover {
+    background: rgba(179, 179, 179, 0.2);
+    color: #FFFFFF;
+    transform: translateY(-2px);
+}
+
+.gameManagement-Index-page .btn-edit {
+    background: rgba(255, 107, 46, 0.1);
+    color: #FF6B2E;
+    border: 1px solid rgba(255, 107, 46, 0.3);
+}
+
+.gameManagement-Index-page .btn-edit:hover {
+    background: rgba(255, 107, 46, 0.2);
+    color: #FF6B2E;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(255, 107, 46, 0.2);
+}
+
+/* Empty State */
+.gameManagement-Index-page .empty-state {
+    padding: 3rem 1.5rem;
+}
+
+.gameManagement-Index-page .empty-content {
+    text-align: center;
+    max-width: 380px;
+    margin: 0 auto;
+}
+
+.gameManagement-Index-page .empty-icon {
+    width: 56px;
+    height: 56px;
+    color: #B3B3B3;
+    margin: 0 auto 1.25rem;
+    filter: grayscale(30%);
+}
+
+.gameManagement-Index-page .empty-content h3 {
+    font-size: 1.25rem;
+    color: #FFFFFF;
+    margin: 0 0 0.5rem 0;
+    font-weight: 700;
+}
+
+.gameManagement-Index-page .empty-content p {
+    color: #B3B3B3;
+    margin: 0;
+    font-size: 0.875rem;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .gameManagement-Index-page .games-table {
+        font-size: 0.75rem;
+    }
+
+    .gameManagement-Index-page .game-image-wrapper {
+        width: 45px;
+        height: 45px;
+    }
+}
+
+@media (max-width: 768px) {
+    .gameManagement-Index-page .game-management-container {
+        padding: 1rem;
+    }
+
+    .gameManagement-Index-page .page-title {
+        font-size: 1.5rem;
+    }
+
+    .gameManagement-Index-page .header-section {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .gameManagement-Index-page .btn-primary {
+        justify-content: center;
+    }
+}

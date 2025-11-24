@@ -1,0 +1,344 @@
+/* ============================
+   License Key Index Page
+   Inferno Theme
+   ============================ */
+
+.licenseKey-Index-page .licenseKey-management-container {
+    padding: 1.5rem 2rem;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Header */
+.licenseKey-Index-page .header-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.licenseKey-Index-page .header-content {
+    flex: 1;
+}
+
+.licenseKey-Index-page .page-title {
+    font-size: 1.75rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #FF2E2E 0%, #FF6B2E 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin: 0 0 0.25rem 0;
+    letter-spacing: -0.02em;
+}
+
+/* Primary Buttons */
+.licenseKey-Index-page .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: linear-gradient(135deg, #FF2E2E 0%, #d92626 100%);
+    color: #FFFFFF;
+    padding: 0.75rem 1.25rem;
+    border-radius: 0.75rem;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.875rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: none;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.licenseKey-Index-page .btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left 0.5s ease;
+}
+
+.licenseKey-Index-page .btn-primary:hover::before {
+    left: 100%;
+}
+
+.licenseKey-Index-page .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 12px rgba(255, 46, 46, 0.4);
+}
+
+.licenseKey-Index-page .btn-primary .icon {
+    width: 18px;
+    height: 18px;
+}
+
+/* Smaller Primary Button */
+.licenseKey-Index-page .btn-primary-small {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    background: linear-gradient(135deg, #FF2E2E 0%, #d92626 100%);
+    color: #FFFFFF;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    font-size: 0.8125rem;
+    margin-top: 0.875rem;
+}
+
+.licenseKey-Index-page .btn-primary-small:hover {
+    background: linear-gradient(135deg, #FF6B2E 0%, #d95a26 100%);
+    transform: translateY(-2px);
+}
+
+/* Table Container */
+.licenseKey-Index-page .table-container {
+    background: #2E2E2E;
+    border-radius: 0.875rem;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
+    width: 100%;
+    max-width: 100%;
+    border: 1px solid rgba(179, 179, 179, 0.1);
+}
+
+/* ✅ Prevent scrollbars on hover */
+.licenseKey-Index-page .table-wrapper {
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-bottom: 0.5rem;
+    scrollbar-gutter: stable both-edges;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.licenseKey-Index-page .table-wrapper::-webkit-scrollbar {
+    display: none;
+}
+
+/* Table */
+.licenseKey-Index-page .licenseKey-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8125rem;
+    table-layout: fixed;
+}
+
+.licenseKey-Index-page .licenseKey-table thead {
+    background: #1a1a1a;
+}
+
+.licenseKey-Index-page .licenseKey-table th {
+    padding: 0.875rem;
+    text-align: left;
+    font-weight: 600;
+    color: #B3B3B3;
+    text-transform: uppercase;
+    font-size: 0.6875rem;
+    letter-spacing: 0.05em;
+    border-bottom: 2px solid #FF2E2E;
+}
+
+.licenseKey-Index-page .licenseKey-table tbody tr {
+    border-bottom: 1px solid rgba(179, 179, 179, 0.1);
+    transition: all 0.2s ease;
+}
+
+.licenseKey-Index-page .licenseKey-table tbody tr:hover {
+    background: rgba(255, 46, 46, 0.05);
+}
+
+.licenseKey-Index-page .licenseKey-table td {
+    padding: 0.875rem;
+    color: #FFFFFF;
+    vertical-align: middle;
+}
+
+/* ID Badge */
+.licenseKey-Index-page .id-badge {
+    display: inline-block;
+    background: #1a1a1a;
+    color: #B3B3B3;
+    padding: 0.25rem 0.625rem;
+    border-radius: 0.375rem;
+    font-weight: 600;
+    font-size: 0.6875rem;
+    border: 1px solid rgba(179, 179, 179, 0.2);
+}
+
+/* License Code */
+.licenseKey-Index-page .license-code {
+    font-weight: 600;
+    color: #FFFFFF;
+    font-size: 0.875rem;
+    font-family: 'Courier New', monospace;
+}
+
+/* Status Indicators */
+.licenseKey-Index-page .status-active {
+    color: #FF6B2E;
+    font-weight: 600;
+}
+
+.licenseKey-Index-page .status-used {
+    color: #B3B3B3;
+    font-weight: 600;
+}
+
+.licenseKey-Index-page .status-pending {
+    color: #FF2E2E;
+    font-weight: 600;
+}
+
+/* Related Game / Order */
+.licenseKey-Index-page .related-text {
+    color: #FFFFFF;
+    font-weight: 600;
+    font-size: 0.875rem;
+}
+
+/* Action Buttons */
+.licenseKey-Index-page .action-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.licenseKey-Index-page .btn-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 0.375rem;
+    transition: all 0.2s ease;
+    text-decoration: none;
+}
+
+.licenseKey-Index-page .btn-action svg {
+    width: 16px;
+    height: 16px;
+}
+
+.licenseKey-Index-page .btn-view {
+    background: rgba(179, 179, 179, 0.1);
+    color: #B3B3B3;
+    border: 1px solid rgba(179, 179, 179, 0.2);
+}
+
+.licenseKey-Index-page .btn-view:hover {
+    background: rgba(179, 179, 179, 0.2);
+    color: #FFFFFF;
+    transform: translateY(-2px);
+}
+
+.licenseKey-Index-page .btn-edit {
+    background: rgba(255, 107, 46, 0.1);
+    color: #FF6B2E;
+    border: 1px solid rgba(255, 107, 46, 0.3);
+}
+
+.licenseKey-Index-page .btn-edit:hover {
+    background: rgba(255, 107, 46, 0.2);
+    color: #FF6B2E;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(255, 107, 46, 0.2);
+}
+
+/* Empty State */
+.licenseKey-Index-page .empty-state {
+    padding: 3rem 1.5rem;
+}
+
+.licenseKey-Index-page .empty-content {
+    text-align: center;
+    max-width: 380px;
+    margin: 0 auto;
+}
+
+.licenseKey-Index-page .empty-icon {
+    width: 56px;
+    height: 56px;
+    color: #B3B3B3;
+    margin: 0 auto 1.25rem;
+    filter: grayscale(30%);
+}
+
+.licenseKey-Index-page .empty-content h3 {
+    font-size: 1.25rem;
+    color: #FFFFFF;
+    margin: 0 0 0.5rem 0;
+    font-weight: 700;
+}
+
+.licenseKey-Index-page .empty-content p {
+    color: #B3B3B3;
+    margin: 0;
+    font-size: 0.875rem;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .licenseKey-Index-page .licenseKey-table {
+        font-size: 0.75rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .licenseKey-Index-page .licenseKey-management-container {
+        padding: 1rem;
+    }
+
+    .licenseKey-Index-page .page-title {
+        font-size: 1.5rem;
+    }
+
+    .licenseKey-Index-page .header-section {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .licenseKey-Index-page .btn-primary {
+        justify-content: center;
+    }
+}
+
+.status-badge {
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.status-available {
+  background-color: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+}
+
+.status-reserved {
+  background-color: rgba(234, 179, 8, 0.15);
+  color: #eab308;
+}
+
+.status-sold {
+  background-color: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+}
+
+.status-expired {
+  background-color: rgba(107, 114, 128, 0.15);
+  color: #6b7280;
+}
+
+.status-deactivated {
+  background-color: rgba(147, 51, 234, 0.15);
+  color: #9333ea;
+}

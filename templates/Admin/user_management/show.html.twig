@@ -1,0 +1,38 @@
+{% extends 'reusable/final_layout.html.twig' %}
+
+{% block title %}UserManagement{% endblock %}
+
+{% block content %}
+    <h1>UserManagement</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ user_management.id }}</td>
+            </tr>
+            <tr>
+                <th>Username</th>
+                <td>{{ user_management.username }}</td>
+            </tr>
+            <tr>
+                <th>Password</th>
+                <td>{{ user_management.password }}</td>
+            </tr>
+            <tr>
+                <th>Roles</th>
+                <td>{{ user_management.roles ? user_management.roles|json_encode : '' }}</td>
+            </tr>
+            <tr>
+                <th>Status</th>
+                <td>{{ user_management.status }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_user_management_index') }}">back to list</a>
+
+    <a href="{{ path('app_user_management_edit', {'id': user_management.id}) }}">edit</a>
+
+    {{ include('Admin/user_management/_delete_form.html.twig') }}
+{% endblock %}

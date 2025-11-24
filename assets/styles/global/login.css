@@ -1,0 +1,244 @@
+:root {
+  --bg: #220000;
+  --card: rgba(170, 0, 0, 0.95);
+  --accent: #ff0000;
+  --text: #222;
+  --border: rgba(255, 255, 255, 0.2);
+  --input-bg: rgba(255, 255, 255, 0.1);
+  --shadow-light: rgba(255, 255, 255, 0.25);
+  --shadow-dark: rgba(0, 0, 0, 0.1);
+}
+
+.login {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+}
+
+/* Left panel */
+.login-left_panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-image: url('/images/bg_pattern.jpg');
+  background-size: cover;
+  background-position: center;
+  color: white;
+  position: relative;
+  padding: 40px;
+}
+
+/* Inline logo + title */
+.logo-inline {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5px;
+}
+
+.logo-inline h1 {
+  font-size: 5rem;
+  font-weight: bold;
+  font-family: "Kurri Island Caps PERSONAL", sans-serif;
+  margin: 0;
+  line-height: 1;
+  color: white;
+  letter-spacing: 5px;
+}
+
+.logo-inline-image {
+  width: 5rem;
+  height: auto;
+  margin-top: 1px;
+}
+
+/* "GAMES" below the logo-inline */
+.login-left_panel p {
+  font-size: 1.5rem;
+  font-family: Inter, sans-serif;
+  margin: 8px 0 0 4px;
+  color: white;
+  letter-spacing: 5px;
+}
+
+/* Right panel */
+.login-right_panel {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  position: relative;
+}
+
+/* Glass morphism effect */
+.login-right_panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, 
+    rgba(255, 255, 255, 0.1) 0%, 
+    rgba(255, 255, 255, 0.05) 100%);
+  backdrop-filter: blur(10px);
+  pointer-events: none;
+}
+
+/* Modern Login card */
+.login-container {
+  width: 100%;
+  max-width: 480px;
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 40px 36px;
+  border-radius: 20px;
+  box-shadow: 
+    0 20px 40px rgba(0, 0, 0, 0.08),
+    0 8px 16px rgba(0, 0, 0, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  text-align: left;
+  position: relative;
+  z-index: 2;
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.login-container:hover {
+  transform: translateY(-4px);
+  box-shadow: 
+    0 32px 64px rgba(0, 0, 0, 0.12),
+    0 16px 32px rgba(0, 0, 0, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.login-container h1 {
+  margin: 0 0 20px 0;
+  font-size: 1.75rem;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  color: var(--text);
+  text-align: center;
+}
+
+/* Form fields */
+.login-row {
+  margin-top: 18px;
+}
+
+label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: var(--text);
+  opacity: 0.8;
+}
+
+input[type="text"], 
+input[type="password"] {
+  width: 100%;
+  padding: 14px 18px;
+  border: 1.5px solid rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  font-size: 1rem;
+  background: rgba(255, 255, 255, 0.9);
+  outline: none;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  box-sizing: border-box;
+}
+
+input[type="text"]:focus, 
+input[type="password"]:focus {
+  border-color: var(--accent);
+  box-shadow: 
+    0 0 0 3px rgba(255, 0, 0, 0.06),
+    0 2px 8px rgba(0, 0, 0, 0.08);
+  background: white;
+}
+
+input[type="text"]:hover:not(:focus), 
+input[type="password"]:hover:not(:focus) {
+  border-color: rgba(0, 0, 0, 0.15);
+  background: white;
+}
+
+/* Modern Button */
+.button {
+  width: 100%;
+  padding: 14px 24px;
+  margin-top: 24px;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  box-shadow: 
+    0 4px 12px rgba(255, 0, 0, 0.25),
+    0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.button:hover {
+  background: #e60000;
+  transform: translateY(-1px);
+  box-shadow: 
+    0 6px 20px rgba(255, 0, 0, 0.35),
+    0 3px 8px rgba(0, 0, 0, 0.15);
+}
+
+.button:active {
+  transform: translateY(0px);
+  transition: transform 0.1s ease;
+  box-shadow: 
+    0 2px 8px rgba(255, 0, 0, 0.3),
+    0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Helper text */
+.helper {
+  margin-top: 20px;
+  font-size: 0.9rem;
+  color: #666;
+  text-align: center;
+  opacity: 0.8;
+}
+
+.helper a {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.helper a:hover {
+  color: #cc0000;
+  text-decoration: underline;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .login-container {
+    margin: 20px;
+    padding: 28px 20px;
+    border-radius: 16px;
+    max-width: none;
+  }
+  
+  .login-container h1 {
+    font-size: 1.5rem;
+  }
+  
+  input[type="text"], 
+  input[type="password"] {
+    padding: 12px 16px;
+  }
+  
+  .button {
+    padding: 12px 20px;
+  }
+}

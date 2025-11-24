@@ -1,0 +1,25 @@
+{% extends 'reusable/final_layout.html.twig' %}
+
+{% block title %}New Game Management{% endblock %}
+{% block body_class %}gameManagement-new-page{% endblock %}
+
+{% block stylesheets %}
+  {{ parent() }}
+  {{ encore_entry_link_tags('game_new') }}
+{% endblock %}
+
+{% block content %}
+<div class="game-new-container">
+  <div class="new-header">
+    <h1>Create New Game</h1>
+  </div>
+
+  <div class="new-form-card">
+    {{ include('Admin/game_management/_form.html.twig') }}
+  </div>
+
+  <div class="new-actions">
+    <a href="{{ path('app_game_management_index') }}" class="btn-secondary">Back</a>
+  </div>
+</div>
+{% endblock %}

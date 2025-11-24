@@ -1,0 +1,168 @@
+/* =============================
+   🎨 Product Show Page Styles (Scoped)
+   ============================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Inter:wght@400;600&display=swap');
+
+body.product-page-show {
+  background-color: #0D0D0D; /* Midnight Black */
+  color: #FFFFFF;
+  font-family: 'Inter', sans-serif;
+  /* padding: 2rem; */
+}
+
+/* Title */
+body.product-page-show h1 {
+  text-align: center;  
+  font-family: 'Orbitron', sans-serif;
+  font-size: 2rem;
+  color: #FF2E2E; /* Inferno Red */
+  margin-bottom: 1.5rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* =============================
+   PRODUCT DETAILS TABLE
+   ============================= */
+body.product-page-show .table {
+  width: 100%;
+  max-width: 700px;
+  margin: 0 auto 2rem auto;
+  border-collapse: collapse;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+
+/* Gradient header style (if used in show) */
+body.product-page-show .table thead th {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  padding: 1rem;
+  text-align: left;
+  background: linear-gradient(90deg, #FF2E2E, #FF6B2E);
+  color: #FFFFFF;
+}
+
+/* First column (labels) */
+body.product-page-show .table th {
+  width: 25%;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  padding: 1rem;
+  background: linear-gradient(90deg, #FF2E2E, #FF6B2E);
+  color: #FFFFFF;
+}
+
+/* ID row value */
+body.product-page-show .table tr:nth-child(1) td {
+  color: #FF2E2E;
+  background-color: #2E2E2E;
+  font-weight: 600;
+}
+
+/* NAME row value */
+body.product-page-show .table tr:nth-child(2) td {
+  color: #FFFFFF;
+  background-color: #2E2E2E;
+  font-weight: 500;
+}
+
+/* PRICE row value */
+body.product-page-show .table tr:nth-child(3) td {
+  color: #FF6B2E;
+  background-color: #2E2E2E;
+  font-weight: 700;
+}
+
+/* DESCRIPTION row value */
+body.product-page-show .table tr:nth-child(4) td {
+  color: #B3B3B3;
+  background-color: #2E2E2E;
+  font-style: italic;
+}
+
+/* Last row cleanup */
+body.product-page-show .table tr:last-child td {
+  border-bottom: none;
+}
+
+/* =============================
+   ACTION LINKS / BUTTONS
+   ============================= */
+body.product-page-show .page-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 2rem;
+  flex-wrap: wrap;
+}
+
+body.product-page-show .page-actions a,
+body.product-page-show .page-actions button {
+  background-color: #FF2E2E;
+  color: #FFFFFF;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  padding: 0.7rem 1.4rem;
+  border-radius: 8px;
+  border: none;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Hover */
+body.product-page-show .page-actions a:hover,
+body.product-page-show .page-actions button:hover {
+  background-color: #FF6B2E;
+  transform: translateY(-2px);
+  box-shadow: 0 0 10px rgba(255, 107, 46, 0.5);
+}
+
+/* Back to list → secondary */
+body.product-page-show .page-actions .back-link {
+  background-color: transparent;
+  border: 1px solid rgba(255,255,255,0.15);
+  color: #B3B3B3;
+}
+
+body.product-page-show .page-actions .back-link:hover {
+  color: #FFFFFF;
+  background-color: rgba(255,255,255,0.05);
+  border-color: #FF6B2E;
+}
+
+/* =============================
+   RESPONSIVE
+   ============================= */
+@media (max-width: 768px) {
+  body.product-page-show {
+    padding: 1rem;
+  }
+
+  body.product-page-show .table {
+    max-width: 100%;
+    display: block;
+    overflow-x: auto;
+  }
+
+  body.product-page-show .page-actions {
+    flex-direction: column;
+  }
+
+  body.product-page-show .page-actions a,
+  body.product-page-show .page-actions button {
+    width: 100%;
+  }
+}

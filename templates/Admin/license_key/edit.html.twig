@@ -1,0 +1,30 @@
+{% extends 'reusable/final_layout.html.twig' %}
+
+{% block title %}Edit LicenseKey{% endblock %}
+
+{% block body_class %}key-edit-page{% endblock %}
+
+{% block stylesheets %}
+  {{ parent() }}
+  {{ encore_entry_link_tags('key_edit') }}
+{% endblock %}
+
+{% block content %}
+<div class="key-edit-container">
+  <!-- Header -->
+  <div class="edit-header">
+    <h1>Edit License Key</h1>
+  </div>
+
+  <!-- Form Card -->
+  <div class="edit-form-card">
+    {{ include('Admin/license_key/_form.html.twig', {'button_label': 'Update'}) }}
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="edit-actions">
+    <a href="{{ path('app_license_key_index') }}" class="btn-secondary">Back to list</a>
+    {{ include('Admin/license_key/_delete_form.html.twig') }}
+  </div>
+</div>
+{% endblock %}

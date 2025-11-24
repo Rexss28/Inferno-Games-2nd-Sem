@@ -1,0 +1,44 @@
+services:
+
+  mysql:
+    image: mysql:8.0
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: inferno_games_root_password
+      MYSQL_DATABASE: inferno_db
+      MYSQL_USER: inferno_user
+      MYSQL_PASSWORD: inferno_games_password
+
+    ports:
+      - "3306:3306"
+
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+    networks:
+      - inferno_network
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    restart: unless-stopped
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      PMA_USER: inferno_user
+      PMA_PASSWORD: inferno_games_password
+
+    ports:
+      - "8080:80"
+
+    depends_on:
+      - mysql
+
+    networks:
+      - inferno_network    
+
+volumes:
+  mysql_data:
+
+networks:
+  inferno_network:
+

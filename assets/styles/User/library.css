@@ -1,0 +1,16 @@
+.library-page .library-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}
+
+.library-page .card {
+    border: 1px red solid;
+    background: var(--color-surface);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    font-family: 'Orbitron', sans-serif;
+    color: var(--color-text);
+}
+

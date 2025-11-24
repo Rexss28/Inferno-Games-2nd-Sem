@@ -1,0 +1,13 @@
+{% extends 'reusable/final_layout.html.twig' %}
+
+{% block title %}Edit UserManagement{% endblock %}
+
+{% block content %}
+    <h1>Edit UserManagement</h1>
+
+    {{ include('Admin/user_management/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_user_management_index') }}">back to list</a>
+
+    {{ include('Admin/user_management/_delete_form.html.twig') }}
+{% endblock %}

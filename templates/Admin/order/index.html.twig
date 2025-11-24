@@ -1,0 +1,60 @@
+{% extends 'reusable/final_layout.html.twig' %}
+
+{% block title %}Order index{% endblock %}
+
+{% block body_class %}OrderIndex-page{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('order_index') }}
+{% endblock %}
+
+{% block content %}
+    <div class="OrderIndex-content">
+        <h1>Order Management</h1>
+
+        <div class="table-container">
+            <div class="table-wrapper">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>OrderNumber</th>
+                            <th>Quantity</th>
+                            <th>TotalAmount</th>
+                            <th>Status</th>
+                            <th>Game</th>
+                            <th>actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for order in orders %}
+                        <tr>
+                            <td>{{ order.id }}</td>
+                            <td>{{ order.orderNumber }}</td>
+                            <td>{{ order.quantity }}</td>
+                            <td>{{ order.totalAmount }}</td>
+                            <td>
+                                <span class="status-badge status-{{ order.status|lower }}">
+                                    {{ order.status }}
+                                </span>
+                            </td>
+                            <td>{{ order.game ? order.game.title : 'N/A' }}</td>
+                            <td>
+                                <a href="{{ path('app_order_show', {'id': order.id}) }}">show</a>
+                                <a href="{{ path('app_order_edit', {'id': order.id}) }}">edit</a>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="7">no records found</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        {# <a href="{{ path('app_order_new') }}">Create new</a> #}
+    </div>
+{% endblock %}

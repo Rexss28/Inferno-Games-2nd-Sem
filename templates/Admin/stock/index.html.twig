@@ -1,0 +1,187 @@
+{% extends 'reusable/final_layout.html.twig' %}
+
+{% block title %}Stock Management{% endblock %}
+{% block body_class %}stock-Index-page{% endblock %}
+
+{% block stylesheets %}
+  {{ parent() }}
+  <!-- DataTables CSS -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/jquery.dataTables.min.css">
+  {{ encore_entry_link_tags('stock_index') }}
+
+  <style>
+    /* 🎨 Dark DataTables Theme */
+    table.dataTable {
+        color: #fff;
+        background-color: #2E2E2E;
+        border-radius: 0.75rem;
+        width: 100% !important;
+    }
+
+    table.dataTable thead {
+        background: #1a1a1a;
+    }
+
+    table.dataTable thead th {
+        color: #B3B3B3;
+        border-bottom: 2px solid #FF2E2E !important;
+        font-weight: 600;
+    }
+
+    table.dataTable tbody tr:hover {
+        background-color: rgba(255, 46, 46, 0.08);
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+        background: #1a1a1a !important;
+        color: #fff !important;
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 6px;
+        margin: 0 2px;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+        background: linear-gradient(135deg, #FF2E2E, #FF6B2E) !important;
+        color: #fff !important;
+    }
+
+    .dataTables_wrapper .dataTables_filter input {
+        background: #1a1a1a;
+        border: 1px solid rgba(255,255,255,0.1);
+        color: #fff;
+        padding: 0.35rem 0.5rem;
+        border-radius: 6px;
+    }
+
+    .dataTables_wrapper .dataTables_length select {
+        background: #1a1a1a;
+        color: #fff;
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 6px;
+    }
+  </style>
+{% endblock %}
+
+{% block content %}
+<div class="stock-management-container">
+    <!-- Header Section -->
+    <div class="header-section">
+        <div class="header-content">
+            <h1 class="page-title">Stock Management</h1>
+        </div>
+        <a href="{{ path('app_stock_new') }}" class="btn-primary">
+            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+            </svg>
+            Add New Stock
+        </a>
+    </div>
+
+    <!-- Table Container -->
+    <div class="table-container">
+        <div class="table-wrapper">
+            <table id="myTable" class="stocks-table display">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Available Quantity</th>
+                        <th>Total Quantity</th>
+                        <th>Status</th>
+                        <th>Game</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for stock in stocks %}
+                    <tr>
+                        <td data-sort="{{ stock.id }}">#{{ stock.id }}</td>
+                        <td data-sort="{{ stock.availableQuantity }}">{{ stock.availableQuantity }}</td>
+                        <td data-sort="{{ stock.totalQuantity }}">{{ stock.totalQuantity }}</td>
+
+                        <td data-search="{{ stock.status|lower }}">
+                            {% set statusClass = '' %}
+                            {% if stock.status == 'In Stock' %}
+                                {% set statusClass = 'status-in-stock' %}
+                            {% elseif stock.status == 'Low Stock' %}
+                                {% set statusClass = 'status-low-stock' %}
+                            {% elseif stock.status == 'Out of Stock' %}
+                                {% set statusClass = 'status-out-stock' %}
+                            {% elseif stock.status == 'Discontinued' %}
+                                {% set statusClass = 'status-discontinued' %}
+                            {% elseif stock.status == 'Preorder' %}
+                                {% set statusClass = 'status-preorder' %}
+                            {% endif %}
+                            <span class="status-badge {{ statusClass }}">{{ stock.status }}</span>
+                        </td>
+
+                        <td data-search="{{ stock.game ? stock.game.title|lower : 'n/a' }}">
+                            {% if stock.game %}
+                                {{ stock.game.title }}
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            <div class="action-buttons">
+                                <a href="{{ path('app_stock_show', {'id': stock.id}) }}" class="btn-action btn-view">👁️</a>
+                                <a href="{{ path('app_stock_edit', {'id': stock.id}) }}" class="btn-action btn-edit">✏️</a>
+                            </div>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="6" class="empty-state">
+                            <div class="empty-content">
+                                <svg class="empty-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                        d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/>
+                                </svg>
+                                <h3>No stock records found</h3>
+                                <p>Start by adding your first stock item.</p>
+                                <a href="{{ path('app_stock_new') }}" class="btn-primary-small">Add Stock</a>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+
+  <!-- ✅ jQuery -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+  <!-- ✅ DataTables -->
+  <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+
+  <script>
+    $(document).ready(function () {
+        if (!$.fn.DataTable.isDataTable('#myTable')) {
+            $('#myTable').DataTable({
+                pageLength: 10,
+                responsive: true,
+                language: {
+                    search: "_INPUT_",
+                    searchPlaceholder: "Search stock..."
+                },
+                columnDefs: [
+                    { targets: [0, 1, 2], type: 'num' }, // ID, Available, Total
+                    { targets: 3, type: 'string' }, // Status
+                    { targets: 4, type: 'string' }, // Game
+                    { targets: 5, orderable: false, searchable: false } // Actions
+                ],
+                order: [[0, 'asc']]
+            });
+            console.log("✅ DataTable initialized successfully for Stock!");
+        } else {
+            console.warn("⚠️ DataTable already initialized for Stock, skipping...");
+        }
+    });
+  </script>
+{% endblock %}

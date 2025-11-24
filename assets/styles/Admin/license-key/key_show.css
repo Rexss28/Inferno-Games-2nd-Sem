@@ -1,0 +1,131 @@
+/* ================================
+   License Key Show Page (No Scrollbar)
+   Inferno Theme
+   ================================ */
+
+.key-Show-page .key-show-container {
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+  background: #1c1c1c;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.4);
+  color: #f5f5f5;
+  box-sizing: border-box;
+}
+
+/* Title */
+.key-Show-page .key-show-container h1 {
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  border-bottom: 2px solid #2c2c2c;
+  padding-bottom: 0.5rem;
+  color: #ffffff;
+}
+
+/* === Table Wrapper === */
+.key-Show-page .table-wrapper {
+  overflow-x: hidden; /* Prevents scrollbar */
+  border-radius: 8px;
+  background: #222;
+  margin-bottom: 1.5rem;
+  width: 100%;
+}
+
+.key-Show-page .key-details-table {
+  width: 100%;
+  border-collapse: collapse;
+  color: #ddd;
+  table-layout: fixed;
+  border-spacing: 0;
+}
+
+/* === Table Cells === */
+.key-Show-page .key-details-table th,
+.key-Show-page .key-details-table td {
+  padding: 0.9rem 1.2rem;
+  border-bottom: 1px solid #2c2c2c;
+  text-align: left;
+  vertical-align: middle;
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+
+.key-Show-page .key-details-table th {
+  background-color: #1a1a1a;
+  color: #bdbdbd;
+  font-weight: 600;
+  width: 35%;
+}
+
+.key-Show-page .key-details-table td {
+  background-color: #121212;
+}
+
+/* === Hover Effect (subtle, no layout shift) === */
+.key-Show-page .key-details-table tr:hover td {
+  background-color: #1d1d1d;
+}
+
+/* Remove bottom border from last row */
+.key-Show-page .key-details-table tr:last-child td {
+  border-bottom: none;
+}
+
+/* === Buttons Section === */
+.key-Show-page .action-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.key-Show-page .action-buttons .btn {
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  display: inline-block;
+  border: none;
+  cursor: pointer;
+}
+
+/* Button Styles */
+.key-Show-page .action-buttons .btn-primary {
+  background: linear-gradient(135deg, #FF2E2E, #FF6B2E);
+  color: white;
+}
+
+.key-Show-page .action-buttons .btn-primary:hover {
+  background: linear-gradient(135deg, #FF6B2E, #FF2E2E);
+  transform: translateY(-2px);
+}
+
+.key-Show-page .action-buttons .btn-secondary {
+  background-color: #2c2c2c;
+  color: #f5f5f5;
+}
+
+.key-Show-page .action-buttons .btn-secondary:hover {
+  background-color: #3a3a3a;
+}
+
+/* === Responsive === */
+@media (max-width: 768px) {
+  .key-Show-page .key-show-container {
+    padding: 1rem;
+  }
+
+  .key-Show-page .key-show-container h1 {
+    font-size: 1.5rem;
+  }
+
+  .key-Show-page .key-details-table th,
+  .key-Show-page .key-details-table td {
+    padding: 0.75rem;
+    font-size: 0.9rem;
+  }
+}

@@ -1,0 +1,210 @@
+/* ============================
+   Game Management Show Page
+   ============================ */
+
+.gameManagement-Show-page .game-show-container {
+    padding: 3rem;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+/* Header */
+.gameManagement-Show-page .show-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.gameManagement-Show-page .show-header-left .game-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #FFFFFF;
+    margin: 0;
+}
+
+.gameManagement-Show-page .show-header-left .game-id {
+    color: #B3B3B3;
+    font-size: 0.875rem;
+}
+
+.gameManagement-Show-page .show-header-right {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.gameManagement-Show-page .btn-primary,
+.gameManagement-Show-page .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1.25rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.gameManagement-Show-page .btn-primary {
+    background: #FF2E2E;
+    color: #fff;
+}
+
+.gameManagement-Show-page .btn-primary:hover {
+    background: #FF6B2E;
+    transform: translateY(-2px);
+}
+
+.gameManagement-Show-page .btn-secondary {
+    background: #2E2E2E;
+    color: #B3B3B3;
+    border: 1px solid #404040;
+}
+
+.gameManagement-Show-page .btn-secondary:hover {
+    background: #383838;
+    color: #FFFFFF;
+}
+
+/* Main Card */
+.gameManagement-Show-page .game-details-card {
+    background: #2E2E2E;
+    border-radius: 1rem;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+    padding: 2rem;
+}
+
+.gameManagement-Show-page .game-info {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+/* Image Section */
+.gameManagement-Show-page .game-image-section {
+    flex: 1;
+    min-width: 250px;
+    max-width: 300px;
+    background: #1a1a1a;
+    border-radius: 0.75rem;
+    overflow: hidden;
+}
+
+.gameManagement-Show-page .game-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.gameManagement-Show-page .image-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 250px;
+    color: #B3B3B3;
+}
+
+/* Meta Section */
+.gameManagement-Show-page .game-meta {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.gameManagement-Show-page .detail-item h4 {
+    color: #FFFFFF;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.gameManagement-Show-page .detail-item p,
+.gameManagement-Show-page .detail-item em,
+.gameManagement-Show-page .detail-item span {
+    color: #B3B3B3;
+    font-size: 0.95rem;
+}
+
+.gameManagement-Show-page .price-tag {
+    display: inline-block;
+    background: linear-gradient(135deg, #FF2E2E, #FF6B2E);
+    color: #fff;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    font-weight: 700;
+}
+
+/* Stock */
+.gameManagement-Show-page .stock-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.gameManagement-Show-page .stock-bar {
+    width: 100%;
+    height: 6px;
+    background: #1a1a1a;
+    border-radius: 3px;
+    overflow: hidden;
+    margin-top: 0.5rem;
+}
+
+.gameManagement-Show-page .stock-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #FF2E2E, #FF6B2E);
+    border-radius: 3px;
+}
+
+/* Lists */
+.gameManagement-Show-page ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.gameManagement-Show-page .key-item,
+.gameManagement-Show-page .order-item {
+    background: #1a1a1a;
+    border-radius: 0.375rem;
+    padding: 0.5rem 0.75rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.gameManagement-Show-page .key-code,
+.gameManagement-Show-page .order-number {
+    color: #FFFFFF;
+    font-weight: 600;
+}
+
+.gameManagement-Show-page .key-status {
+    color: #FF6B2E;
+}
+
+.gameManagement-Show-page .order-status {
+    color: #FF2E2E;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .gameManagement-Show-page .game-show-container {
+        padding: 1.5rem;
+    }
+
+    .gameManagement-Show-page .show-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .gameManagement-Show-page .game-info {
+        flex-direction: column;
+    }
+}

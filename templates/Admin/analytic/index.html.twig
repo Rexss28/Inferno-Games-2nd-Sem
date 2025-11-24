@@ -1,0 +1,195 @@
+{% extends 'reusable/final_layout.html.twig' %}
+
+{% block title %}Analytics{% endblock %}
+{% block body_class %}analytics-index-page{% endblock %}
+
+{% block stylesheets %}
+  {{ parent() }}
+  {{ encore_entry_link_tags('analytics_page') }}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="analytics-index-page">
+    <main class="dashboard-content">
+        <!-- Header -->
+        <header class="page-header">
+            <h2 class="page-title">Analytics Overview</h2>
+        </header>
+
+        <!-- KPI Cards -->
+        <div class="stats-grid">
+            <div class="stat-card stat-glow-primary">
+                <div class="stat-icon">🎮</div>
+                <div class="stat-content">
+                    <p class="stat-label">Total Games</p>
+                    <p class="stat-value">{{ totalGames }}</p>
+                </div>
+                <div class="card-gradient"></div>
+            </div>
+
+            <div class="stat-card stat-glow-accent">
+                <div class="stat-icon">🛒</div>
+                <div class="stat-content">
+                    <p class="stat-label">Total Orders</p>
+                    <p class="stat-value">{{ totalOrders }}</p>
+                </div>
+                <div class="card-gradient"></div>
+            </div>
+
+            <div class="stat-card stat-glow-success">
+                <div class="stat-icon">📦</div>
+                <div class="stat-content">
+                    <p class="stat-label">Total Stocks</p>
+                    <p class="stat-value">{{ totalStocks }}</p>
+                </div>
+                <div class="card-gradient"></div>
+            </div>
+
+            <div class="stat-card stat-glow-warning">
+                <div class="stat-icon">🔑</div>
+                <div class="stat-content">
+                    <p class="stat-label">License Keys</p>
+                    <p class="stat-value">{{ totalLicenseKeys }}</p>
+                </div>
+                <div class="card-gradient"></div>
+            </div>
+        </div>
+
+        <!-- Revenue + Orders Status -->
+        <div class="info-grid">
+            <div class="revenue-card">
+                <div class="card-header">
+                    <div class="card-icon-wrapper gradient-primary">
+                        <span class="card-icon">💰</span>
+                    </div>
+                    <h3 class="card-title">Total Revenue</h3>
+                </div>
+                <div class="revenue-display">
+                    <span class="currency-symbol">$</span>
+                    <span class="revenue-amount">{{ totalRevenue|number_format(2, '.', ',') }}</span>
+                </div>
+                <div class="revenue-accent"></div>
+            </div>
+
+            <div class="status-card">
+                <div class="card-header">
+                    <div class="card-icon-wrapper gradient-accent">
+                        <span class="card-icon">📦</span>
+                    </div>
+                    <h3 class="card-title">Orders by Status</h3>
+                </div>
+
+                <div class="status-list">
+                    {% set total = 0 %}
+                    {% for s in ordersByStatus %}
+                        {% set total = total + s.count %}
+                    {% endfor %}
+
+                    {% for item in ordersByStatus %}
+                        {% set percentage = total > 0 ? (item.count / total * 100)|round : 0 %}
+                        <div class="status-item">
+                            <span class="status-name">{{ item.status|capitalize }}</span>
+                            <div class="status-bar-container">
+                                <div class="status-bar">
+                                    <div class="status-bar-fill" style="width: {{ percentage }}%"></div>
+                                </div>
+                                <span class="status-count">{{ item.count }}</span>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Low Stock Alerts -->
+        <div class="data-table-card alert-variant">
+            <div class="alert-accent-bar"></div>
+            <div class="card-header">
+                <div class="card-icon-wrapper gradient-alert">
+                    <span class="card-icon">⚠️</span>
+                </div>
+                <h3 class="card-title">Low Stock Alerts</h3>
+            </div>
+            {% if lowStockGames is not empty %}
+                <div class="table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Stock ID</th>
+                                <th>Available</th>
+                                <th>Total</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for stock in lowStockGames %}
+                                <tr>
+                                    <td><span class="text-primary font-semibold">{{ stock.id }}</span></td>
+                                    <td><span class="text-alert font-bold">{{ stock.availableQuantity }}</span></td>
+                                    <td>{{ stock.totalQuantity }}</td>
+                                    <td><span class="badge badge-destructive">{{ stock.status }}</span></td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <span class="empty-icon">✅</span>
+                    <p class="empty-text">All stocks are sufficient</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Top Performing Games -->
+        <div class="data-table-card">
+            <div class="card-header">
+                <div class="card-icon-wrapper gradient-primary">
+                    <span class="card-icon">🏆</span>
+                </div>
+                <h3 class="card-title">Top Performing Games</h3>
+            </div>
+            {% if topPerformingGames is not empty %}
+                <div class="table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Game</th>
+                                <th>Orders</th>
+                                <th>Revenue</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for game in topPerformingGames %}
+                                <tr>
+                                    <td>{{ game.title }}</td>
+                                    <td>{{ game.orderCount }}</td>
+                                    <td><span class="text-primary font-bold">${{ game.totalRevenue|number_format(2, '.', ',') }}</span></td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <span class="empty-icon">📊</span>
+                    <p class="empty-text">No data available yet</p>
+                </div>
+            {% endif %}
+        </div>
+    </main>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+  <script>
+    // Mobile menu toggle
+    document.querySelector('.mobile-menu-btn')?.addEventListener('click', function() {
+        document.querySelector('.nav-links')?.classList.toggle('active');
+    });
+  </script>
+{% endblock %}

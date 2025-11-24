@@ -1,0 +1,25 @@
+{% extends 'reusable/layout.html.twig' %}
+{% block body_class %}product-page-edit{% endblock %}
+{% block title %}Edit Product{% endblock %}
+
+{% block stylesheets %}
+  {{ parent() }}
+  {{ encore_entry_link_tags('edit') }}
+{% endblock %}
+
+{% block content %}
+  <h1>Edit Product</h1>
+
+  <div class="form-card">
+    {{ include('Admin/product/_form.html.twig', {'button_label': 'Update'}) }}
+  </div>
+
+  <div class="form-footer">
+    <a href="{{ path('app_product_index') }}" class="button secondary back-link">
+      ⬅ Back to list
+    </a>
+
+    {{ include('Admin/product/_delete_form.html.twig') }}
+  </div>
+{% endblock %}
+

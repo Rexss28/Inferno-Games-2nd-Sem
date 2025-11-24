@@ -1,0 +1,342 @@
+/* ============================
+   Stock Index Page
+   Inferno Theme
+   ============================ */
+
+.stock-Index-page .stock-management-container {
+    padding: 1.5rem 2rem;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Header */
+.stock-Index-page .header-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.stock-Index-page .header-content {
+    flex: 1;
+}
+
+.stock-Index-page .page-title {
+    font-size: 1.75rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #FF2E2E 0%, #FF6B2E 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin: 0 0 0.25rem 0;
+    letter-spacing: -0.02em;
+}
+
+/* Primary Buttons */
+.stock-Index-page .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: linear-gradient(135deg, #FF2E2E 0%, #d92626 100%);
+    color: #FFFFFF;
+    padding: 0.75rem 1.25rem;
+    border-radius: 0.75rem;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.875rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: none;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.stock-Index-page .btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left 0.5s ease;
+}
+
+.stock-Index-page .btn-primary:hover::before {
+    left: 100%;
+}
+
+.stock-Index-page .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 12px rgba(255, 46, 46, 0.4);
+}
+
+.stock-Index-page .btn-primary .icon {
+    width: 18px;
+    height: 18px;
+}
+
+/* Smaller Primary Button */
+.stock-Index-page .btn-primary-small {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    background: linear-gradient(135deg, #FF2E2E 0%, #d92626 100%);
+    color: #FFFFFF;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    font-size: 0.8125rem;
+    margin-top: 0.875rem;
+}
+
+.stock-Index-page .btn-primary-small:hover {
+    background: linear-gradient(135deg, #FF6B2E 0%, #d95a26 100%);
+    transform: translateY(-2px);
+}
+
+/* Table Container */
+.stock-Index-page .table-container {
+    background: #2E2E2E;
+    border-radius: 0.875rem;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
+    width: 100%;
+    max-width: 100%;
+    border: 1px solid rgba(179, 179, 179, 0.1);
+}
+
+/* ✅ FIX: Prevent scrollbars on hover */
+.stock-Index-page .table-wrapper {
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-bottom: 0.5rem;
+    scrollbar-gutter: stable both-edges; /* prevents layout shift */
+    -ms-overflow-style: none; /* hide scrollbar IE/Edge */
+    scrollbar-width: none; /* hide scrollbar Firefox */
+}
+
+.stock-Index-page .table-wrapper::-webkit-scrollbar {
+    display: none; /* hide scrollbar Chrome/Safari */
+}
+
+/* Table */
+.stock-Index-page .stocks-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8125rem;
+    table-layout: fixed;
+}
+
+.stock-Index-page .stocks-table thead {
+    background: #1a1a1a;
+}
+
+.stock-Index-page .stocks-table th {
+    padding: 0.875rem;
+    text-align: left;
+    font-weight: 600;
+    color: #B3B3B3;
+    text-transform: uppercase;
+    font-size: 0.6875rem;
+    letter-spacing: 0.05em;
+    border-bottom: 2px solid #FF2E2E;
+}
+
+.stock-Index-page .stocks-table tbody tr {
+    border-bottom: 1px solid rgba(179, 179, 179, 0.1);
+    transition: all 0.2s ease;
+}
+
+.stock-Index-page .stocks-table tbody tr:hover {
+    background: rgba(255, 46, 46, 0.05);
+}
+
+.stock-Index-page .stocks-table td {
+    padding: 0.875rem;
+    color: #FFFFFF;
+    vertical-align: middle;
+}
+
+/* ID Badge */
+.stock-Index-page .id-badge {
+    display: inline-block;
+    background: #1a1a1a;
+    color: #B3B3B3;
+    padding: 0.25rem 0.625rem;
+    border-radius: 0.375rem;
+    font-weight: 600;
+    font-size: 0.6875rem;
+    border: 1px solid rgba(179, 179, 179, 0.2);
+}
+
+/* Quantity and Status Cells */
+.stock-Index-page .quantity-cell {
+    font-weight: 600;
+    color: #FFFFFF;
+    font-size: 0.875rem;
+}
+
+.stock-Index-page .status-active {
+    color: #FF6B2E;
+    font-weight: 600;
+}
+
+.stock-Index-page .status-inactive {
+    color: #B3B3B3;
+    font-weight: 600;
+}
+
+.stock-Index-page .status-pending {
+    color: #FF2E2E;
+    font-weight: 600;
+}
+
+/* Game Title */
+.stock-Index-page .game-title {
+    color: #FFFFFF;
+    font-weight: 600;
+    font-size: 0.875rem;
+}
+
+/* Action Buttons */
+.stock-Index-page .action-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.stock-Index-page .btn-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 0.375rem;
+    transition: all 0.2s ease;
+    text-decoration: none;
+}
+
+.stock-Index-page .btn-action svg {
+    width: 16px;
+    height: 16px;
+}
+
+.stock-Index-page .btn-view {
+    background: rgba(179, 179, 179, 0.1);
+    color: #B3B3B3;
+    border: 1px solid rgba(179, 179, 179, 0.2);
+}
+
+.stock-Index-page .btn-view:hover {
+    background: rgba(179, 179, 179, 0.2);
+    color: #FFFFFF;
+    transform: translateY(-2px);
+}
+
+.stock-Index-page .btn-edit {
+    background: rgba(255, 107, 46, 0.1);
+    color: #FF6B2E;
+    border: 1px solid rgba(255, 107, 46, 0.3);
+}
+
+.stock-Index-page .btn-edit:hover {
+    background: rgba(255, 107, 46, 0.2);
+    color: #FF6B2E;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(255, 107, 46, 0.2);
+}
+
+/* Empty State */
+.stock-Index-page .empty-state {
+    padding: 3rem 1.5rem;
+}
+
+.stock-Index-page .empty-content {
+    text-align: center;
+    max-width: 380px;
+    margin: 0 auto;
+}
+
+.stock-Index-page .empty-icon {
+    width: 56px;
+    height: 56px;
+    color: #B3B3B3;
+    margin: 0 auto 1.25rem;
+    filter: grayscale(30%);
+}
+
+.stock-Index-page .empty-content h3 {
+    font-size: 1.25rem;
+    color: #FFFFFF;
+    margin: 0 0 0.5rem 0;
+    font-weight: 700;
+}
+
+.stock-Index-page .empty-content p {
+    color: #B3B3B3;
+    margin: 0;
+    font-size: 0.875rem;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .stock-Index-page .stocks-table {
+        font-size: 0.75rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .stock-Index-page .stock-management-container {
+        padding: 1rem;
+    }
+
+    .stock-Index-page .page-title {
+        font-size: 1.5rem;
+    }
+
+    .stock-Index-page .header-section {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .stock-Index-page .btn-primary {
+        justify-content: center;
+    }
+}
+
+.status-badge {
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.status-in-stock {
+  background-color: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+}
+
+.status-low-stock {
+  background-color: rgba(234, 179, 8, 0.15);
+  color: #eab308;
+}
+
+.status-out-stock {
+  background-color: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+}
+
+.status-discontinued {
+  background-color: rgba(107, 114, 128, 0.15);
+  color: #6b7280;
+}
+
+.status-preorder {
+  background-color: rgba(59, 130, 246, 0.15);
+  color: #3b82f6;
+}

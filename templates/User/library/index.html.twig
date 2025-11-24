@@ -1,0 +1,21 @@
+{% extends 'reusable/layout.html.twig' %}
+
+{# {% block title %}Hello LibraryController!{% endblock %} #}
+{% block body_class %}library-page{% endblock %}
+
+
+{% block stylesheets %}
+  {{ parent() }}
+  {{ encore_entry_link_tags('library') }}
+{% endblock %}
+
+{% block content %}
+ <div class="library-container">
+  <div class="card">Card 1</div>
+  <div class="card">Card 2</div>
+  <div class="card">Card 3</div>
+  <div class="card">Card 4</div>
+</div>
+
+  
+{% endblock %}

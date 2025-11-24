@@ -1,0 +1,165 @@
+/* =============================
+   🎨 New Product Page Styles
+   Design System: Dark Futuristic
+   ============================= */
+
+/* Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Inter:wght@400;600&display=swap');
+
+/* =============================
+   BASE STYLES
+   ============================= */
+.product-page-new {
+  background-color: #0D0D0D; /* Midnight Black */
+  color: #FFFFFF; /* White */
+  font-family: 'Inter', sans-serif;
+  /* padding: 2rem; */
+}
+
+/* Headings */
+.product-page-new h1 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 2rem;
+  color: #FF2E2E; /* Inferno Red */
+  text-align: center;
+  margin-bottom: 2rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* =============================
+   FORM STYLES
+   ============================= */
+.product-page-new form {
+  background-color: #2E2E2E; /* Charcoal Gray */
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  max-width: 700px;
+  margin: 0 auto 2rem auto;
+}
+
+.product-page-new label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #B3B3B3; /* Ash Gray */
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.product-page-new input[type="text"],
+.product-page-new input[type="number"],
+.product-page-new textarea,
+.product-page-new select {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  border: none;
+  background-color: #0D0D0D;
+  color: #FFFFFF;
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  transition: all 0.2s ease;
+}
+
+.product-page-new input:focus,
+.product-page-new textarea:focus,
+.product-page-new select:focus {
+  outline: 2px solid #FF6B2E; /* Flame Orange */
+  background-color: #1A1A1A;
+}
+
+/* =============================
+   BUTTONS
+   ============================= */
+.product-page-new .button,
+.product-page-new button,
+.product-page-new input[type="submit"] {
+  background-color: #FF2E2E; /* Inferno Red */
+  color: #FFFFFF;
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 600;
+  text-transform: uppercase;
+  border: none;
+  border-radius: 10px;
+  padding: 0.75rem 1.5rem;
+  cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.product-page-new .button:hover,
+.product-page-new button:hover,
+.product-page-new input[type="submit"]:hover {
+  background-color: #FF6B2E; /* Flame Orange */
+  transform: translateY(-2px);
+  box-shadow: 0 0 10px rgba(255,107,46,0.5);
+}
+
+/* =============================
+   LINKS
+   ============================= */
+.product-page-new a {
+  color: #FF6B2E;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.product-page-new a:hover {
+  color: #FF2E2E;
+  text-decoration: underline;
+}
+
+/* =============================
+   RESPONSIVE
+   ============================= */
+@media (max-width: 768px) {
+  .product-page-new {
+    padding: 1rem;
+  }
+
+  .product-page-new form {
+    padding: 1.25rem;
+  }
+
+  .product-page-new input[type="text"],
+  .product-page-new input[type="number"],
+  .product-page-new textarea,
+  .product-page-new select,
+  .product-page-new .button,
+  .product-page-new button,
+  .product-page-new input[type="submit"] {
+    width: 100%;
+  }
+}
+
+
+.product-page-new .form-footer {
+  display: flex;
+  justify-content: center; /* centers content horizontally */
+  align-items: center;     /* keeps vertical alignment */
+  margin-top: 1rem;
+}
+
+
+/* Back to list */
+.product-page-new .back-link {
+  font-size: 0.95rem;
+  padding: 0.6rem 1rem;
+  background: transparent;
+  color: #B3B3B3;
+  border-radius: 8px;
+  border: 1px solid rgba(179,179,179,0.1);
+  transition: background-color 0.18s ease, color 0.18s ease, transform 0.12s ease;
+  text-decoration: none;
+}
+
+.product-page-new .back-link:hover {
+  color: #FFFFFF;
+  background-color: rgba(255,255,255,0.05);
+  transform: translateY(-2px);
+}
