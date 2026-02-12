@@ -11,7 +11,22 @@ services:
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+    
+    App\Security\LicenseKeyVoter:
+        tags: [ 'security.voter' ]
 
+    App\Security\StockVoter:
+        tags: [ 'security.voter' ]
+
+    App\Security\GameManagementVoter:
+        arguments:
+            $security: '@security.helper'
+        tags: [ 'security.voter' ]
+
+    App\Security\LoginAuthenticator:
+        arguments:
+            $userRepository: '@App\Repository\UserRepository'
+            $urlGenerator: '@router.default'
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
     App\:

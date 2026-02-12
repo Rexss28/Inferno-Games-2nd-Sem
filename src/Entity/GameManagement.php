@@ -17,7 +17,7 @@ class GameManagement
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $image = null;
 
     #[Assert\NotBlank(message: 'Game title cannot be empty.')]
@@ -45,7 +45,7 @@ class GameManagement
     private ?string $price = null;
 
     #[ORM\OneToOne(inversedBy: 'game', cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(nullable: true)]   // 👈 add this line
+    #[ORM\JoinColumn(nullable: true)]
     private ?Stock $stock = null;
 
     /**
@@ -59,6 +59,10 @@ class GameManagement
      */
     #[ORM\OneToMany(targetEntity: Order::class, mappedBy: 'game')]
     private Collection $orders;
+
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(nullable: false)] // Changed to NOT NULL - game must have a creator
+    private ?User $createdBy = null;
 
     public function __construct()
     {
@@ -76,7 +80,7 @@ class GameManagement
         return $this->image;
     }
 
-    public function setImage(string $image): static
+    public function setImage(?string $image): static
     {
         $this->image = $image;
 
@@ -152,7 +156,6 @@ class GameManagement
     public function removeLicenseKey(LicenseKey $licenseKey): static
     {
         if ($this->licenseKeys->removeElement($licenseKey)) {
-            // set the owning side to null (unless already changed)
             if ($licenseKey->getGame() === $this) {
                 $licenseKey->setGame(null);
             }
@@ -182,12 +185,29 @@ class GameManagement
     public function removeOrder(Order $order): static
     {
         if ($this->orders->removeElement($order)) {
-            // set the owning side to null (unless already changed)
             if ($order->getGame() === $this) {
                 $order->setGame(null);
             }
         }
 
         return $this;
+    }
+
+    public function getCreatedBy(): ?User
+    {
+        return $this->createdBy;
+    }
+
+    public function setCreatedBy(?User $createdBy): static
+    {
+        $this->createdBy = $createdBy;
+
+        return $this;
+    }
+
+    // Helper method for voter/security checks
+    public function isCreatedBy(User $user): bool
+    {
+        return $this->createdBy && $this->createdBy->getId() === $user->getId();
     }
 }

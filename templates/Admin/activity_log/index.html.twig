@@ -1,0 +1,225 @@
+{% extends 'reusable/final_layout.html.twig' %}
+
+{% block title %}Activity Logs{% endblock %}
+{% block body_class %}activityLogs-Index-page{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <!-- ✅ Activity Logs Specific CSS -->
+    {{ encore_entry_link_tags('activity_logs') }}
+    
+    <!-- ✅ DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/jquery.dataTables.min.css">
+{% endblock %}
+
+{% block content %}
+<div class="activity-logs-container">
+    <!-- Header Section -->
+    <div class="header-section">
+        <div class="header-content">
+            <h1 class="page-title">Activity Logs</h1>
+            <p class="page-subtitle">Monitor and track user activities in the system</p>
+        </div>
+    </div>
+
+    <!-- Minimalist Filter Section -->
+    <div class="filter-section">
+        <h3 class="filter-title">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+            </svg>
+            Filter Logs
+        </h3>
+        
+        <form method="get" class="filter-form">
+            <div class="filter-group">
+                <label class="filter-label">Username</label>
+                <input type="text" 
+                       name="user" 
+                       class="filter-input" 
+                       placeholder="Enter username" 
+                       value="{{ filters.user }}"
+                       title="Filter by username">
+            </div>
+            
+            <div class="filter-group">
+                <label class="filter-label">Action</label>
+                <select name="action" class="filter-select">
+                    <option value="">All Actions</option>
+                    <option value="LOGIN" {{ filters.action == 'LOGIN' ? 'selected' : '' }}>Login</option>
+                    <option value="LOGOUT" {{ filters.action == 'LOGOUT' ? 'selected' : '' }}>Logout</option>
+                    <option value="CREATE" {{ filters.action == 'CREATE' ? 'selected' : '' }}>Create</option>
+                    <option value="UPDATE" {{ filters.action == 'UPDATE' ? 'selected' : '' }}>Update</option>
+                    <option value="DELETE" {{ filters.action == 'DELETE' ? 'selected' : '' }}>Delete</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label class="filter-label">Date</label>
+                <input type="date" 
+                       name="date" 
+                       class="filter-input" 
+                       value="{{ filters.date }}"
+                       title="Filter by specific date">
+            </div>
+            
+            <div class="filter-group button-group">
+                <button type="submit" class="filter-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                    Apply
+                </button>
+            </div>
+        </form>
+
+        <!-- Active Filters Indicator -->
+        {% if filters.user or filters.action or filters.date %}
+        <div class="active-filters">
+            <small>Active filters:</small>
+            
+            {% if filters.user %}
+            <span class="filter-tag">
+                User: {{ filters.user }}
+                <a href="{{ path(app.request.attributes.get('_route'), app.request.query.all|merge({'user': null})) }}" 
+                   class="filter-tag-remove" title="Remove user filter">
+                    ×
+                </a>
+            </span>
+            {% endif %}
+            
+            {% if filters.action %}
+            <span class="filter-tag">
+                Action: {{ filters.action }}
+                <a href="{{ path(app.request.attributes.get('_route'), app.request.query.all|merge({'action': null})) }}" 
+                   class="filter-tag-remove" title="Remove action filter">
+                    ×
+                </a>
+            </span>
+            {% endif %}
+            
+            {% if filters.date %}
+            <span class="filter-tag">
+                Date: {{ filters.date }}
+                <a href="{{ path(app.request.attributes.get('_route'), app.request.query.all|merge({'date': null})) }}" 
+                   class="filter-tag-remove" title="Remove date filter">
+                    ×
+                </a>
+            </span>
+            {% endif %}
+            
+            <a href="{{ path(app.request.attributes.get('_route')) }}" class="clear-filter">
+                Clear all
+            </a>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Logs Table Card -->
+    <div class="table-card">
+        {# <div class="table-header">Activity Logs</div> #}
+        <div class="table-container">
+            <div class="table-wrapper">
+                <table id="logsTable" class="logs-table display">
+                    <thead>
+                        <tr>
+                            <th>User ID</th>
+                            <th>Username</th>
+                            <th>Role</th>
+                            <th>Action</th>
+                            <th>Target Data</th>
+                            <th>Date/Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for log in logs %}
+                        <tr>
+                            <td data-sort="{{ log.userId }}">{{ log.userId }}</td>
+                            <td data-search="{{ log.username|lower }}">
+                                {{ log.username }}
+                            </td>
+                            <td data-search="{{ log.role|lower }}">
+                                <span class="badge {% if log.role == 'ROLE_ADMIN' %}bg-danger{% elseif log.role == 'ROLE_STAFF' %}bg-warning{% else %}bg-secondary{% endif %}">
+                                    {{ log.role }}
+                                </span>
+                            </td>
+                            <td data-search="{{ log.action|lower }}">
+                                <span class="badge {% if log.action == 'CREATE' %}bg-success{% elseif log.action == 'UPDATE' %}bg-info{% elseif log.action == 'DELETE' %}bg-danger{% elseif log.action == 'LOGIN' %}bg-primary{% else %}bg-secondary{% endif %}">
+                                    {{ log.action }}
+                                </span>
+                            </td>
+                            <td data-search="{{ log.targetData|lower }}">
+                                {{ log.targetData }}
+                            </td>
+                            <td data-sort="{{ log.createdAt.timestamp }}">
+                                {{ log.createdAt|date('Y-m-d H:i:s') }}
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="6" class="text-center text-muted">No logs found</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <!-- ✅ jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <!-- ✅ DataTables -->
+    <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            // Initialize DataTable
+            if (!$.fn.DataTable.isDataTable('#logsTable')) {
+                $('#logsTable').DataTable({
+                    pageLength: 25,
+                    responsive: true,
+                    language: {
+                        search: "_INPUT_",
+                        searchPlaceholder: "Search logs...",
+                        lengthMenu: "Show _MENU_ entries",
+                        info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                        paginate: {
+                            first: "First",
+                            last: "Last",
+                            next: "Next",
+                            previous: "Previous"
+                        }
+                    },
+                    columnDefs: [
+                        { targets: 0, type: 'num' },
+                        { targets: 1, type: 'string' },
+                        { targets: 2, type: 'string' },
+                        { targets: 3, type: 'string' },
+                        { targets: 4, type: 'string' },
+                        { 
+                            targets: 5,
+                            type: 'date',
+                            render: function(data, type, row) {
+                                if (type === 'sort' || type === 'type') {
+                                    return new Date(data).getTime();
+                                }
+                                return data;
+                            }
+                        }
+                    ],
+                    order: [[5, 'desc']],
+                    initComplete: function() {
+                        console.log("✅ DataTable initialized successfully for Activity Logs!");
+                    }
+                });
+            }
+        });
+    </script>
+{% endblock %}

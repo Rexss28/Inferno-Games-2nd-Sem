@@ -1,135 +1,400 @@
 /* ===========================================
-   Game Management New Page - Modern Compact Design
+   Game New - Neo Inferno Compact Design
    =========================================== */
 
-.gameManagement-new-page .game-new-container {
-  max-width: 580px;
-  margin: 3rem auto;
-  background: rgba(22, 22, 22, 0.85);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 1rem;
-  padding: 2rem;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
-  color: #e5e5e5;
+.gameManagement-new-page {
+  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+  min-height: 100vh;
+  position: relative;
   font-family: 'Inter', sans-serif;
 }
 
-/* ---------- Header ---------- */
+/* Main Container - More Compact */
+.gameManagement-new-page .game-new-container {
+  max-width: 800px;
+  margin: 1.5rem auto;
+  padding: 1.25rem;
+  position: relative;
+}
+
+/* Header - More Compact */
 .gameManagement-new-page .new-header {
   text-align: center;
   margin-bottom: 1.5rem;
+  position: relative;
 }
 
 .gameManagement-new-page .new-header h1 {
-  font-size: 1.5rem;
-  font-weight: 600;
-  background: linear-gradient(90deg, #ff6b2e, #ff2e2e);
+  font-size: 1.4rem;
+  font-weight: 800;
+  background: linear-gradient(90deg, #ff2e2e, #ff6b2e, #ff2e2e);
+  background-size: 200% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradient 3s ease infinite;
   margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  position: relative;
 }
 
-/* ---------- Form Card ---------- */
+@keyframes gradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Form Card - More Compact */
 .gameManagement-new-page .new-form-card {
-  background: rgba(18, 18, 18, 0.85);
-  border-radius: 0.75rem;
-  padding: 1.5rem 1.75rem;
-  box-shadow: inset 0 0 6px rgba(255, 255, 255, 0.04);
+  background: rgba(15, 15, 15, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 14px;
+  padding: 1.75rem;
+  border: 1px solid rgba(255, 46, 46, 0.15);
+  box-shadow: 
+    0 6px 20px rgba(255, 46, 46, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  position: relative;
+  overflow: hidden;
 }
 
-.gameManagement-new-page form {
-  display: flex;
-  flex-direction: column;
+.gameManagement-new-page .new-form-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1.5px;
+  background: linear-gradient(90deg, #ff2e2e, #ff6b2e);
+}
+
+/* Form Grid Layout - More Compact */
+.gameManagement-new-page .new-form-card form {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
   gap: 1rem;
 }
 
-.gameManagement-new-page label {
-  font-weight: 500;
-  color: #b3b3b3;
-  font-size: 0.9rem;
-  margin-bottom: 0.3rem;
+/* Form Groups */
+.gameManagement-new-page .form-group {
+  position: relative;
 }
 
-.gameManagement-new-page input,
-.gameManagement-new-page textarea,
-.gameManagement-new-page select {
-  background: #1e1e1e;
-  border: 1px solid #2b2b2b;
-  border-radius: 0.4rem;
-  padding: 0.6rem 0.75rem;
-  font-size: 0.9rem;
+/* Full width fields */
+.gameManagement-new-page .form-group:nth-child(1),
+.gameManagement-new-page .form-group:nth-child(2),
+.gameManagement-new-page .form-group:nth-child(6) {
+  grid-column: 1 / -1;
+}
+
+/* Form Labels - More Compact */
+.gameManagement-new-page .form-label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.4rem;
   color: #fff;
-  transition: all 0.2s ease;
-}
-
-.gameManagement-new-page input:focus,
-.gameManagement-new-page textarea:focus,
-.gameManagement-new-page select:focus {
-  border-color: #ff6b2e;
-  background-color: #222;
-  outline: none;
-  box-shadow: 0 0 4px rgba(255, 107, 46, 0.5);
-}
-
-/* ---------- Buttons ---------- */
-.gameManagement-new-page button,
-.gameManagement-new-page .btn-primary {
-  background: linear-gradient(90deg, #ff2e2e, #ff6b2e);
-  color: #fff;
-  border: none;
-  padding: 0.6rem 1.2rem;
-  border-radius: 0.5rem;
   font-weight: 600;
-  cursor: pointer;
-  transition: all 0.25s ease;
-  font-size: 0.9rem;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
 }
 
-.gameManagement-new-page button:hover,
-.gameManagement-new-page .btn-primary:hover {
-  filter: brightness(1.1);
+.gameManagement-new-page .form-label::before {
+  content: '';
+  width: 5px;
+  height: 5px;
+  background: #ff2e2e;
+  border-radius: 50%;
+  display: inline-block;
+  box-shadow: 0 0 6px #ff2e2e;
+}
+
+/* Input Fields - More Compact */
+.gameManagement-new-page .form-input {
+  width: 100%;
+  background: rgba(25, 25, 25, 0.8);
+  border: 1.2px solid rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 0.65rem 0.85rem;
+  color: #fff;
+  font-size: 0.85rem;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: 'Inter', sans-serif;
+}
+
+.gameManagement-new-page .form-input:hover {
+  border-color: rgba(255, 46, 46, 0.25);
+  background: rgba(30, 30, 30, 0.9);
   transform: translateY(-1px);
 }
 
-/* ---------- Secondary Button ---------- */
-.gameManagement-new-page .btn-secondary {
-  background: transparent;
-  border: 1px solid #ff6b2e;
+.gameManagement-new-page .form-input:focus {
+  border-color: #ff2e2e;
+  background: rgba(30, 30, 30, 1);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(255, 46, 46, 0.1);
+  transform: translateY(-1px);
+}
+
+/* Special File Input - More Compact */
+.gameManagement-new-page .file-input-container {
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+  background: rgba(255, 46, 46, 0.03);
+  border: 1.5px dashed rgba(255, 46, 46, 0.25);
+  padding: 1rem;
+  text-align: center;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  margin-bottom: 0.5rem;
+}
+
+.gameManagement-new-page .file-input-container:hover {
+  background: rgba(255, 46, 46, 0.07);
+  border-color: rgba(255, 46, 46, 0.4);
+}
+
+.gameManagement-new-page .file-input-container input[type="file"] {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.gameManagement-new-page .file-input-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
   color: #ff6b2e;
-  padding: 0.55rem 1.1rem;
-  border-radius: 0.5rem;
+  font-weight: 500;
+  font-size: 0.8rem;
+}
+
+.gameManagement-new-page .file-input-label svg {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: #ff2e2e;
+}
+
+.gameManagement-new-page .file-input-label small {
+  font-size: 0.7rem;
+  color: #b3b3b3;
+}
+
+/* Compact Image Preview Area */
+.gameManagement-new-page .image-preview-container {
+  grid-column: 1 / -1;
+  margin-bottom: 0.25rem;
+}
+
+.gameManagement-new-page .image-preview {
+  display: none; /* Hidden by default */
+  flex-direction: row;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  background: rgba(255, 46, 46, 0.04);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 46, 46, 0.15);
+  flex-wrap: wrap;
+}
+
+.gameManagement-new-page .image-preview.active {
+  display: flex;
+}
+
+.gameManagement-new-page .preview-image {
+  width: 60px;
+  height: 40px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 46, 46, 0.25);
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.gameManagement-new-page .preview-info {
+  flex: 1;
+  min-width: 0; /* Allow text truncation */
+}
+
+.gameManagement-new-page .preview-filename {
+  color: #ff6b2e;
+  font-size: 0.8rem;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 0.25rem;
+}
+
+.gameManagement-new-page .preview-size {
+  color: #b3b3b3;
+  font-size: 0.7rem;
+}
+
+.gameManagement-new-page .remove-image-btn {
+  background: rgba(255, 46, 46, 0.08);
+  border: 1px solid rgba(255, 46, 46, 0.2);
+  color: #ff6b2e;
+  padding: 0.35rem 0.75rem;
+  border-radius: 5px;
+  font-size: 0.7rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.gameManagement-new-page .remove-image-btn:hover {
+  background: rgba(255, 46, 46, 0.15);
+  border-color: #ff2e2e;
+}
+
+/* Textarea - More Compact */
+.gameManagement-new-page textarea.form-input {
+  min-height: 80px;
+  resize: vertical;
+  line-height: 1.4;
+  font-size: 0.85rem;
+}
+
+/* Primary Action Button - More Compact */
+.gameManagement-new-page .primary-action {
+  width: 100%;
+  background: linear-gradient(135deg, #ff2e2e, #ff6b2e);
+  color: white;
+  border: none;
+  padding: 0.85rem 1.25rem;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  margin-top: 0.5rem;
+  grid-column: 1 / -1;
+}
+
+.gameManagement-new-page .primary-action:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(255, 46, 46, 0.25);
+}
+
+/* Secondary Actions - More Compact */
+.gameManagement-new-page .new-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.gameManagement-new-page .btn-secondary {
+  flex: 1;
+  background: rgba(255, 46, 46, 0.04);
+  border: 1.2px solid rgba(255, 46, 46, 0.15);
+  color: #ff6b2e;
+  padding: 0.65rem 1rem;
+  border-radius: 8px;
   text-decoration: none;
   font-weight: 600;
-  font-size: 0.9rem;
-  transition: all 0.25s ease;
+  text-align: center;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  font-size: 0.8rem;
 }
 
 .gameManagement-new-page .btn-secondary:hover {
-  background: #ff6b2e;
-  color: #fff;
+  background: rgba(255, 46, 46, 0.08);
+  border-color: #ff2e2e;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255, 46, 46, 0.1);
 }
 
-/* ---------- Actions ---------- */
-.gameManagement-new-page .new-actions {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 1.5rem;
-}
-
-/* ---------- Responsive ---------- */
-@media (max-width: 480px) {
+/* Responsive Design */
+@media (max-width: 768px) {
   .gameManagement-new-page .game-new-container {
+    padding: 1rem;
+    margin: 1rem auto;
+  }
+  
+  .gameManagement-new-page .new-form-card {
     padding: 1.5rem;
   }
-
+  
+  .gameManagement-new-page .new-form-card form {
+    grid-template-columns: 1fr;
+    gap: 0.85rem;
+  }
+  
+  .gameManagement-new-page .new-header h1 {
+    font-size: 1.2rem;
+  }
+  
   .gameManagement-new-page .new-actions {
-    justify-content: center;
+    flex-direction: column;
+    gap: 0.6rem;
   }
-
-  .gameManagement-new-page .btn-secondary,
-  .gameManagement-new-page button {
-    width: 100%;
+  
+  .gameManagement-new-page .image-preview {
+    flex-direction: column;
     text-align: center;
+    gap: 0.5rem;
   }
+  
+  .gameManagement-new-page .preview-info {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .gameManagement-new-page .game-new-container {
+    padding: 0.75rem;
+    margin: 0.75rem auto;
+  }
+  
+  .gameManagement-new-page .new-form-card {
+    padding: 1.25rem;
+  }
+  
+  .gameManagement-new-page .new-header h1 {
+    font-size: 1.1rem;
+  }
+  
+  .gameManagement-new-page .form-input {
+    padding: 0.6rem 0.75rem;
+    font-size: 0.8rem;
+  }
+  
+  .gameManagement-new-page .file-input-container {
+    padding: 0.85rem;
+  }
+  
+  .gameManagement-new-page .preview-image {
+    width: 50px;
+    height: 35px;
+  }
+}
+
+/* Minimal Background Effect */
+.gameManagement-new-page::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    radial-gradient(circle at 20% 30%, rgba(255, 46, 46, 0.02) 0%, transparent 20%),
+    radial-gradient(circle at 80% 70%, rgba(255, 107, 46, 0.02) 0%, transparent 20%);
+  z-index: -1;
+  pointer-events: none;
 }

@@ -4,7 +4,10 @@ namespace App\Form;
 
 use App\Entity\Stock;
 use App\Entity\GameManagement;
-// use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\PositiveOrZero;
+use Symfony\Component\Validator\Constraints\Positive;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -16,34 +19,53 @@ class StockType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add(child: 'availableQuantity')
-            ->add('totalQuantity')
-            // ->add('status', ChoiceType::class, [
-            //     'choices' => [
-            //         'In Stock' => 'In Stock',
-            //         'Low Stock' => 'Low Stock',
-            //         'Out of Stock' => 'Out of Stock',
-            //         'Discontinued' => 'Discontinued',
-            //         'Preorder' => 'Preorder',
-            //     ],
-            //     'label' => 'Stock Status',
-            //     'attr' => ['class' => 'form-control'],
-            //     ])
-             ->add('game', EntityType::class, [
+            ->add('availableQuantity', IntegerType::class, [
+                'label' => 'Available Quantity',
+                'attr' => [
+                    'min' => 0,
+                    'class' => 'form-control',
+                ],
+                'constraints' => [
+                    new NotBlank(['message' => 'Available quantity cannot be empty.']),
+                    new PositiveOrZero(['message' => 'Available quantity must be zero or positive.']),
+                ],
+            ])
+            ->add('totalQuantity', IntegerType::class, [
+                'label' => 'Total Quantity',
+                'attr' => [
+                    'min' => 1,
+                    'class' => 'form-control',
+                ],
+                'constraints' => [
+                    new NotBlank(['message' => 'Total quantity is required.']),
+                    new Positive(['message' => 'Total quantity must be a positive number.']),
+                ],
+            ])
+            ->add('game', EntityType::class, [
                 'class' => GameManagement::class,
+                'label' => 'Linked Game (Optional)',
                 'choice_label' => 'title',
                 'required' => false,
-                'placeholder' => 'N/A',
+                'placeholder' => 'Select a game (optional)',
+                'attr' => ['class' => 'form-select'],
+                'help' => 'Only games without existing stock are shown',
                 'query_builder' => function (EntityRepository $er) use ($options) {
-                    return $er->createQueryBuilder('g')
+                    $qb = $er->createQueryBuilder('g')
                         ->leftJoin('g.stock', 's')
-                        ->where('s IS NULL OR s = :currentStock')
-                        ->setParameter('currentStock', $options['data']->getId() ?? 0);
+                        ->where('s IS NULL');
+                    
+                    // If editing, include the current game
+                    if (isset($options['data']) && $options['data']->getId()) {
+                        $currentGame = $options['data']->getGame();
+                        if ($currentGame) {
+                            $qb->orWhere('g.id = :currentGameId')
+                               ->setParameter('currentGameId', $currentGame->getId());
+                        }
+                    }
+                    
+                    return $qb->orderBy('g.title', 'ASC');
                 },
             ]);
-
-
-        ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void

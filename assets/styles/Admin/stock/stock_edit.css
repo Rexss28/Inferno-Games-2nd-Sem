@@ -1,157 +1,356 @@
 /* ===========================================
-   Stock Edit Page - Modern Compact Design
-   Matches Game Management Edit
+   Stock Edit - Neo Inferno Design (Compact Version)
    =========================================== */
 
-.stock-edit-page .stock-edit-container {
-  max-width: 580px;
-  margin: 3rem auto;
-  background: rgba(22, 22, 22, 0.85);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 1rem;
-  padding: 2rem;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
-  color: #e5e5e5;
+.stock-edit-page {
+  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+  min-height: 100vh;
+  position: relative;
   font-family: 'Inter', sans-serif;
-  overflow-x: hidden; /* Prevent horizontal scrollbar */
 }
 
-/* ---------- Header ---------- */
+/* Main Container - Reduced padding */
+.stock-edit-page .stock-edit-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem;
+  position: relative;
+}
+
+/* Header - More compact */
 .stock-edit-page .edit-header {
   text-align: center;
   margin-bottom: 1.5rem;
+  position: relative;
 }
 
 .stock-edit-page .edit-header h1 {
   font-size: 1.5rem;
-  font-weight: 600;
-  background: linear-gradient(90deg, #ff6b2e, #ff2e2e);
+  font-weight: 800;
+  background: linear-gradient(90deg, #ff2e2e, #ff6b2e, #ff2e2e);
+  background-size: 200% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradient 3s ease infinite;
   margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  position: relative;
 }
 
-/* ---------- Form Card ---------- */
+@keyframes gradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Main Content Grid - Smaller gap */
+.stock-edit-page .edit-main-content {
+  display: grid;
+  grid-template-columns: 1fr 350px;
+  gap: 1.5rem;
+  position: relative;
+}
+
+/* Form Card - Reduced padding */
 .stock-edit-page .edit-form-card {
-  background: rgba(18, 18, 18, 0.85);
-  border-radius: 0.75rem;
-  padding: 1.5rem 1.75rem;
-  box-shadow: inset 0 0 6px rgba(255, 255, 255, 0.04);
+  background: rgba(15, 15, 15, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 1.5rem;
+  border: 1px solid rgba(255, 46, 46, 0.15);
+  box-shadow: 
+    0 8px 25px rgba(255, 46, 46, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  position: relative;
+  overflow: hidden;
 }
 
-.stock-edit-page form {
+.stock-edit-page .edit-form-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #ff2e2e, #ff6b2e);
+}
+
+/* Form Groups - Reduced spacing */
+.stock-edit-page .form-group {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.stock-edit-page .form-group:last-child {
+  margin-bottom: 0;
+}
+
+/* Form Labels - Smaller */
+.stock-edit-page .form-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stock-edit-page .form-label::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  background: #ff2e2e;
+  border-radius: 50%;
+  display: inline-block;
+  box-shadow: 0 0 8px #ff2e2e;
+}
+
+/* Input Fields - More compact */
+.stock-edit-page input,
+.stock-edit-page select {
+  width: 100%;
+  background: rgba(25, 25, 25, 0.8);
+  border: 2px solid rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  color: #fff;
+  font-size: 0.85rem;
+  transition: all 0.2s ease;
+  font-family: 'Inter', sans-serif;
+  height: 42px;
+}
+
+.stock-edit-page select option {
+  background: #1a1a1a;
+  color: #fff;
+  padding: 0.5rem;
+}
+
+.stock-edit-page input:hover,
+.stock-edit-page select:hover {
+  border-color: rgba(255, 46, 46, 0.3);
+  background: rgba(30, 30, 30, 0.9);
+}
+
+.stock-edit-page input:focus,
+.stock-edit-page select:focus {
+  border-color: #ff2e2e;
+  background: rgba(30, 30, 30, 1);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(255, 46, 46, 0.1);
+}
+
+/* Submit Button - Smaller */
+.stock-edit-page button[type="submit"] {
+  width: 100%;
+  background: linear-gradient(135deg, #ff2e2e, #ff6b2e);
+  color: white;
+  border: none;
+  padding: 0.85rem 1.5rem;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  position: relative;
+  overflow: hidden;
+  margin-top: 0.5rem;
+}
+
+.stock-edit-page button[type="submit"]:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(255, 46, 46, 0.3);
+}
+
+/* Preview Section - More compact */
+.stock-edit-page .edit-preview-section {
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
 
-.stock-edit-page label {
-  font-weight: 500;
-  color: #b3b3b3;
-  font-size: 0.9rem;
-  margin-bottom: 0.3rem;
+/* Preview Card - Reduced padding */
+.stock-edit-page .preview-card {
+  background: rgba(15, 15, 15, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 1.5rem;
+  border: 1px solid rgba(255, 46, 46, 0.15);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  position: relative;
+  overflow: hidden;
 }
 
-.stock-edit-page input,
-.stock-edit-page textarea,
-.stock-edit-page select {
-  background: #1e1e1e;
-  border: 1px solid #2b2b2b;
-  border-radius: 0.4rem;
-  padding: 0.6rem 0.75rem;
-  font-size: 0.9rem;
-  color: #fff;
-  transition: all 0.2s ease;
-  width: 100%;
-  box-sizing: border-box;
+.stock-edit-page .preview-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #ff6b2e, #ff2e2e);
 }
 
-.stock-edit-page input:focus,
-.stock-edit-page textarea:focus,
-.stock-edit-page select:focus {
-  border-color: #ff6b2e;
-  background-color: #222;
-  outline: none;
-  box-shadow: 0 0 4px rgba(255, 107, 46, 0.5);
+/* Preview Header - Smaller */
+.stock-edit-page .preview-header {
+  text-align: center;
+  margin-bottom: 1.5rem;
 }
 
-/* ---------- Buttons ---------- */
-.stock-edit-page button,
-.stock-edit-page .btn-primary {
-  background: linear-gradient(90deg, #ff2e2e, #ff6b2e);
-  color: #fff;
-  border: none;
-  padding: 0.6rem 1.2rem;
-  border-radius: 0.5rem;
+.stock-edit-page .preview-header h3 {
+  font-size: 1.1rem;
   font-weight: 600;
-  cursor: pointer;
-  transition: all 0.25s ease;
-  font-size: 0.9rem;
+  background: linear-gradient(90deg, #fff, #ff6b2e);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin: 0;
+  letter-spacing: 0.5px;
 }
 
-.stock-edit-page button:hover,
-.stock-edit-page .btn-primary:hover {
-  filter: brightness(1.1);
-  transform: translateY(-1px);
+/* Preview Items - More compact */
+.stock-edit-page .preview-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
 }
 
-/* ---------- Secondary Button ---------- */
-.stock-edit-page .btn-secondary {
-  background: transparent;
-  border: 1px solid #ff6b2e;
+.stock-edit-page .preview-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.75rem;
+  background: linear-gradient(135deg, rgba(255, 46, 46, 0.05), rgba(255, 107, 46, 0.05));
+  border-radius: 8px;
+  border: 1px solid rgba(255, 46, 46, 0.1);
+}
+
+.stock-edit-page .preview-label {
+  font-size: 0.65rem;
   color: #ff6b2e;
-  padding: 0.55rem 1.1rem;
-  border-radius: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+}
+
+.stock-edit-page .preview-value {
+  font-size: 0.85rem;
+  color: #fff;
+  font-weight: 600;
+}
+
+/* Actions - More compact */
+.stock-edit-page .edit-actions {
+  background: rgba(15, 15, 15, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 1.5rem;
+  border: 1px solid rgba(255, 46, 46, 0.15);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.stock-edit-page .btn-secondary {
+  background: rgba(255, 46, 46, 0.05);
+  border: 2px solid rgba(255, 46, 46, 0.2);
+  color: #ff6b2e;
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
   text-decoration: none;
   font-weight: 600;
-  font-size: 0.9rem;
-  transition: all 0.25s ease;
+  text-align: center;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 0.8rem;
 }
 
 .stock-edit-page .btn-secondary:hover {
-  background: #ff6b2e;
-  color: #fff;
+  background: rgba(255, 46, 46, 0.1);
+  border-color: #ff2e2e;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255, 46, 46, 0.2);
 }
 
-/* ---------- Actions ---------- */
-.stock-edit-page .edit-actions {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 1.5rem;
-  flex-wrap: wrap;
-  gap: 1rem;
+/* Delete Form - Smaller */
+.stock-edit-page .delete-form button {
+  background: linear-gradient(135deg, rgba(197, 40, 40, 0.1), rgba(255, 46, 46, 0.1));
+  border: 2px solid rgba(255, 46, 46, 0.3);
+  color: #ff6b2e;
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  font-weight: 600;
+  text-align: center;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 0.8rem;
+  width: 100%;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
 }
 
-.stock-edit-page .edit-actions form {
-  margin: 0;
+.stock-edit-page .delete-form button:hover {
+  background: linear-gradient(135deg, rgba(255, 46, 46, 0.2), rgba(255, 107, 46, 0.2));
+  border-color: #ff2e2e;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255, 46, 46, 0.2);
 }
 
-/* ---------- Delete Button ---------- */
-.stock-edit-page .edit-actions button {
-  background: #c52828;
-  border: none;
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .stock-edit-page .edit-main-content {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .stock-edit-page .edit-preview-section {
+    max-width: 500px;
+    margin: 0 auto;
+    width: 100%;
+  }
 }
 
-.stock-edit-page .edit-actions button:hover {
-  background: #ff3d3d;
+@media (max-width: 768px) {
+  .stock-edit-page .stock-edit-container {
+    padding: 0.75rem;
+  }
+  
+  .stock-edit-page .edit-form-card,
+  .stock-edit-page .preview-card,
+  .stock-edit-page .edit-actions {
+    padding: 1.25rem;
+  }
+  
+  .stock-edit-page .edit-header h1 {
+    font-size: 1.3rem;
+  }
 }
 
-/* ---------- Responsive ---------- */
 @media (max-width: 480px) {
   .stock-edit-page .stock-edit-container {
-    padding: 1.5rem;
+    padding: 0.5rem;
   }
-
+  
+  .stock-edit-page .edit-form-card,
+  .stock-edit-page .preview-card,
   .stock-edit-page .edit-actions {
-    flex-direction: column;
-    gap: 0.8rem;
+    padding: 1rem;
   }
-
-  .stock-edit-page .btn-secondary,
-  .stock-edit-page button {
-    width: 100%;
-    text-align: center;
+  
+  .stock-edit-page .edit-header h1 {
+    font-size: 1.1rem;
+  }
+  
+  .stock-edit-page .preview-value {
+    font-size: 0.8rem;
   }
 }

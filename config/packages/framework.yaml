@@ -7,6 +7,22 @@ framework:
 
     #esi: true
     #fragments: true
+    
+    csrf_protection:
+        enabled: true
+    
+    # Add ALL ngrok domains to trusted hosts:
+    trusted_hosts: 
+        - 'localhost'
+        - '127.0.0.1'
+        - '^.+\.ngrok-free\.dev$'
+        - '^.+\.ngrok\.io$'
+    
+    # For CSRF tokens to work through reverse proxy:
+    trusted_proxies: '127.0.0.1,localhost,REMOTE_ADDR,ngrok-free.dev,ngrok.io'
+    trusted_headers: ['x-forwarded-for', 'x-forwarded-host', 'x-forwarded-proto', 'x-forwarded-port']
+
+
 
 when@test:
     framework:

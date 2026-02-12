@@ -1,0 +1,666 @@
+/* user_edit.css - Neo Inferno Theme Redesign - Compact Version */
+.user-edit-page {
+  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+  min-height: 100vh;
+  position: relative;
+  font-family: 'Inter', sans-serif;
+}
+
+.user-edit-page::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #ff2e2e, transparent);
+  z-index: 1;
+}
+
+/* Main Container */
+.user-edit-page .page-content {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  position: relative;
+}
+
+.user-edit-page .edit-wrapper {
+  animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Compact Neo Inferno Header */
+.user-edit-page .edit-header {
+  text-align: center;
+  margin-bottom: 2rem;
+  position: relative;
+}
+
+.user-edit-page .edit-header h1 {
+  font-size: 1.8rem; /* COMPACT: Smaller font */
+  font-weight: 800;
+  background: linear-gradient(90deg, #ff2e2e, #ff6b2e, #ff2e2e);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradient 3s ease infinite;
+  margin: 0 0 0.5rem 0; /* COMPACT: Reduced margin */
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  position: relative;
+}
+
+@keyframes gradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.user-edit-page .edit-header h1::after {
+  content: 'EDIT USER';
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: rgba(255, 46, 46, 0.08);
+  z-index: -1;
+  animation: glitch 2s infinite;
+}
+
+@keyframes glitch {
+  0% { transform: translate(0); }
+  20% { transform: translate(-1px, 1px); }
+  40% { transform: translate(-1px, -1px); }
+  60% { transform: translate(1px, 1px); }
+  80% { transform: translate(1px, -1px); }
+  100% { transform: translate(0); }
+}
+
+.user-edit-page .edit-header p {
+  color: #b3b3b3;
+  font-size: 0.9rem; /* COMPACT: Smaller font */
+  margin: 0;
+  line-height: 1.4;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+  font-weight: 400;
+}
+
+/* Compact Neo Inferno Form Card - NO HOVER GLOW */
+.user-edit-page .edit-form-card {
+  background: rgba(15, 15, 15, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 16px; /* COMPACT: Smaller border radius */
+  padding: 2rem; /* COMPACT: Reduced padding */
+  border: 1px solid rgba(255, 46, 46, 0.15);
+  box-shadow: 
+    0 8px 30px rgba(255, 46, 46, 0.1), /* COMPACT: Smaller shadow */
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  position: relative;
+  overflow: hidden;
+}
+
+.user-edit-page .edit-form-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #ff2e2e, #ff6b2e);
+}
+
+/* Compact Grid Layout */
+.user-edit-page .form-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem; /* COMPACT: Reduced gap */
+  margin-bottom: 1.5rem; /* COMPACT: Reduced margin */
+}
+
+.user-edit-page .form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem; /* COMPACT: Reduced gap */
+  align-items: start;
+}
+
+/* Compact Form Groups */
+.user-edit-page .form-group {
+  position: relative;
+  margin-bottom: 1rem; /* COMPACT: Reduced margin */
+}
+
+.user-edit-page .form-group:last-child {
+  margin-bottom: 0;
+}
+
+/* Compact Form Labels - Neo Inferno Style */
+.user-edit-page .form-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem; /* COMPACT: Reduced gap */
+  margin-bottom: 0.5rem; /* COMPACT: Reduced margin */
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.75rem; /* COMPACT: Smaller font */
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.user-edit-page .form-label::before {
+  content: '';
+  width: 6px; /* COMPACT: Smaller dot */
+  height: 6px; /* COMPACT: Smaller dot */
+  background: #ff2e2e;
+  border-radius: 50%;
+  display: inline-block;
+  box-shadow: 0 0 5px #ff2e2e; /* COMPACT: Smaller shadow */
+}
+
+/* Compact Neo Inferno Input Fields */
+.user-edit-page .form-input {
+  width: 100%;
+  background: rgba(25, 25, 25, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.05); /* COMPACT: Thinner border */
+  border-radius: 10px; /* COMPACT: Smaller border radius */
+  padding: 0.75rem 1rem; /* COMPACT: Reduced padding */
+  color: #fff;
+  font-size: 0.85rem; /* COMPACT: Smaller font */
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); /* COMPACT: Faster transition */
+  font-family: 'Inter', sans-serif;
+}
+
+.user-edit-page .form-input:hover {
+  border-color: rgba(255, 46, 46, 0.2);
+  background: rgba(30, 30, 30, 0.9);
+}
+
+.user-edit-page .form-input:focus {
+  border-color: #ff2e2e;
+  background: rgba(30, 30, 30, 1);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(255, 46, 46, 0.1); /* COMPACT: Smaller shadow */
+}
+
+/* COMPACT ENHANCED SELECT DROPDOWN */
+.user-edit-page .custom-dropdown {
+  position: relative;
+  width: 100%;
+}
+
+.user-edit-page .dropdown-trigger {
+  background: rgba(25, 25, 25, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.05); /* COMPACT: Thinner border */
+  border-radius: 10px; /* COMPACT: Smaller border radius */
+  padding: 0.75rem 1rem; /* COMPACT: Reduced padding */
+  color: #fff;
+  font-size: 0.85rem; /* COMPACT: Smaller font */
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  user-select: none;
+  min-height: 44px; /* COMPACT: Smaller height */
+  position: relative;
+}
+
+.user-edit-page .dropdown-trigger:hover {
+  border-color: rgba(255, 46, 46, 0.2);
+  background: rgba(30, 30, 30, 0.9);
+}
+
+.user-edit-page .dropdown-trigger.open {
+  border-color: #ff2e2e;
+  background: rgba(30, 30, 30, 1);
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border-bottom: 1px solid rgba(255, 46, 46, 0.2);
+}
+
+.user-edit-page .dropdown-trigger .selected-text {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem; /* COMPACT: Reduced gap */
+  flex: 1;
+}
+
+.user-edit-page .dropdown-trigger .chevron {
+  width: 12px; /* COMPACT: Smaller chevron */
+  height: 12px; /* COMPACT: Smaller chevron */
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+  margin-left: 0.5rem; /* COMPACT: Reduced margin */
+  color: #ff6b2e;
+}
+
+.user-edit-page .dropdown-trigger.open .chevron {
+  transform: rotate(180deg);
+  color: #ff2e2e;
+}
+
+.user-edit-page .dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: rgba(20, 20, 20, 0.98);
+  backdrop-filter: blur(10px);
+  border: 1px solid #ff2e2e; /* COMPACT: Thinner border */
+  border-top: none;
+  border-radius: 0 0 10px 10px; /* COMPACT: Smaller border radius */
+  max-height: 0;
+  overflow: hidden;
+  z-index: 1000;
+  opacity: 0;
+  transform: translateY(-5px);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 10px 25px rgba(255, 46, 46, 0.15); /* COMPACT: Smaller shadow */
+}
+
+.user-edit-page .dropdown-menu.open {
+  max-height: 250px; /* COMPACT: Smaller max height */
+  opacity: 1;
+  transform: translateY(0);
+  overflow-y: auto;
+}
+
+.user-edit-page .dropdown-option {
+  padding: 0.75rem 1rem; /* COMPACT: Reduced padding */
+  cursor: pointer;
+  transition: all 0.15s ease;
+  color: #b3b3b3;
+  border-bottom: 1px solid rgba(255, 46, 46, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem; /* COMPACT: Reduced gap */
+  position: relative;
+  font-size: 0.85rem; /* COMPACT: Smaller font */
+}
+
+.user-edit-page .dropdown-option:last-child {
+  border-bottom: none;
+}
+
+.user-edit-page .dropdown-option:hover {
+  background: rgba(255, 46, 46, 0.1);
+  color: #ff6b2e;
+}
+
+.user-edit-page .dropdown-option.selected {
+  background: rgba(255, 46, 46, 0.15);
+  color: #ff2e2e;
+  font-weight: 600;
+}
+
+.user-edit-page .dropdown-option.selected::before {
+  content: '';
+  width: 4px; /* COMPACT: Smaller dot */
+  height: 4px; /* COMPACT: Smaller dot */
+  background: #ff2e2e;
+  border-radius: 50%;
+  display: block;
+  box-shadow: 0 0 5px #ff2e2e; /* COMPACT: Smaller shadow */
+}
+
+.user-edit-page .dropdown-option .option-badge {
+  font-size: 0.7rem; /* COMPACT: Smaller font */
+  padding: 0.2rem 0.4rem; /* COMPACT: Reduced padding */
+  background: rgba(255, 46, 46, 0.2);
+  color: #ff6b2e;
+  border-radius: 3px; /* COMPACT: Smaller border radius */
+  font-weight: 500;
+  margin-left: auto;
+  border: 1px solid rgba(255, 46, 46, 0.3);
+}
+
+/* Compact Role badges styling */
+.user-edit-page .role-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.5rem; /* COMPACT: Reduced padding */
+  border-radius: 12px; /* COMPACT: Smaller border radius */
+  font-size: 0.7rem; /* COMPACT: Smaller font */
+  font-weight: 600;
+  border: 1px solid;
+}
+
+.user-edit-page .role-badge.user { 
+  background: rgba(255, 46, 46, 0.1); 
+  color: #ff6b2e;
+  border-color: rgba(255, 107, 46, 0.3);
+}
+
+.user-edit-page .role-badge.staff { 
+  background: rgba(255, 107, 46, 0.1); 
+  color: #ff8b2e;
+  border-color: rgba(255, 139, 46, 0.3);
+}
+
+.user-edit-page .role-badge.admin { 
+  background: rgba(255, 46, 46, 0.2); 
+  color: #ff2e2e;
+  border-color: rgba(255, 46, 46, 0.4);
+}
+
+/* Compact Status dropdown styling */
+.user-edit-page .select-container {
+  position: relative;
+}
+
+.user-edit-page .select-container::after {
+  content: '';
+  position: absolute;
+  right: 1rem; /* COMPACT: Adjusted position */
+  top: 50%;
+  transform: translateY(-50%) rotate(0deg);
+  width: 10px; /* COMPACT: Smaller */
+  height: 5px; /* COMPACT: Smaller */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 6'%3E%3Cpath d='M1 1l5 4 5-4' stroke='%23ff6b2e' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  pointer-events: none;
+  transition: transform 0.2s ease;
+}
+
+.user-edit-page .select-container.open::after {
+  transform: translateY(-50%) rotate(180deg);
+}
+
+.user-edit-page select.form-input {
+  appearance: none;
+  padding-right: 2.5rem; /* COMPACT: Reduced padding */
+  cursor: pointer;
+  background-image: none;
+  position: relative;
+  z-index: 1;
+}
+
+/* Compact Password Field */
+.user-edit-page .password-field {
+  position: relative;
+}
+
+.user-edit-page .password-hint {
+  font-size: 0.7rem; /* COMPACT: Smaller font */
+  color: #b3b3b3;
+  margin-top: 0.35rem; /* COMPACT: Reduced margin */
+  padding: 0.35rem 0.5rem; /* COMPACT: Reduced padding */
+  background: rgba(255, 46, 46, 0.05);
+  border-radius: 6px; /* COMPACT: Smaller border radius */
+  border-left: 2px solid rgba(255, 107, 46, 0.3);
+  border: 1px solid rgba(255, 46, 46, 0.1);
+}
+
+/* Compact Action Buttons */
+.user-edit-page .form-actions {
+  display: flex;
+  gap: 0.75rem; /* COMPACT: Reduced gap */
+  padding-top: 1.5rem; /* COMPACT: Reduced padding */
+  border-top: 1px solid rgba(255, 46, 46, 0.1);
+  margin-top: 0.5rem; /* COMPACT: Reduced margin */
+}
+
+.user-edit-page .btn {
+  flex: 1;
+  padding: 0.75rem 1.5rem; /* COMPACT: Reduced padding */
+  border-radius: 10px; /* COMPACT: Smaller border radius */
+  font-size: 0.85rem; /* COMPACT: Smaller font */
+  font-weight: 600;
+  text-decoration: none;
+  text-align: center;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  border: none;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem; /* COMPACT: Reduced gap */
+  position: relative;
+  overflow: hidden;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* REMOVED: Hover glow effect on form card */
+/* REMOVED: .edit-form-card::after and related hover effects */
+
+.user-edit-page .btn-primary {
+  background: linear-gradient(135deg, #ff2e2e, #ff6b2e);
+  color: white;
+  box-shadow: 0 3px 15px rgba(255, 46, 46, 0.2); /* COMPACT: Smaller shadow */
+  border: none;
+}
+
+.user-edit-page .btn-primary:hover {
+  transform: translateY(-1px); /* COMPACT: Smaller hover movement */
+  box-shadow: 0 6px 20px rgba(255, 46, 46, 0.3); /* COMPACT: Smaller shadow */
+  letter-spacing: 0.6px;
+}
+
+.user-edit-page .btn-primary:active {
+  transform: translateY(0);
+}
+
+.user-edit-page .btn-secondary {
+  background: rgba(255, 46, 46, 0.05);
+  color: #ff6b2e;
+  border: 1px solid rgba(255, 46, 46, 0.2); /* COMPACT: Thinner border */
+}
+
+.user-edit-page .btn-secondary:hover {
+  background: rgba(255, 46, 46, 0.1);
+  color: #ff8b2e;
+  border-color: #ff2e2e;
+  transform: translateY(-1px); /* COMPACT: Smaller hover movement */
+  box-shadow: 0 5px 15px rgba(255, 46, 46, 0.15); /* COMPACT: Smaller shadow */
+}
+
+/* Compact Loading state */
+.user-edit-page .btn-loading {
+  position: relative;
+  color: transparent !important;
+}
+
+.user-edit-page .btn-loading::after {
+  content: '';
+  position: absolute;
+  width: 16px; /* COMPACT: Smaller spinner */
+  height: 16px; /* COMPACT: Smaller spinner */
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Compact Error States */
+.user-edit-page .has-error .form-input,
+.user-edit-page .has-error .dropdown-trigger {
+  border-color: #ff2e2e;
+  background: rgba(255, 46, 46, 0.05);
+  box-shadow: 0 0 10px rgba(255, 46, 46, 0.15); /* COMPACT: Smaller shadow */
+}
+
+.user-edit-page .has-error .form-input:focus,
+.user-edit-page .has-error .dropdown-trigger.open {
+  box-shadow: 0 0 0 3px rgba(255, 46, 46, 0.15); /* COMPACT: Smaller shadow */
+}
+
+.user-edit-page .error-message {
+  font-size: 0.7rem; /* COMPACT: Smaller font */
+  color: #ff6b2e;
+  margin-top: 0.35rem; /* COMPACT: Reduced margin */
+  padding: 0.35rem 0.5rem; /* COMPACT: Reduced padding */
+  background: rgba(255, 46, 46, 0.05);
+  border-radius: 6px; /* COMPACT: Smaller border radius */
+  border-left: 2px solid rgba(255, 46, 46, 0.3);
+  display: flex;
+  align-items: center;
+  gap: 0.35rem; /* COMPACT: Reduced gap */
+  border: 1px solid rgba(255, 46, 46, 0.1);
+}
+
+.user-edit-page .error-message::before {
+  content: '⚠';
+  font-size: 0.75rem; /* COMPACT: Smaller icon */
+  color: #ff2e2e;
+}
+
+/* Compact Success State */
+.user-edit-page .has-success .form-input,
+.user-edit-page .has-success .dropdown-trigger {
+  border-color: #ff6b2e;
+  box-shadow: 0 0 10px rgba(255, 107, 46, 0.15); /* COMPACT: Smaller shadow */
+}
+
+/* Compact Field Group Styling */
+.user-edit-page .field-group {
+  display: grid;
+  gap: 0.75rem; /* COMPACT: Reduced gap */
+}
+
+.user-edit-page .field-group-header {
+  grid-column: 1 / -1;
+  margin-bottom: 0.25rem; /* COMPACT: Reduced margin */
+}
+
+.user-edit-page .field-group-header h3 {
+  color: #ff6b2e;
+  font-size: 0.85rem; /* COMPACT: Smaller font */
+  font-weight: 600;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem; /* COMPACT: Reduced gap */
+  position: relative;
+}
+
+.user-edit-page .field-group-header h3::before {
+  content: '';
+  width: 3px; /* COMPACT: Smaller indicator */
+  height: 12px; /* COMPACT: Smaller indicator */
+  background: linear-gradient(135deg, #ff2e2e, #ff6b2e);
+  border-radius: 1px; /* COMPACT: Smaller border radius */
+  box-shadow: 0 0 5px #ff2e2e; /* COMPACT: Smaller shadow */
+}
+
+/* Visual connection between paired fields - REMOVED for cleaner look */
+.user-edit-page .form-row {
+  position: relative;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .user-edit-page .page-content {
+    padding: 1rem;
+  }
+  
+  .user-edit-page .edit-form-card {
+    padding: 1.5rem;
+    border-radius: 14px;
+  }
+  
+  .user-edit-page .form-row {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .user-edit-page .edit-header h1 {
+    font-size: 1.5rem;
+  }
+  
+  .user-edit-page .form-actions {
+    flex-direction: column;
+  }
+  
+  .user-edit-page .btn {
+    width: 100%;
+  }
+  
+  .user-edit-page .dropdown-menu {
+    position: fixed;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) scale(0.9);
+    width: 90vw;
+    max-width: 350px;
+    border-radius: 10px;
+    border: 1px solid #ff2e2e;
+    max-height: 60vh;
+  }
+  
+  .user-edit-page .dropdown-menu.open {
+    transform: translate(-50%, -50%) scale(1);
+  }
+  
+  .user-edit-page .dropdown-trigger.open {
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    border-bottom: 1px solid rgba(255, 46, 46, 0.2);
+  }
+}
+
+@media (max-width: 480px) {
+  .user-edit-page .page-content {
+    padding: 0.75rem;
+  }
+  
+  .user-edit-page .edit-form-card {
+    padding: 1.25rem;
+    border-radius: 12px;
+  }
+  
+  .user-edit-page .edit-header h1 {
+    font-size: 1.3rem;
+  }
+  
+  .user-edit-page .edit-header p {
+    font-size: 0.8rem;
+  }
+  
+  .user-edit-page .form-input,
+  .user-edit-page .dropdown-trigger {
+    padding: 0.65rem 0.85rem;
+    font-size: 0.8rem;
+  }
+  
+  .user-edit-page .btn {
+    padding: 0.65rem 1.25rem;
+    font-size: 0.8rem;
+  }
+}
+
+/* Floating Particles Background */
+.user-edit-page::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    radial-gradient(circle at 20% 30%, rgba(255, 46, 46, 0.05) 0%, transparent 20%),
+    radial-gradient(circle at 80% 70%, rgba(255, 107, 46, 0.05) 0%, transparent 20%),
+    radial-gradient(circle at 40% 80%, rgba(255, 46, 46, 0.03) 0%, transparent 20%);
+  z-index: -1;
+  pointer-events: none;
+}

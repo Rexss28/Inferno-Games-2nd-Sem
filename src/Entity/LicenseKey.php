@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Entity;
+
 use Symfony\Component\Validator\Constraints as Assert;
 use App\Repository\LicenseKeyRepository;
 use Doctrine\ORM\Mapping as ORM;
@@ -33,6 +34,11 @@ class LicenseKey
     #[ORM\ManyToOne(inversedBy: 'licenseKeys')]
     #[ORM\JoinColumn(onDelete: "SET NULL")]
     private ?Order $order = null; // singular for clarity
+
+    // ✅ ADD THIS: Ownership tracking
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $createdBy = null;
 
     // ─────────────────────────────
     // 🔹 Getters & Setters
@@ -85,6 +91,24 @@ class LicenseKey
     {
         $this->order = $order;
         return $this;
+    }
+
+    // ✅ ADD THESE METHODS:
+    public function getCreatedBy(): ?User
+    {
+        return $this->createdBy;
+    }
+
+    public function setCreatedBy(?User $createdBy): static
+    {
+        $this->createdBy = $createdBy;
+        return $this;
+    }
+
+    // Helper method for voter/security checks
+    public function isCreatedBy(User $user): bool
+    {
+        return $this->createdBy && $this->createdBy->getId() === $user->getId();
     }
 
     // ─────────────────────────────

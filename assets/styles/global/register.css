@@ -1,0 +1,477 @@
+/* ============================================
+   REGISTRATION PAGE STYLES
+   Matching the login page design
+   ============================================ */
+
+.register-page {
+    margin: 0;
+    padding: 0;
+    font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    min-height: 100vh;
+}
+
+.register {
+    display: flex;
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+}
+
+/* ============================================
+   LEFT PANEL - Matching login page
+   ============================================ */
+.register-left_panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-image: url('/images/bg_pattern.jpg');
+    background-size: cover;
+    background-position: center;
+    color: white;
+    position: relative;
+    padding: 40px;
+}
+
+/* Inline logo + title - matching login */
+.logo-inline {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5px;
+}
+
+.logo-inline h1 {
+    font-size: 5rem;
+    font-weight: bold;
+    font-family: "Kurri Island Caps PERSONAL", sans-serif;
+    margin: 0;
+    line-height: 1;
+    color: white;
+    letter-spacing: 5px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.logo-inline-image {
+    width: 5rem;
+    height: auto;
+    margin-top: 1px;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+/* "GAMES" below the logo-inline */
+.register-left_panel p {
+    font-size: 1.5rem;
+    font-family: Inter, sans-serif;
+    margin: 8px 0 0 4px;
+    color: white;
+    letter-spacing: 5px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* ============================================
+   RIGHT PANEL - Registration form
+   ============================================ */
+.register-right_panel {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    position: relative;
+}
+
+/* Glass morphism effect */
+.register-right_panel::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.1) 0%, 
+        rgba(255, 255, 255, 0.05) 100%);
+    backdrop-filter: blur(10px);
+    pointer-events: none;
+}
+
+/* Modern Registration card */
+.register-container {
+    width: 100%;
+    max-width: 500px;
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 40px 36px;
+    border-radius: 20px;
+    box-shadow: 
+        0 20px 40px rgba(0, 0, 0, 0.08),
+        0 8px 16px rgba(0, 0, 0, 0.04),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    text-align: left;
+    position: relative;
+    z-index: 2;
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.register-container:hover {
+    transform: translateY(-4px);
+    box-shadow: 
+        0 32px 64px rgba(0, 0, 0, 0.12),
+        0 16px 32px rgba(0, 0, 0, 0.06),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.register-container h1 {
+    margin: 0 0 8px 0;
+    font-size: 1.75rem;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    color: #222;
+    text-align: center;
+}
+
+.form-intro {
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.form-intro p {
+    margin: 0;
+    color: #666;
+    font-size: 0.95rem;
+    opacity: 0.9;
+}
+
+/* Form styles */
+.register-form {
+    margin-top: 8px;
+}
+
+/* Alert messages */
+.alert-danger {
+    background: rgba(255, 46, 46, 0.1);
+    color: #ff2e2e;
+    padding: 12px 16px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 46, 46, 0.2);
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+}
+
+/* Form groups */
+.form-group {
+    margin-bottom: 20px;
+}
+
+/* Form labels */
+.form-group label {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: #222;
+    opacity: 0.8;
+}
+
+/* IMPORTANT: Fix for form input text color */
+.form-control,
+input[type="text"],
+input[type="password"] {
+    width: 100%;
+    padding: 14px 18px;
+    border: 1.5px solid rgba(0, 0, 0, 0.08);
+    border-radius: 12px;
+    font-size: 1rem;
+    background: rgba(255, 255, 255, 0.9);
+    outline: none;
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    box-sizing: border-box;
+    font-family: Inter, sans-serif;
+    color: #222 !important; /* Force text color */
+}
+
+/* Remove any conflicting styles */
+.form-control *,
+input[type="text"] *,
+input[type="password"] * {
+    color: #222 !important;
+}
+
+/* Focus states */
+.form-control:focus,
+input[type="text"]:focus,
+input[type="password"]:focus {
+    border-color: #ff0000;
+    box-shadow: 
+        0 0 0 3px rgba(255, 0, 0, 0.06),
+        0 2px 8px rgba(0, 0, 0, 0.08);
+    background: white;
+    color: #222 !important;
+}
+
+/* Hover states */
+.form-control:hover:not(:focus),
+input[type="text"]:hover:not(:focus),
+input[type="password"]:hover:not(:focus) {
+    border-color: rgba(0, 0, 0, 0.15);
+    background: white;
+    color: #222 !important;
+}
+
+/* Placeholder text */
+.form-control::placeholder,
+input[type="text"]::placeholder,
+input[type="password"]::placeholder {
+    color: #999 !important;
+    opacity: 0.8;
+}
+
+/* Form errors */
+.form-error {
+    color: #ff2e2e;
+    font-size: 0.8rem;
+    margin-top: 6px;
+    font-weight: 500;
+}
+
+/* Password hints */
+.password-hints {
+    margin-top: 6px;
+}
+
+.password-hints small {
+    color: #666;
+    font-size: 0.8rem;
+    opacity: 0.7;
+}
+
+/* Checkbox group */
+.checkbox-group {
+    margin: 24px 0;
+}
+
+.checkbox-wrapper {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    cursor: pointer;
+}
+
+.checkbox-input {
+    margin-top: 3px;
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    accent-color: #ff0000;
+}
+
+.checkbox-input:checked {
+    background-color: #ff0000;
+    border-color: #ff0000;
+}
+
+.checkbox-wrapper label {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #444;
+    line-height: 1.4;
+    cursor: pointer;
+    opacity: 0.9;
+}
+
+/* Register Button */
+.register-button {
+    width: 100%;
+    padding: 14px 24px;
+    margin-top: 10px;
+    background: #ff0000;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    box-shadow: 
+        0 4px 12px rgba(255, 0, 0, 0.25),
+        0 2px 4px rgba(0, 0, 0, 0.1);
+    font-family: Inter, sans-serif;
+}
+
+.register-button:hover {
+    background: #e60000;
+    transform: translateY(-1px);
+    box-shadow: 
+        0 6px 20px rgba(255, 0, 0, 0.35),
+        0 3px 8px rgba(0, 0, 0, 0.15);
+}
+
+.register-button:active {
+    transform: translateY(0px);
+    transition: transform 0.1s ease;
+    box-shadow: 
+        0 2px 8px rgba(255, 0, 0, 0.3),
+        0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Login Link */
+.login-link {
+    margin-top: 24px;
+    text-align: center;
+    padding: 16px 0;
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.login-link p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.login-link a {
+    color: #ff0000;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    position: relative;
+    padding-bottom: 2px;
+}
+
+.login-link a::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 1.5px;
+    background: #ff0000;
+    transition: width 0.3s ease;
+}
+
+.login-link a:hover {
+    color: #cc0000;
+}
+
+.login-link a:hover::after {
+    width: 100%;
+}
+
+/* Helper text */
+.helper {
+    margin-top: 16px;
+    font-size: 0.75rem;
+    color: #888;
+    text-align: center;
+    opacity: 0.8;
+    line-height: 1.4;
+    font-style: italic;
+}
+
+.helper a {
+    color: #ff0000;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.helper a:hover {
+    color: #cc0000;
+    text-decoration: underline;
+}
+
+/* ============================================
+   RESPONSIVE DESIGN
+   ============================================ */
+@media (max-width: 1024px) {
+    .register {
+        flex-direction: column;
+    }
+    
+    .register-left_panel,
+    .register-right_panel {
+        flex: 1;
+        width: 100%;
+    }
+    
+    .register-left_panel {
+        padding: 20px;
+    }
+    
+    .logo-inline h1 {
+        font-size: 3.5rem;
+    }
+    
+    .logo-inline-image {
+        width: 3.5rem;
+    }
+    
+    .register-left_panel p {
+        font-size: 1.2rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .register-container {
+        margin: 20px;
+        padding: 28px 20px;
+        border-radius: 16px;
+        max-width: none;
+    }
+    
+    .register-container h1 {
+        font-size: 1.5rem;
+    }
+    
+    .form-control,
+    input[type="text"],
+    input[type="password"] {
+        padding: 12px 16px;
+    }
+    
+    .register-button {
+        padding: 12px 20px;
+    }
+    
+    .logo-inline h1 {
+        font-size: 3rem;
+        letter-spacing: 3px;
+    }
+    
+    .logo-inline-image {
+        width: 3rem;
+    }
+    
+    .register-left_panel p {
+        font-size: 1rem;
+        letter-spacing: 3px;
+    }
+}
+
+@media (max-width: 480px) {
+    .register-container {
+        padding: 20px 16px;
+        margin: 16px;
+    }
+    
+    .register-container h1 {
+        font-size: 1.3rem;
+    }
+    
+    .form-intro p {
+        font-size: 0.85rem;
+    }
+    
+    .checkbox-wrapper label {
+        font-size: 0.85rem;
+    }
+    
+    .helper {
+        font-size: 0.7rem;
+    }
+}

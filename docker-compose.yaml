@@ -1,5 +1,24 @@
-services:
+version: '3.8'
 
+services:
+  # Symfony Web Application
+  web:
+    build: .
+    restart: unless-stopped
+    working_dir: /var/www/html
+    volumes:
+      - .:/var/www/html
+      - ./docker/php/php.ini:/usr/local/etc/php/conf.d/custom.ini
+    ports:
+      - "8000:80"  # Important: Use port 8000 for ngrok
+    depends_on:
+      - mysql
+    networks:
+      - inferno_network
+    environment:
+      DATABASE_URL: "mysql://inferno_user:inferno_games_password@mysql:3306/inferno_db?serverVersion=8.0.32&charset=utf8mb4"
+
+  # MySQL Database
   mysql:
     image: mysql:8.0
     restart: unless-stopped
@@ -8,16 +27,15 @@ services:
       MYSQL_DATABASE: inferno_db
       MYSQL_USER: inferno_user
       MYSQL_PASSWORD: inferno_games_password
-
     ports:
       - "3306:3306"
-
     volumes:
       - mysql_data:/var/lib/mysql
-
     networks:
       - inferno_network
+    command: --default-authentication-plugin=mysql_native_password
 
+  # PHPMyAdmin
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     restart: unless-stopped
@@ -26,19 +44,16 @@ services:
       PMA_PORT: 3306
       PMA_USER: inferno_user
       PMA_PASSWORD: inferno_games_password
-
     ports:
       - "8080:80"
-
     depends_on:
       - mysql
-
     networks:
-      - inferno_network    
+      - inferno_network
 
 volumes:
   mysql_data:
 
 networks:
   inferno_network:
-
+    driver: bridge

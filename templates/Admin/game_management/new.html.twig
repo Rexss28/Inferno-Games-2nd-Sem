@@ -8,6 +8,64 @@
   {{ encore_entry_link_tags('game_new') }}
 {% endblock %}
 
+{% block javascripts %}
+  {{ parent() }}
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const fileInput = document.getElementById('game_management_image');
+      const imagePreview = document.getElementById('imagePreview');
+      const previewImage = document.getElementById('previewImage');
+      const filenameDisplay = document.getElementById('filenameDisplay');
+      const fileSizeDisplay = document.getElementById('fileSizeDisplay');
+      const removeImageBtn = document.getElementById('removeImageBtn');
+      
+      // Format file size
+      function formatFileSize(bytes) {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+      }
+      
+      // Handle file selection
+      if (fileInput) {
+        fileInput.addEventListener('change', function(e) {
+          if (this.files && this.files[0]) {
+            const file = this.files[0];
+            
+            // Show filename and size
+            filenameDisplay.textContent = file.name;
+            fileSizeDisplay.textContent = formatFileSize(file.size);
+            
+            // Preview image
+            const reader = new FileReader();
+            reader.onload = function(e) {
+              previewImage.src = e.target.result;
+              imagePreview.classList.add('active');
+            }
+            reader.readAsDataURL(file);
+          }
+        });
+      }
+      
+      // Handle remove image button
+      if (removeImageBtn) {
+        removeImageBtn.addEventListener('click', function(e) {
+          e.preventDefault();
+          if (fileInput) {
+            fileInput.value = '';
+          }
+          imagePreview.classList.remove('active');
+          previewImage.src = '';
+          filenameDisplay.textContent = '';
+          fileSizeDisplay.textContent = '';
+        });
+      }
+    });
+  </script>
+{% endblock %}
+
 {% block content %}
 <div class="game-new-container">
   <div class="new-header">
@@ -15,11 +73,114 @@
   </div>
 
   <div class="new-form-card">
-    {{ include('Admin/game_management/_form.html.twig') }}
-  </div>
+    <form action="{{ path('app_game_management_new') }}" method="post" enctype="multipart/form-data">
+      <!-- Title -->
+      <div class="form-group">
+        <label class="form-label" for="game_management_title">
+          Game Title
+        </label>
+        <input type="text" id="game_management_title" name="game_management[title]" 
+               class="form-input" required placeholder="Enter game title"
+               value="{{ game_management.title ?? '' }}">
+        {% for flash in app.flashes('error') %}
+          {% if flash matches '/title/i' %}
+            <div class="error-message" style="color: #ff2e2e; font-size: 0.8rem; margin-top: 0.5rem;">{{ flash }}</div>
+          {% endif %}
+        {% endfor %}
+      </div>
 
-  <div class="new-actions">
-    <a href="{{ path('app_game_management_index') }}" class="btn-secondary">Back</a>
+      <!-- Price -->
+      <div class="form-group">
+        <label class="form-label" for="game_management_price">
+          Price ($)
+        </label>
+        <input type="number" id="game_management_price" name="game_management[price]" 
+               class="form-input" step="0.01" min="0" required placeholder="0.00"
+               value="{{ game_management.price ?? '' }}">
+        {% for flash in app.flashes('error') %}
+          {% if flash matches '/price/i' %}
+            <div class="error-message" style="color: #ff2e2e; font-size: 0.8rem; margin-top: 0.5rem;">{{ flash }}</div>
+          {% endif %}
+        {% endfor %}
+      </div>
+
+      <!-- Image Upload -->
+      <div class="form-group">
+        <label class="form-label" for="game_management_image">
+          Game Image
+        </label>
+        <div class="file-input-container">
+          <input type="file" id="game_management_image" name="game_management[image]" 
+                 class="form-input" accept="image/*">
+          <div class="file-input-label">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+            </svg>
+            <span>Upload Image</span>
+            <small>PNG, JPG, GIF (max 2MB)</small>
+          </div>
+        </div>
+        {% for flash in app.flashes('error') %}
+          {% if flash matches '/image/i' %}
+            <div class="error-message" style="color: #ff2e2e; font-size: 0.8rem; margin-top: 0.5rem;">{{ flash }}</div>
+          {% endif %}
+        {% endfor %}
+        
+        <!-- Compact Image Preview -->
+        <div class="image-preview-container">
+          <div id="imagePreview" class="image-preview">
+            <img id="previewImage" class="preview-image" alt="Selected image">
+            <div class="preview-info">
+              <div id="filenameDisplay" class="preview-filename"></div>
+              <div id="fileSizeDisplay" class="preview-size"></div>
+            </div>
+            <button id="removeImageBtn" class="remove-image-btn" type="button">
+              Remove
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stock -->
+      <div class="form-group">
+        <label class="form-label" for="game_management_stock">
+          Stock
+        </label>
+        <select id="game_management_stock" name="game_management[stock]" class="form-input">
+          <option value="">Select stock (optional)</option>
+          <!-- Add your stock options here dynamically -->
+          {% for stock in stocks ?? [] %}
+            <option value="{{ stock.id }}">{{ stock.name ?? stock.id }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <!-- Description -->
+      <div class="form-group">
+        <label class="form-label" for="game_management_description">
+          Description
+        </label>
+        <textarea id="game_management_description" name="game_management[description]" 
+                  class="form-input" rows="3" placeholder="Game description...">{{ game_management.description ?? '' }}</textarea>
+        {% for flash in app.flashes('error') %}
+          {% if flash matches '/description/i' %}
+            <div class="error-message" style="color: #ff2e2e; font-size: 0.8rem; margin-top: 0.5rem;">{{ flash }}</div>
+          {% endif %}
+        {% endfor %}
+      </div>
+
+      <!-- CSRF Token and Submit -->
+      <input type="hidden" name="_token" value="{{ csrf_token('new_game') }}">
+      <button type="submit" class="primary-action">
+        Create Game
+      </button>
+
+      <div class="new-actions">
+        <a href="{{ path('app_game_management_index') }}" class="btn-secondary">
+          Back to List
+        </a>
+      </div>
+    </form>
   </div>
 </div>
 {% endblock %}

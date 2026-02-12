@@ -26,19 +26,38 @@ class Stock
     #[ORM\Column]
     private ?int $totalQuantity = null;
 
-    // #[Assert\NotBlank]
-    // #[Assert\Choice(
-    //     choices: ['In Stock', 'Low Stock', 'Out of Stock'],
-    //     message: 'Invalid stock status.'
-    // )]
     #[ORM\Column(length: 255)]
     private ?string $status = null;
 
     #[ORM\OneToOne(mappedBy: 'stock', cascade: ['persist', 'remove'])]
     private ?GameManagement $game = null;
 
+    // ✅ ADD THIS: Ownership tracking
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $createdBy = null;
 
-    //setters and getters
+    // Existing getters and setters remain the same...
+
+    // ✅ ADD THESE METHODS:
+    public function getCreatedBy(): ?User
+    {
+        return $this->createdBy;
+    }
+
+    public function setCreatedBy(?User $createdBy): static
+    {
+        $this->createdBy = $createdBy;
+        return $this;
+    }
+
+    // Helper method for voter/security checks
+    public function isCreatedBy(User $user): bool
+    {
+        return $this->createdBy && $this->createdBy->getId() === $user->getId();
+    }
+
+    // Existing methods remain...
     public function getId(): ?int
     {
         return $this->id;
@@ -52,7 +71,6 @@ class Stock
     public function setAvailableQuantity(int $availableQuantity): static
     {
         $this->availableQuantity = $availableQuantity;
-
         return $this;
     }
 
@@ -64,7 +82,6 @@ class Stock
     public function setTotalQuantity(int $totalQuantity): static
     {
         $this->totalQuantity = $totalQuantity;
-
         return $this;
     }
 
@@ -76,7 +93,6 @@ class Stock
     public function setStatus(string $status): static
     {
         $this->status = $status;
-
         return $this;
     }
 
@@ -87,18 +103,15 @@ class Stock
 
     public function setGame(?GameManagement $game): static
     {
-        // unset the owning side of the relation if necessary
         if ($game === null && $this->game !== null) {
             $this->game->setStock(null);
         }
 
-        // set the owning side of the relation if necessary
         if ($game !== null && $game->getStock() !== $this) {
             $game->setStock($this);
         }
 
         $this->game = $game;
-
         return $this;
     }
 
@@ -113,8 +126,4 @@ class Stock
             $this->status = 'In Stock';
         }
     }
-
-
 }
-
-

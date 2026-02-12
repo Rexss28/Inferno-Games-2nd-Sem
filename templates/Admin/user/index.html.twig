@@ -1,0 +1,184 @@
+{% extends 'reusable/final_layout.html.twig' %}
+
+{% block title %}Users Management{% endblock %}
+{% block body_class %}user-Index-page{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <!-- ✅ DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/jquery.dataTables.min.css">
+    {{ encore_entry_link_tags('user_index') }}
+{% endblock %}
+
+{% block content %}
+<div class="user-container">
+    <!-- Stats Cards -->
+    {# <div class="stats-container">
+        <div class="stat-card active">
+            <div class="stat-number">{{ statusCounts.active }}</div>
+            <div class="stat-label">Active Users</div>
+        </div>
+        <div class="stat-card inactive">
+            <div class="stat-number">{{ statusCounts.inactive }}</div>
+            <div class="stat-label">Archived/Disabled</div>
+            {% if statusCounts.inactive > 0 %}
+                <a href="{{ path('app_user_inactive') }}" class="btn-primary-small view-inactive-btn">
+                    👁️ View All
+                </a>
+            {% endif %}
+        </div>
+    </div> #}
+
+    <!-- Header Section -->
+    <div class="header-section">
+        <div class="header-content">
+            <h1 class="page-title">User Management</h1>
+        </div>
+        <div class="button-group">
+            <a href="{{ path('app_user_inactive') }}" class="btn-modern btn-modern-secondary">
+                📁 Archived/Disabled
+                {% if statusCounts.inactive > 0 %}
+                    <span class="badge-count">
+                        {{ statusCounts.inactive }}
+                    </span>
+                {% endif %}
+            </a>
+            <a href="{{ path('app_user_new') }}" class="btn-primary">
+                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                </svg>
+                Add New User
+            </a>
+        </div>
+    </div>
+
+    <!-- Table Container -->
+    <div class="table-container">
+        <div class="table-wrapper">
+            <table id="usersTable" class="user-table display">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Username</th>
+                        <th>Roles</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for user in users %}
+                    {% if user.isActive() %}
+                        <tr>
+                            <td><span class="id-badge">#{{ user.id }}</span></td>
+                            <td>
+                                <span class="username-display">{{ user.username }}</span>
+                            </td>
+                            <td>
+                                <div class="roles-info">
+                                    {% for role in user.getDisplayRoles() %}
+                                        {% if role == 'ROLE_ADMIN' %}
+                                            <span class="role-pill admin">Admin</span>
+                                        {% elseif role == 'ROLE_STAFF' %}
+                                            <span class="role-pill staff">Staff</span>
+                                        {% else %}
+                                            <span class="role-pill">User</span>
+                                        {% endif %}
+                                    {% else %}
+                                        <span class="text-muted">No roles</span>
+                                    {% endfor %}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="status-indicator">
+                                    <span class="status-dot active"></span>
+                                    <span class="status-text">Active</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="action-buttons-container">
+                                    <a href="{{ path('app_user_show', {'id': user.id}) }}" 
+                                       class="action-chip chip-view">
+                                        👁️ View
+                                    </a>
+                                    <a href="{{ path('app_user_edit', {'id': user.id}) }}" 
+                                       class="action-chip chip-edit">
+                                        ✏️ Edit
+                                    </a>
+                                    
+                                    <!-- SIMPLE ARCHIVE FORM - NO REASON PROMPT -->
+                                    <form method="POST" 
+                                          action="{{ path('app_user_status', {'id': user.id, 'status': 'inactivate'}) }}" 
+                                          style="display: inline;" 
+                                          onsubmit="return confirm('Are you sure you want to archive/disable user \"{{ user.username|escape('js') }}\"?')">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('status' ~ user.id) }}">
+                                        <input type="hidden" name="reason" value="Archived from active users list">
+                                        <button type="submit" class="action-chip chip-inactivate" 
+                                                style="border: none; background: none; cursor: pointer; padding: 0; color: inherit; font: inherit;">
+                                            📁 Archive/Disable
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endif %}
+                {% else %}
+                    <tr>
+                        <td colspan="5" class="empty-state">
+                            <div class="empty-content">
+                                <svg class="empty-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                                </svg>
+                                <h3>No Active Users Found</h3>
+                                <p>Start by adding your first user or check archived users</p>
+                                <div class="flex-wrap gap-1 justify-center mt-1">
+                                    <a href="{{ path('app_user_new') }}" class="btn-primary-small">Add User</a>
+                                    <a href="{{ path('app_user_inactive') }}" class="btn-modern btn-modern-secondary">View Archived</a>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <!-- ✅ jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <!-- ✅ DataTables -->
+    <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            // DataTable initialization
+            let dataTable = null;
+            if (!$.fn.DataTable.isDataTable('#usersTable')) {
+                dataTable = $('#usersTable').DataTable({
+                    pageLength: 10,
+                    responsive: true,
+                    language: {
+                        search: "_INPUT_",
+                        searchPlaceholder: "Search users...",
+                        lengthMenu: "Show _MENU_ entries",
+                        info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                        paginate: {
+                            previous: "← Previous",
+                            next: "Next →"
+                        }
+                    },
+                    columnDefs: [
+                        { targets: 4, orderable: false, searchable: false }
+                    ],
+                    order: [[0, 'desc']]
+                });
+            }
+        });
+    </script>
+{% endblock %}

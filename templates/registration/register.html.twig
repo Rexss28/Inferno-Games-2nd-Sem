@@ -1,0 +1,86 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Register - Inferno Games{% endblock %}
+
+{% block body_class %}register-page{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/global/register.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="register">
+    {# left side panel #}
+    <div class="register-left_panel">
+        <div class="logo-inline">
+            <h1>INFERN</h1>
+            <img src="{{ asset('images/logo_1.png') }}" alt="Inferno Flame Logo" class="logo-inline-image">
+        </div>
+        <p>GAMES</p>
+    </div>
+
+    {# right side panel #}
+    <div class="register-right_panel">
+        <div class="register-container" role="main" aria-labelledby="register-heading">
+            <h1 id="register-heading">CREATE ACCOUNT</h1>
+            
+            <div class="form-intro">
+                <p>Join the Inferno Games community</p>
+            </div>
+
+            {{ form_start(registrationForm, {'attr': {'class': 'register-form'}}) }}
+            
+                {% if form_errors(registrationForm) %}
+                    <div class="alert alert-danger">
+                        {{ form_errors(registrationForm) }}
+                    </div>
+                {% endif %}
+
+                <div class="form-group">
+                    {{ form_label(registrationForm.username) }}
+                    {{ form_widget(registrationForm.username, {
+                        'attr': {
+                            'class': 'form-control',
+                            'placeholder': 'Choose a username',
+                            'autocomplete': 'username'
+                        }
+                    }) }}
+                    {% if form_errors(registrationForm.username) %}
+                        <div class="form-error">{{ form_errors(registrationForm.username) }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(registrationForm.plainPassword) }}
+                    {{ form_widget(registrationForm.plainPassword, {
+                        'attr': {
+                            'class': 'form-control',
+                            'placeholder': 'Create a strong password',
+                            'autocomplete': 'new-password'
+                        }
+                    }) }}
+                    {% if form_errors(registrationForm.plainPassword) %}
+                        <div class="form-error">{{ form_errors(registrationForm.plainPassword) }}</div>
+                    {% endif %}
+                    <div class="password-hints">
+                        <small>Use at least 6 characters</small>
+                    </div>
+                </div>
+
+                <button type="submit" class="button btn btn-lg btn-primary register-button">
+                    Create Account
+                </button>
+
+                <div class="login-link">
+                    <p>Already have an account? <a href="{{ path('app_login') }}">Sign in here</a></p>
+                </div>
+
+                <div class="helper">
+                    You will be automatically logged in and redirected to the home page after registration.
+                </div>
+            {{ form_end(registrationForm) }}
+        </div>
+    </div>
+</div>
+{% endblock %}

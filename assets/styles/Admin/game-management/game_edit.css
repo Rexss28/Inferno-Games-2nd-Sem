@@ -1,159 +1,507 @@
 /* ===========================================
-   Game Management Edit Page - Modern Compact Design
+   Game Edit - Neo Inferno Design (Smaller Fonts Only)
    =========================================== */
 
-.gameManagement-edit-page .game-edit-container {
-  max-width: 580px;
-  margin: 3rem auto;
-  background: rgba(22, 22, 22, 0.85);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 1rem;
-  padding: 2rem;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
-  color: #e5e5e5;
+.gameManagement-edit-page {
+  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+  min-height: 100vh;
+  position: relative;
   font-family: 'Inter', sans-serif;
-  overflow-x: hidden; /* Prevent horizontal scrollbar */
 }
 
-/* ---------- Header ---------- */
+.gameManagement-edit-page::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #ff2e2e, transparent);
+  z-index: 1;
+}
+
+/* Main Container */
+.gameManagement-edit-page .game-edit-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem;
+  position: relative;
+}
+
+/* Header */
 .gameManagement-edit-page .edit-header {
   text-align: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: 3rem;
+  position: relative;
 }
 
 .gameManagement-edit-page .edit-header h1 {
-  font-size: 1.5rem;
+  font-size: 1.8rem; /* SMALLER: Was 2.5rem */
+  font-weight: 800;
+  background: linear-gradient(90deg, #ff2e2e, #ff6b2e, #ff2e2e);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradient 3s ease infinite;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  position: relative;
+}
+
+@keyframes gradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.gameManagement-edit-page .edit-header h1::after {
+  content: 'EDIT GAME';
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: rgba(255, 46, 46, 0.1);
+  z-index: -1;
+  animation: glitch 2s infinite;
+}
+
+@keyframes glitch {
+  0% { transform: translate(0); }
+  20% { transform: translate(-2px, 2px); }
+  40% { transform: translate(-2px, -2px); }
+  60% { transform: translate(2px, 2px); }
+  80% { transform: translate(2px, -2px); }
+  100% { transform: translate(0); }
+}
+
+/* Main Content Grid */
+.gameManagement-edit-page .edit-main-content {
+  display: grid;
+  grid-template-columns: 1fr 400px;
+  gap: 2.5rem;
+  position: relative;
+}
+
+/* Left Column - Form */
+.gameManagement-edit-page .edit-form-section {
+  position: relative;
+}
+
+.gameManagement-edit-page .form-card {
+  background: rgba(15, 15, 15, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 2.5rem;
+  border: 1px solid rgba(255, 46, 46, 0.15);
+  box-shadow: 
+    0 10px 40px rgba(255, 46, 46, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  position: relative;
+  overflow: hidden;
+}
+
+.gameManagement-edit-page .form-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #ff2e2e, #ff6b2e);
+}
+
+/* Form Grid Layout */
+.gameManagement-edit-page .form-card form {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.75rem;
+}
+
+/* Form Groups */
+.gameManagement-edit-page .form-group {
+  position: relative;
+}
+
+/* Full width fields */
+.gameManagement-edit-page .form-group:nth-child(1),
+.gameManagement-edit-page .form-group:nth-child(2),
+.gameManagement-edit-page .form-group:nth-child(3) {
+  grid-column: 1 / -1;
+}
+
+/* Form Labels */
+.gameManagement-edit-page .form-label {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+  color: #fff;
   font-weight: 600;
+  font-size: 0.85rem; /* SMALLER: Was 0.9rem */
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.gameManagement-edit-page .form-label::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  background: #ff2e2e;
+  border-radius: 50%;
+  display: inline-block;
+  box-shadow: 0 0 10px #ff2e2e;
+}
+
+/* Input Fields */
+.gameManagement-edit-page .form-input {
+  width: 100%;
+  background: rgba(25, 25, 25, 0.8);
+  border: 2px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  color: #fff;
+  font-size: 0.95rem; /* SMALLER: Was 1rem */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: 'Inter', sans-serif;
+}
+
+.gameManagement-edit-page .form-input:hover {
+  border-color: rgba(255, 46, 46, 0.3);
+  background: rgba(30, 30, 30, 0.9);
+  transform: translateY(-1px);
+}
+
+.gameManagement-edit-page .form-input:focus {
+  border-color: #ff2e2e;
+  background: rgba(30, 30, 30, 1);
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(255, 46, 46, 0.1);
+  transform: translateY(-2px);
+}
+
+/* Special File Input */
+.gameManagement-edit-page .file-input-container {
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  background: rgba(255, 46, 46, 0.05);
+  border: 2px dashed rgba(255, 46, 46, 0.3);
+  padding: 1.5rem;
+  text-align: center;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.gameManagement-edit-page .file-input-container:hover {
+  background: rgba(255, 46, 46, 0.1);
+  border-color: rgba(255, 46, 46, 0.5);
+}
+
+.gameManagement-edit-page .file-input-container input[type="file"] {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.gameManagement-edit-page .file-input-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  color: #ff6b2e;
+  font-weight: 500;
+  font-size: 0.9rem; /* SMALLER: Added font size */
+}
+
+.gameManagement-edit-page .file-input-label svg {
+  width: 2rem;
+  height: 2rem;
+  color: #ff2e2e;
+}
+
+.gameManagement-edit-page .file-input-label small {
+  font-size: 0.8rem;
+  color: #b3b3b3;
+}
+
+/* Textarea */
+.gameManagement-edit-page textarea.form-input {
+  min-height: 140px;
+  resize: vertical;
+  line-height: 1.6;
+  font-size: 0.95rem; /* SMALLER: Added matching font size */
+}
+
+/* Right Column - Preview & Actions */
+.gameManagement-edit-page .edit-preview-section {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* Game Preview Card */
+.gameManagement-edit-page .game-preview-card {
+  background: rgba(15, 15, 15, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 2.5rem;
+  border: 1px solid rgba(255, 46, 46, 0.15);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.gameManagement-edit-page .game-preview-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
   background: linear-gradient(90deg, #ff6b2e, #ff2e2e);
+}
+
+/* Preview Header */
+.gameManagement-edit-page .preview-header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.gameManagement-edit-page .preview-header h3 {
+  font-size: 1.3rem; /* SMALLER: Was 1.5rem */
+  font-weight: 700;
+  background: linear-gradient(90deg, #fff, #ff6b2e);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   margin: 0;
+  letter-spacing: 1px;
 }
 
-/* ---------- Form Card ---------- */
-.gameManagement-edit-page .edit-form-card {
-  background: rgba(18, 18, 18, 0.85);
-  border-radius: 0.75rem;
-  padding: 1.5rem 1.75rem;
-  box-shadow: inset 0 0 6px rgba(255, 255, 255, 0.04);
+/* Preview Stats Grid */
+.gameManagement-edit-page .preview-stats {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
 }
 
-.gameManagement-edit-page form {
+.gameManagement-edit-page .preview-stat {
   display: flex;
   flex-direction: column;
+  gap: 0.5rem;
+  padding: 1.25rem;
+  background: linear-gradient(135deg, rgba(255, 46, 46, 0.05), rgba(255, 107, 46, 0.05));
+  border-radius: 12px;
+  border: 1px solid rgba(255, 46, 46, 0.1);
+}
+
+.gameManagement-edit-page .preview-stat-label {
+  font-size: 0.75rem; /* SMALLER: Was 0.8rem */
+  color: #ff6b2e;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 600;
+}
+
+.gameManagement-edit-page .preview-stat-value {
+  font-size: 1rem; /* SMALLER: Was 1.2rem */
+  color: #fff;
+  font-weight: 700;
+}
+
+/* Current Image Preview */
+.gameManagement-edit-page .current-image-preview {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.gameManagement-edit-page .current-image {
+  width: 100%;
+  max-width: 200px;
+  height: auto;
+  border-radius: 12px;
+  border: 2px solid rgba(255, 46, 46, 0.3);
+  margin: 0 auto 1rem;
+}
+
+.gameManagement-edit-page .no-image {
+  width: 100%;
+  height: 150px;
+  background: rgba(255, 46, 46, 0.05);
+  border: 2px dashed rgba(255, 46, 46, 0.3);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ff6b2e;
+  font-size: 0.85rem; /* SMALLER: Was 0.9rem */
+}
+
+/* Actions Card */
+.gameManagement-edit-page .actions-card {
+  background: rgba(15, 15, 15, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 2.5rem;
+  border: 1px solid rgba(255, 46, 46, 0.15);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+/* Primary Action Button */
+.gameManagement-edit-page .primary-action {
+  width: 100%;
+  background: linear-gradient(135deg, #ff2e2e, #ff6b2e);
+  color: white;
+  border: none;
+  padding: 1.25rem 2rem;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 1rem; /* SMALLER: Was 1.1rem */
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 1.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.gameManagement-edit-page .primary-action::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.gameManagement-edit-page .primary-action:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 30px rgba(255, 46, 46, 0.4);
+  letter-spacing: 1.5px;
+}
+
+.gameManagement-edit-page .primary-action:hover::before {
+  width: 300px;
+  height: 300px;
+}
+
+/* Secondary Actions */
+.gameManagement-edit-page .secondary-actions {
+  display: flex;
   gap: 1rem;
 }
 
-.gameManagement-edit-page label {
-  font-weight: 500;
-  color: #b3b3b3;
-  font-size: 0.9rem;
-  margin-bottom: 0.3rem;
-}
-
-.gameManagement-edit-page input,
-.gameManagement-edit-page textarea,
-.gameManagement-edit-page select {
-  background: #1e1e1e;
-  border: 1px solid #2b2b2b;
-  border-radius: 0.4rem;
-  padding: 0.6rem 0.75rem;
-  font-size: 0.9rem;
-  color: #fff;
-  transition: all 0.2s ease;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.gameManagement-edit-page input:focus,
-.gameManagement-edit-page textarea:focus,
-.gameManagement-edit-page select:focus {
-  border-color: #ff6b2e;
-  background-color: #222;
-  outline: none;
-  box-shadow: 0 0 4px rgba(255, 107, 46, 0.5);
-}
-
-/* ---------- Buttons ---------- */
-.gameManagement-edit-page button,
-.gameManagement-edit-page .btn-primary {
-  background: linear-gradient(90deg, #ff2e2e, #ff6b2e);
-  color: #fff;
-  border: none;
-  padding: 0.6rem 1.2rem;
-  border-radius: 0.5rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.25s ease;
-  font-size: 0.9rem;
-}
-
-.gameManagement-edit-page button:hover,
-.gameManagement-edit-page .btn-primary:hover {
-  filter: brightness(1.1);
-  transform: translateY(-1px);
-}
-
-/* ---------- Secondary Button ---------- */
-.gameManagement-edit-page .btn-secondary {
-  background: transparent;
-  border: 1px solid #ff6b2e;
+.gameManagement-edit-page .secondary-action {
+  flex: 1;
+  background: rgba(255, 46, 46, 0.05);
+  border: 2px solid rgba(255, 46, 46, 0.2);
   color: #ff6b2e;
-  padding: 0.55rem 1.1rem;
-  border-radius: 0.5rem;
+  padding: 1rem 1.5rem;
+  border-radius: 12px;
   text-decoration: none;
   font-weight: 600;
-  font-size: 0.9rem;
-  transition: all 0.25s ease;
+  text-align: center;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 0.9rem; /* SMALLER: Added font size */
 }
 
-.gameManagement-edit-page .btn-secondary:hover {
-  background: #ff6b2e;
-  color: #fff;
+.gameManagement-edit-page .secondary-action:hover {
+  background: rgba(255, 46, 46, 0.1);
+  border-color: #ff2e2e;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(255, 46, 46, 0.2);
 }
 
-/* ---------- Actions ---------- */
-.gameManagement-edit-page .edit-actions {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 1.5rem;
-  flex-wrap: wrap;
-  gap: 1rem;
+.gameManagement-edit-page .delete-action {
+  background: linear-gradient(135deg, rgba(197, 40, 40, 0.1), rgba(255, 46, 46, 0.1));
+  border-color: rgba(255, 46, 46, 0.3);
 }
 
-.gameManagement-edit-page .edit-actions form {
-  margin: 0;
+.gameManagement-edit-page .delete-action:hover {
+  background: linear-gradient(135deg, rgba(255, 46, 46, 0.2), rgba(255, 107, 46, 0.2));
 }
 
-/* ---------- Delete Button ---------- */
-/* Updated to match Stock Edit styling */
-.gameManagement-edit-page .edit-actions button {
-  background: #c52828;
-  border: none;
-  transition: all 0.25s ease;
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .gameManagement-edit-page .edit-main-content {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  
+  .gameManagement-edit-page .edit-preview-section {
+    max-width: 600px;
+    margin: 0 auto;
+    width: 100%;
+  }
 }
 
-.gameManagement-edit-page .edit-actions button:hover {
-  background: #ff3d3d;
-  transform: translateY(-1px);
-}
-
-/* ---------- Responsive ---------- */
-@media (max-width: 480px) {
+@media (max-width: 768px) {
   .gameManagement-edit-page .game-edit-container {
     padding: 1.5rem;
   }
-
-  .gameManagement-edit-page .edit-actions {
+  
+  .gameManagement-edit-page .form-card,
+  .gameManagement-edit-page .game-preview-card,
+  .gameManagement-edit-page .actions-card {
+    padding: 2rem;
+  }
+  
+  .gameManagement-edit-page .form-card form {
+    grid-template-columns: 1fr;
+  }
+  
+  .gameManagement-edit-page .edit-header h1 {
+    font-size: 1.6rem; /* SMALLER: Was 2rem */
+  }
+  
+  .gameManagement-edit-page .secondary-actions {
     flex-direction: column;
-    gap: 0.8rem;
   }
+}
 
-  .gameManagement-edit-page .btn-secondary,
-  .gameManagement-edit-page button {
-    width: 100%;
-    text-align: center;
+@media (max-width: 480px) {
+  .gameManagement-edit-page .game-edit-container {
+    padding: 1rem;
   }
+  
+  .gameManagement-edit-page .form-card,
+  .gameManagement-edit-page .game-preview-card,
+  .gameManagement-edit-page .actions-card {
+    padding: 1.5rem;
+  }
+  
+  .gameManagement-edit-page .edit-header h1 {
+    font-size: 1.4rem; /* SMALLER: Was 1.75rem */
+  }
+  
+  .gameManagement-edit-page .preview-stat-value {
+    font-size: 0.95rem; /* SMALLER: Was 1.1rem */
+  }
+}
+
+/* Floating Particles Background */
+.gameManagement-edit-page::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    radial-gradient(circle at 20% 30%, rgba(255, 46, 46, 0.05) 0%, transparent 20%),
+    radial-gradient(circle at 80% 70%, rgba(255, 107, 46, 0.05) 0%, transparent 20%),
+    radial-gradient(circle at 40% 80%, rgba(255, 46, 46, 0.03) 0%, transparent 20%);
+  z-index: -1;
+  pointer-events: none;
 }

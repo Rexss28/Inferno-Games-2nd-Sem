@@ -366,21 +366,59 @@
     font-size: 0.875rem;
 }
 
-/* Badges */
+/* Badges - Updated to match Activity Logs page */
 .badge {
     display: inline-flex;
     align-items: center;
-    padding: 0.3125rem 0.625rem;
-    border-radius: 0.5rem;
-    font-size: 0.75rem;
-    font-weight: 600;
-    line-height: 1;
+    padding: 0.35rem 0.75rem !important;
+    border-radius: 12px !important;
+    font-size: 0.75rem !important;
+    font-weight: 600 !important;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border: 1px solid;
 }
 
-.badge-danger {
-    background: rgba(255, 46, 46, 0.15);
-    color: #FF2E2E;
-    border: 1px solid rgba(255, 46, 46, 0.3);
+.badge-danger { 
+    background: rgba(255, 46, 46, 0.15) !important; 
+    color: #ff2e2e !important;
+    border-color: rgba(255, 46, 46, 0.4) !important;
+}
+
+.badge-warning { 
+    background: rgba(255, 107, 46, 0.15) !important; 
+    color: #ff8b2e !important;
+    border-color: rgba(255, 139, 46, 0.3) !important;
+}
+
+.badge-secondary { 
+    background: rgba(107, 114, 128, 0.15) !important; 
+    color: #9ca3af !important;
+    border-color: rgba(107, 114, 128, 0.3) !important;
+}
+
+.badge-success { 
+    background: rgba(16, 185, 129, 0.15) !important; 
+    color: #10b981 !important;
+    border-color: rgba(16, 185, 129, 0.3) !important;
+}
+
+.badge-info { 
+    background: rgba(59, 130, 246, 0.15) !important; 
+    color: #3b82f6 !important;
+    border-color: rgba(59, 130, 246, 0.3) !important;
+}
+
+.badge-primary { 
+    background: rgba(102, 126, 234, 0.15) !important; 
+    color: #818cf8 !important;
+    border-color: rgba(102, 126, 234, 0.3) !important;
+}
+
+.badge-light {
+    background: rgba(255, 255, 255, 0.15) !important;
+    color: #ffffff !important;
+    border-color: rgba(255, 255, 255, 0.3) !important;
 }
 
 .status-badge {
@@ -409,6 +447,34 @@
     background: rgba(179, 179, 179, 0.15);
     color: #B3B3B3;
     border: 1px solid rgba(179, 179, 179, 0.3);
+}
+
+/* Activity Logs specific styles */
+.log-target {
+    color: #B3B3B3;
+    font-size: 0.8125rem;
+    font-family: 'Courier New', monospace;
+}
+
+.log-time {
+    color: #FFFFFF;
+    font-size: 0.8125rem;
+    font-weight: 500;
+}
+
+.user-name {
+    color: #FFFFFF;
+    font-weight: 600;
+    font-size: 0.8125rem;
+}
+
+/* Text Center */
+.text-center {
+    text-align: center;
+}
+
+.mt-3 {
+    margin-top: 1rem;
 }
 
 /* Empty State */
@@ -512,7 +578,6 @@
     color: #666;
 }
 
-
 .game-item:last-child {
     border-bottom: none;
 }
@@ -548,6 +613,32 @@
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.05em;
+}
+
+/* Button Styles */
+.btn {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.75rem;
+    font-weight: 600;
+    font-size: 0.8125rem;
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid;
+}
+
+.btn-outline-primary {
+    background: rgba(255, 46, 46, 0.05);
+    color: #ff2e2e;
+    border-color: rgba(255, 46, 46, 0.3);
+}
+
+.btn-outline-primary:hover {
+    background: rgba(255, 46, 46, 0.15);
+    color: #ff6b2e;
+    border-color: #ff2e2e;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 12px -3px rgba(255, 46, 46, 0.2);
 }
 
 /* Responsive Design */

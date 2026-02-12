@@ -8,19 +8,218 @@
   {{ encore_entry_link_tags('game_edit') }}
 {% endblock %}
 
+{% block javascripts %}
+  {{ parent() }}
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const fileInput = document.getElementById('game_management_image');
+      const imagePreview = document.getElementById('imagePreview');
+      const previewImage = document.getElementById('previewImage');
+      const filenameDisplay = document.getElementById('filenameDisplay');
+      const fileSizeDisplay = document.getElementById('fileSizeDisplay');
+      const removeImageBtn = document.getElementById('removeImageBtn');
+      const currentImage = document.getElementById('currentImage');
+      
+      // Format file size
+      function formatFileSize(bytes) {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+      }
+      
+      // Handle file selection
+      if (fileInput) {
+        fileInput.addEventListener('change', function(e) {
+          if (this.files && this.files[0]) {
+            const file = this.files[0];
+            
+            // Show filename and size
+            filenameDisplay.textContent = file.name;
+            fileSizeDisplay.textContent = formatFileSize(file.size);
+            
+            // Preview image
+            const reader = new FileReader();
+            reader.onload = function(e) {
+              previewImage.src = e.target.result;
+              imagePreview.style.display = 'block';
+            }
+            reader.readAsDataURL(file);
+          }
+        });
+      }
+      
+      // Handle remove image button
+      if (removeImageBtn) {
+        removeImageBtn.addEventListener('click', function(e) {
+          e.preventDefault();
+          if (fileInput) {
+            fileInput.value = '';
+          }
+          imagePreview.style.display = 'none';
+          previewImage.src = '';
+          filenameDisplay.textContent = '';
+          fileSizeDisplay.textContent = '';
+        });
+      }
+    });
+  </script>
+{% endblock %}
+
 {% block content %}
 <div class="game-edit-container">
   <div class="edit-header">
     <h1>Edit Game</h1>
   </div>
 
-  <div class="edit-form-card">
-    {{ include('Admin/game_management/_form.html.twig', {'button_label': 'Update'}) }}
-  </div>
+  <div class="edit-main-content">
+    <!-- Left: Form -->
+    <div class="edit-form-section">
+      <div class="form-card">
+        {{ form_start(form, {'attr': {'class': 'edit-form'}}) }}
+          <!-- Image Upload -->
+          <div class="form-group">
+            {{ form_label(form.image, null, {'label_attr': {'class': 'form-label'}}) }}
+            <div class="file-input-container">
+              {{ form_widget(form.image, {'attr': {
+                'class': 'form-input-file',
+                'accept': 'image/*'
+              }}) }}
+              <div class="file-input-label">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                </svg>
+                <span>Choose Image File</span>
+                <small>PNG, JPG, GIF up to 2MB</small>
+              </div>
+            </div>
+            {{ form_errors(form.image) }}
+          </div>
 
-  <div class="edit-actions">
-    <a href="{{ path('app_game_management_index') }}" class="btn-secondary">Back</a>
-    {{ include('Admin/game_management/_delete_form.html.twig') }}
+          <!-- Title -->
+          <div class="form-group">
+            {{ form_label(form.title, null, {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.title, {'attr': {
+              'class': 'form-input',
+              'required': true
+            }}) }}
+            {{ form_errors(form.title) }}
+          </div>
+
+          <!-- Description -->
+          <div class="form-group">
+            {{ form_label(form.description, null, {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.description, {'attr': {
+              'class': 'form-input',
+              'rows': '4'
+            }}) }}
+            {{ form_errors(form.description) }}
+          </div>
+
+          <!-- Price -->
+          <div class="form-group">
+            {{ form_label(form.price, null, {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.price, {'attr': {
+              'class': 'form-input',
+              'step': '0.01',
+              'min': '0',
+              'required': true
+            }}) }}
+            {{ form_errors(form.price) }}
+          </div>
+
+          <!-- Stock -->
+          <div class="form-group">
+            {{ form_label(form.stock, null, {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.stock, {'attr': {
+              'class': 'form-input'
+            }}) }}
+            {{ form_errors(form.stock) }}
+          </div>
+
+          <!-- Submit Button -->
+          <button type="submit" class="primary-action">
+            Update Game
+          </button>
+        {{ form_end(form) }}
+      </div>
+    </div>
+
+    <!-- Right: Preview & Actions -->
+    <div class="edit-preview-section">
+      <!-- Game Preview -->
+      <div class="game-preview-card">
+        <div class="preview-header">
+          <h3>Game Preview</h3>
+        </div>
+        
+        <div class="preview-stats">
+          <div class="preview-stat">
+            <div class="preview-stat-label">Current Game</div>
+            <div class="preview-stat-value">{{ game_management.title }}</div>
+          </div>
+          
+          <div class="preview-stat">
+            <div class="preview-stat-label">Current Price</div>
+            <div class="preview-stat-value">${{ game_management.price|number_format(2) }}</div>
+          </div>
+          
+          <div class="preview-stat">
+            <div class="preview-stat-label">License Keys</div>
+            <div class="preview-stat-value">{{ game_management.licenseKeys|length }} keys</div>
+          </div>
+          
+          <div class="preview-stat">
+            <div class="preview-stat-label">Active Orders</div>
+            <div class="preview-stat-value">{{ game_management.orders|length }} orders</div>
+          </div>
+        </div>
+        
+        <div class="current-image-preview">
+          {% if game_management.image %}
+            <img src="{{ asset('images/games/' ~ game_management.image) }}" 
+                 alt="{{ game_management.title }}" class="current-image" id="currentImage">
+            <div class="preview-stat-label">Current Image</div>
+          {% else %}
+            <div class="no-image">
+              <div>No Image Uploaded</div>
+            </div>
+          {% endif %}
+        </div>
+        
+        <!-- Image Preview for new selection -->
+        <div id="imagePreview" style="display: none; margin-top: 1rem; padding: 1rem; background: rgba(255,46,46,0.05); border-radius: 8px;">
+          <div style="display: flex; align-items: center; gap: 1rem;">
+            <img id="previewImage" class="preview-image" alt="Selected image" style="width: 60px; height: 40px; border-radius: 6px; border: 1px solid rgba(255,46,46,0.25);">
+            <div style="flex: 1;">
+              <div id="filenameDisplay" class="preview-filename" style="color: #ff6b2e; font-size: 0.8rem; font-weight: 500;"></div>
+              <div id="fileSizeDisplay" class="preview-size" style="color: #b3b3b3; font-size: 0.7rem;"></div>
+            </div>
+            <button id="removeImageBtn" class="remove-image-btn" type="button" style="background: rgba(255,46,46,0.08); border: 1px solid rgba(255,46,46,0.2); color: #ff6b2e; padding: 0.35rem 0.75rem; border-radius: 5px; font-size: 0.7rem; cursor: pointer;">
+              Remove
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="actions-card">
+        <div class="secondary-actions">
+          <a href="{{ path('app_game_management_index') }}" class="secondary-action">
+            Back to List
+          </a>
+          
+          <form method="post" action="{{ path('app_game_management_delete', {'id': game_management.id}) }}" 
+                class="d-inline" onsubmit="return confirm('Are you sure you want to delete this game?');">
+            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ game_management.id) }}">
+            <button type="submit" class="secondary-action delete-action">
+              Delete Game
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 {% endblock %}

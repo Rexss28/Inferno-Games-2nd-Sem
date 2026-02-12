@@ -1,0 +1,169 @@
+{% extends 'reusable/final_layout.html.twig' %}
+
+{% block title %}Archived/Disabled Users{% endblock %}
+{% block body_class %}user-Index-page{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <!-- ✅ DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/jquery.dataTables.min.css">
+    {{ encore_entry_link_tags('user_index') }}
+{% endblock %}
+
+{% block content %}
+<div class="user-container">
+    <!-- Stats Cards -->
+    {# <div class="stats-container">
+        <div class="stat-card active">
+            <div class="stat-number">{{ statusCounts.active }}</div>
+            <div class="stat-label">Active Users</div>
+            <a href="{{ path('app_user_index') }}" class="btn-primary-small" style="margin-top: 1rem; width: 100%; justify-content: center;">
+                🔄 Back to Active
+            </a>
+        </div>
+        <div class="stat-card inactive">
+            <div class="stat-number">{{ statusCounts.inactive }}</div>
+            <div class="stat-label">Archived/Disabled</div>
+        </div>
+    </div> #}
+
+    <!-- Header Section -->
+    <div class="header-section">
+        <div class="header-content">
+            <h1 class="page-title">Archived/Disabled Users</h1>
+        </div>
+        <div style="display: flex; gap: 1rem;">
+            <a href="{{ path('app_user_index') }}" class="btn-modern btn-modern-secondary">
+                ↩️ Back to Active
+            </a>
+            <a href="{{ path('app_user_new') }}" class="btn-primary">
+                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                </svg>
+                Add New User
+            </a>
+        </div>
+    </div>
+
+    <!-- Table Container -->
+    <div class="table-container">
+        <div class="table-wrapper">
+            <table id="inactiveUsersTable" class="user-table display">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Username</th>
+                        <th>Roles</th>
+                        <th>Archived On</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for user in users %}
+                    <tr>
+                        <td><span class="id-badge">#{{ user.id }}</span></td>
+                        <td>
+                            <span style="font-weight: 600; color: #fff;">{{ user.username }}</span>
+                        </td>
+                        <td>
+                            <div class="roles-info">
+                                {% for role in user.getDisplayRoles() %}
+                                    {% if role == 'ROLE_ADMIN' %}
+                                        <span class="role-pill admin">Admin</span>
+                                    {% elseif role == 'ROLE_STAFF' %}
+                                        <span class="role-pill staff">Staff</span>
+                                    {% else %}
+                                        <span class="role-pill">User</span>
+                                    {% endif %}
+                                {% else %}
+                                    <span class="text-muted" style="color: #666; font-style: italic;">No roles</span>
+                                {% endfor %}
+                            </div>
+                        </td>
+                        <td>
+                            {% if user.inactivatedAt %}
+                                <span style="color: #b3b3b3; font-size: 0.875rem;">
+                                    {{ user.inactivatedAt|date('Y-m-d H:i') }}
+                                </span>
+                            {% else %}
+                                <span style="color: #666; font-style: italic;">N/A</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+                                <a href="{{ path('app_user_show', {'id': user.id}) }}" 
+                                   class="action-chip chip-view">
+                                    👁️ View
+                                </a>
+                                
+                                <!-- SIMPLE RESTORE FORM - NO CONFIRMATION POPUP -->
+                                <form method="POST" action="{{ path('app_user_restore', {'id': user.id}) }}" 
+                                      style="display: inline;">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('restore' ~ user.id) }}">
+                                    <button type="submit" class="action-chip chip-activate" style="border: none; background: none; cursor: pointer; padding: 0;">
+                                        🔄 Restore
+                                    </button>
+                                </form>
+                                
+                                <!-- SIMPLE DELETE FORM - KEEP CONFIRMATION FOR SAFETY -->
+                                <form method="POST" action="{{ path('app_user_delete', {'id': user.id}) }}" 
+                                      style="display: inline;" 
+                                      onsubmit="return confirm('Permanently delete user {{ user.username }}?\\n\\nThis cannot be undone!')">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
+                                    <input type="hidden" name="_method" value="DELETE">
+                                    <button type="submit" class="action-chip chip-delete" style="border: none; background: none; cursor: pointer; padding: 0;">
+                                        🗑️ Delete
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="5" class="empty-state">
+                            <div class="empty-content">
+                                <svg class="empty-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                                <h3>No Archived/Disabled Users</h3>
+                                <p>All users are currently active</p>
+                                <a href="{{ path('app_user_index') }}" class="btn-primary-small" style="margin-top: 1rem;">
+                                    ↩️ Back to Active Users
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('#inactiveUsersTable').DataTable({
+                pageLength: 10,
+                responsive: true,
+                language: {
+                    search: "_INPUT_",
+                    searchPlaceholder: "Search inactive users...",
+                    lengthMenu: "Show _MENU_ entries",
+                    info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                    paginate: {
+                        previous: "← Previous",
+                        next: "Next →"
+                    }
+                },
+                order: [[3, 'desc']] // Sort by archived date
+            });
+        });
+    </script>
+{% endblock %}

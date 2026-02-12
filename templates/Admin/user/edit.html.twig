@@ -1,0 +1,369 @@
+{# templates/Admin/user/edit.html.twig #}
+{% extends 'reusable/final_layout.html.twig' %}
+
+{% block title %}Edit User - {{ user.username }}{% endblock %}
+{% block body_class %}user-edit-page{% endblock %}
+
+{% block stylesheets %}
+  {{ parent() }}
+  {{ encore_entry_link_tags('user_edit') }}
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Get the original select element for roles (it's a multi-select)
+      const roleSelect = document.querySelector('select[name="user[roles][]"]');
+      
+      if (roleSelect) {
+        // Define role display names and colors
+        const roleConfig = {
+          'ROLE_USER': { name: 'User', badge: 'user' },
+          'ROLE_STAFF': { name: 'Staff', badge: 'staff' },
+          'ROLE_ADMIN': { name: 'Admin', badge: 'admin' }
+        };
+        
+        // Get the parent form-group
+        const formGroup = roleSelect.closest('.form-group');
+        
+        // Create custom dropdown container
+        const customDropdown = document.createElement('div');
+        customDropdown.className = 'custom-dropdown';
+        
+        // Create dropdown trigger
+        const dropdownTrigger = document.createElement('div');
+        dropdownTrigger.className = 'dropdown-trigger';
+        
+        const selectedTextSpan = document.createElement('span');
+        selectedTextSpan.className = 'selected-text';
+        selectedTextSpan.textContent = 'Select Role';
+        
+        const chevronSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        chevronSvg.setAttribute('class', 'chevron');
+        chevronSvg.setAttribute('width', '12');
+        chevronSvg.setAttribute('height', '12');
+        chevronSvg.setAttribute('viewBox', '0 0 16 16');
+        chevronSvg.setAttribute('fill', 'none');
+        
+        const chevronPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        chevronPath.setAttribute('d', 'M4 6l4 4 4-4');
+        chevronPath.setAttribute('stroke', 'currentColor');
+        chevronPath.setAttribute('stroke-width', '2');
+        chevronPath.setAttribute('stroke-linecap', 'round');
+        chevronPath.setAttribute('stroke-linejoin', 'round');
+        
+        chevronSvg.appendChild(chevronPath);
+        dropdownTrigger.appendChild(selectedTextSpan);
+        dropdownTrigger.appendChild(chevronSvg);
+        
+        // Create dropdown menu
+        const dropdownMenu = document.createElement('div');
+        dropdownMenu.className = 'dropdown-menu';
+        
+        // Get currently selected roles (it's an array because multiple=true)
+        const selectedRoles = Array.from(roleSelect.selectedOptions).map(opt => opt.value);
+        
+        // Determine the highest priority role for display
+        let displayRole = null;
+        if (selectedRoles.includes('ROLE_ADMIN')) {
+          displayRole = 'ROLE_ADMIN';
+        } else if (selectedRoles.includes('ROLE_STAFF')) {
+          displayRole = 'ROLE_STAFF';
+        } else if (selectedRoles.includes('ROLE_USER')) {
+          displayRole = 'ROLE_USER';
+        }
+        
+        // Set initial display text
+        if (displayRole && roleConfig[displayRole]) {
+          const role = roleConfig[displayRole];
+          const badgeHtml = role.badge ? `<span class="role-badge ${role.badge}">${role.name}</span>` : '';
+          selectedTextSpan.innerHTML = `${role.name} ${badgeHtml}`;
+        }
+        
+        // Populate dropdown options
+        Array.from(roleSelect.options).forEach((option) => {
+          const role = roleConfig[option.value] || { name: option.text };
+          const optionElement = document.createElement('div');
+          optionElement.className = 'dropdown-option';
+          optionElement.dataset.value = option.value;
+          
+          // Check if this role is currently selected
+          const isSelected = selectedRoles.includes(option.value);
+          if (isSelected) {
+            optionElement.classList.add('selected');
+          }
+          
+          const optionText = document.createElement('span');
+          optionText.textContent = role.name;
+          optionElement.appendChild(optionText);
+          
+          if (role.badge) {
+            const badge = document.createElement('span');
+            badge.className = 'option-badge';
+            badge.textContent = role.name;
+            optionElement.appendChild(badge);
+          }
+          
+          // Add click handler
+          optionElement.addEventListener('click', function(e) {
+            e.stopPropagation();
+            
+            // Clear all selections first
+            Array.from(roleSelect.options).forEach(opt => {
+              opt.selected = false;
+            });
+            
+            // Select only this option
+            option.selected = true;
+            
+            // Update selected text
+            const badgeHtml = role.badge ? `<span class="role-badge ${role.badge}">${role.name}</span>` : '';
+            selectedTextSpan.innerHTML = `${role.name} ${badgeHtml}`;
+            
+            // Update selected state in dropdown
+            dropdownMenu.querySelectorAll('.dropdown-option').forEach(opt => {
+              opt.classList.remove('selected');
+            });
+            this.classList.add('selected');
+            
+            // Close dropdown
+            dropdownTrigger.classList.remove('open');
+            dropdownMenu.classList.remove('open');
+            
+            // Add success glow effect
+            dropdownTrigger.classList.add('has-success');
+            setTimeout(() => {
+              dropdownTrigger.classList.remove('has-success');
+            }, 800);
+            
+            // Trigger change event on original select
+            roleSelect.dispatchEvent(new Event('change', { bubbles: true }));
+          });
+          
+          dropdownMenu.appendChild(optionElement);
+        });
+        
+        // Assemble custom dropdown
+        customDropdown.appendChild(dropdownTrigger);
+        customDropdown.appendChild(dropdownMenu);
+        
+        // Toggle dropdown
+        dropdownTrigger.addEventListener('click', function(e) {
+          e.stopPropagation();
+          e.preventDefault();
+          
+          // Close all other dropdowns first
+          document.querySelectorAll('.dropdown-trigger').forEach(trigger => {
+            if (trigger !== dropdownTrigger) {
+              trigger.classList.remove('open');
+              const menu = trigger.nextElementSibling;
+              if (menu && menu.classList.contains('dropdown-menu')) {
+                menu.classList.remove('open');
+              }
+            }
+          });
+          
+          // Toggle this dropdown
+          dropdownTrigger.classList.toggle('open');
+          dropdownMenu.classList.toggle('open');
+        });
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+          if (!customDropdown.contains(e.target)) {
+            dropdownTrigger.classList.remove('open');
+            dropdownMenu.classList.remove('open');
+          }
+        });
+        
+        // Close dropdown on Escape key
+        document.addEventListener('keydown', function(e) {
+          if (e.key === 'Escape') {
+            dropdownTrigger.classList.remove('open');
+            dropdownMenu.classList.remove('open');
+          }
+        });
+        
+        // Hide original select and insert custom dropdown
+        roleSelect.style.display = 'none';
+        roleSelect.parentNode.insertBefore(customDropdown, roleSelect);
+        
+        // Copy error state if exists
+        if (formGroup && formGroup.classList.contains('has-error')) {
+          dropdownTrigger.classList.add('has-error');
+        }
+      }
+      
+      // Status dropdown (native)
+      const statusSelect = document.querySelector('select[name="user[status]"]');
+      if (statusSelect) {
+        const container = statusSelect.closest('.select-container');
+        if (container) {
+          statusSelect.addEventListener('focus', () => {
+            container.classList.add('open');
+          });
+          
+          statusSelect.addEventListener('blur', () => {
+            container.classList.remove('open');
+          });
+        }
+      }
+      
+      // Form submission
+      const form = document.getElementById('editUserForm');
+      const submitBtn = form?.querySelector('button[type="submit"]');
+      
+      if (form && submitBtn) {
+        form.addEventListener('submit', function(e) {
+          // Disable submit button
+          submitBtn.disabled = true;
+          submitBtn.classList.add('btn-loading');
+          
+          // Re-enable after 4 seconds
+          setTimeout(() => {
+            submitBtn.disabled = false;
+            submitBtn.classList.remove('btn-loading');
+          }, 4000);
+        });
+      }
+      
+      // Real-time validation
+      const inputs = form.querySelectorAll('.form-input');
+      inputs.forEach(input => {
+        input.addEventListener('input', function() {
+          const group = this.closest('.form-group');
+          group.classList.remove('has-error', 'has-success');
+          
+          if (this.value.trim()) {
+            group.classList.add('has-success');
+          }
+        });
+        
+        input.addEventListener('blur', function() {
+          const group = this.closest('.form-group');
+          if (!this.value.trim() && this.hasAttribute('required')) {
+            group.classList.add('has-error');
+            group.classList.remove('has-success');
+          }
+        });
+      });
+      
+      // Auto-focus first field
+      const firstInput = form?.querySelector('.form-input');
+      if (firstInput && firstInput !== roleSelect) {
+        setTimeout(() => firstInput.focus(), 100);
+      }
+    });
+  </script>
+{% endblock %}
+
+{% block content %}
+<div class="page-content">
+  <div class="edit-wrapper">
+    <!-- Compact Neo Inferno Header -->
+    <div class="edit-header">
+      <h1>Edit User</h1>
+      <p>Update {{ user.username }}'s account settings and permissions</p>
+    </div>
+
+    <!-- Compact Neo Inferno Form Card -->
+    <div class="edit-form-card">
+      {{ form_start(form, {'attr': {'class': 'edit-form', 'id': 'editUserForm'}}) }}
+      
+      <div class="form-grid">
+        <!-- Top Row: Username + Role -->
+        <div class="field-group">
+          <div class="field-group-header">
+            <h3>Account Information</h3>
+          </div>
+          <div class="form-row">
+            <!-- Username Field -->
+            <div class="form-group {% if form_errors(form.username) %}has-error{% endif %}">
+              <label class="form-label">Username</label>
+              {{ form_widget(form.username, {'attr': {
+                'class': 'form-input',
+                'placeholder': 'Enter username',
+                'required': true,
+                'autofocus': true
+              }}) }}
+              {% if form_errors(form.username) %}
+                <div class="error-message">{{ form_errors(form.username) }}</div>
+              {% endif %}
+            </div>
+
+            <!-- Role Dropdown (will be replaced by custom dropdown) -->
+            <div class="form-group {% if form_errors(form.roles) %}has-error{% endif %}">
+              <label class="form-label">User Role</label>
+              {{ form_widget(form.roles, {'attr': {
+                'class': 'form-input'
+              }}) }}
+              {% if form_errors(form.roles) %}
+                <div class="error-message">{{ form_errors(form.roles) }}</div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom Row: Password + Status -->
+        <div class="field-group">
+          <div class="field-group-header">
+            <h3>Security Settings</h3>
+          </div>
+          <div class="form-row">
+            <!-- Password Field -->
+            <div class="form-group password-field {% if form_errors(form.plainPassword) %}has-error{% endif %}">
+              <label class="form-label">New Password</label>
+              {{ form_widget(form.plainPassword, {'attr': {
+                'class': 'form-input',
+                'placeholder': 'Leave empty to keep current',
+                'autocomplete': 'new-password'
+              }}) }}
+              {# <div class="password-hint">At least 8 characters with letters and numbers</div> #}
+              {% if form_errors(form.plainPassword) %}
+                <div class="error-message">{{ form_errors(form.plainPassword) }}</div>
+              {% endif %}
+            </div>
+
+            <!-- Status Dropdown -->
+            <div class="form-group {% if form_errors(form.status) %}has-error{% endif %}">
+              <label class="form-label">Account Status</label>
+              <div class="select-container">
+                {{ form_widget(form.status, {'attr': {
+                  'class': 'form-input'
+                }}) }}
+              </div>
+              {% if form_errors(form.status) %}
+                <div class="error-message">{{ form_errors(form.status) }}</div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Compact Action Buttons -->
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+            <polyline points="17 21 17 13 7 13 7 21"></polyline>
+            <polyline points="7 3 7 8 15 8"></polyline>
+          </svg>
+          Save Changes
+        </button>
+        
+        <a href="{{ path('app_user_index') }}" class="btn btn-secondary">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+          Back to List
+        </a>
+      </div>
+
+      {{ form_end(form) }}
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,349 @@
+/* ===========================================
+   User Show Page - Clean Modern Redesign
+   =========================================== */
+
+.user-show-page {
+  min-height: 100vh;
+  background: linear-gradient(145deg, #0c0c0c, #121212);
+  padding: 2rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+.user-show-page .user-show-container {
+  width: 100%;
+  max-width: 700px;
+  margin: 0 auto;
+  background: rgba(15, 15, 15, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  padding: 3rem;
+  color: #f0f0f0;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Subtle gradient accent */
+.user-show-page .user-show-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #ff6b2e, #ff2e2e);
+  opacity: 0.8;
+}
+
+/* ---------- Profile Header ---------- */
+.user-show-page .profile-header {
+  text-align: center;
+  margin-bottom: 3rem;
+  position: relative;
+}
+
+.user-show-page .user-avatar {
+  width: 72px;
+  height: 72px;
+  margin: 0 auto 1.5rem;
+  position: relative;
+}
+
+.user-show-page .avatar-circle {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #ff6b2e, #ff2e2e);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: white;
+  position: relative;
+}
+
+.user-show-page .avatar-circle::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  background: linear-gradient(135deg, #ff6b2e, #ff2e2e);
+  border-radius: 50%;
+  z-index: -1;
+  opacity: 0.4;
+  filter: blur(8px);
+}
+
+.user-show-page .profile-header h1 {
+  font-size: 2.25rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem 0;
+  color: #fff;
+  letter-spacing: -0.02em;
+}
+
+.user-show-page .profile-header p {
+  color: #999;
+  font-size: 0.95rem;
+  margin: 0;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+}
+
+/* ---------- Profile Information ---------- */
+.user-show-page .profile-info {
+  background: rgba(20, 20, 20, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 16px;
+  padding: 2rem;
+  margin-bottom: 2.5rem;
+}
+
+.user-show-page .info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1.25rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.user-show-page .info-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.user-show-page .info-item:first-child {
+  padding-top: 0;
+}
+
+.user-show-page .info-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.user-show-page .info-label::before {
+  content: '';
+  width: 4px;
+  height: 4px;
+  background: #ff6b2e;
+  border-radius: 50%;
+  display: block;
+}
+
+.user-show-page .info-value {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #fff;
+  margin-left: 0.5rem;
+}
+
+/* ---------- Role Badges ---------- */
+.user-show-page .role-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 0.25rem;
+}
+
+.user-show-page .role-badge {
+  background: rgba(255, 107, 46, 0.12);
+  border: 1px solid rgba(255, 107, 46, 0.3);
+  color: #ff6b2e;
+  padding: 0.4rem 0.9rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: all 0.2s ease;
+}
+
+.user-show-page .role-badge:hover {
+  background: rgba(255, 107, 46, 0.18);
+  transform: translateY(-1px);
+}
+
+.user-show-page .role-badge::before {
+  content: '•';
+  font-size: 1.2rem;
+  line-height: 0;
+}
+
+.user-show-page .role-badge.user-role { background: rgba(100, 100, 100, 0.12); border-color: rgba(100, 100, 100, 0.3); color: #999; }
+.user-show-page .role-badge.admin-role { background: rgba(255, 46, 46, 0.12); border-color: rgba(255, 46, 46, 0.3); color: #ff5252; }
+.user-show-page .role-badge.staff-role { background: rgba(255, 107, 46, 0.12); border-color: rgba(255, 107, 46, 0.3); color: #ff6b2e; }
+
+/* ---------- Security Status ---------- */
+.user-show-page .security-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(74, 222, 128, 0.12);
+  border: 1px solid rgba(74, 222, 128, 0.3);
+  color: #4ade80;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-left: 0.5rem;
+}
+
+.user-show-page .security-status::before {
+  content: '✓';
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+/* ---------- Action Buttons ---------- */
+.user-show-page .profile-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.user-show-page .action-btn {
+  padding: 0.875rem 1.75rem;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: none;
+  cursor: pointer;
+  min-width: 140px;
+  justify-content: center;
+}
+
+/* Primary Button - Edit */
+.user-show-page .btn-primary {
+  background: linear-gradient(135deg, #ff6b2e, #ff2e2e);
+  color: white;
+  border: none;
+}
+
+.user-show-page .btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 107, 46, 0.3);
+}
+
+/* Secondary Button - Back */
+.user-show-page .btn-secondary {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ccc;
+}
+
+.user-show-page .btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 107, 46, 0.4);
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+/* Danger Button - Delete */
+.user-show-page .btn-danger {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #ef4444;
+}
+
+.user-show-page .btn-danger:hover {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.5);
+  transform: translateY(-2px);
+}
+
+.user-show-page .action-btn:active {
+  transform: translateY(0);
+}
+
+/* ---------- Delete Form ---------- */
+.user-show-page .delete-form {
+  margin: 0;
+  width: 100%;
+  max-width: 140px;
+}
+
+.user-show-page .delete-form button {
+  width: 100%;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 768px) {
+  .user-show-page .user-show-container {
+    padding: 2.5rem 2rem;
+    max-width: 90%;
+  }
+  
+  .user-show-page .profile-header h1 {
+    font-size: 2rem;
+  }
+  
+  .user-show-page .profile-info {
+    padding: 1.5rem;
+  }
+  
+  .user-show-page .profile-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .user-show-page .action-btn {
+    width: 100%;
+    max-width: none;
+  }
+  
+  .user-show-page .delete-form {
+    max-width: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .user-show-page .user-show-container {
+    padding: 2rem 1.5rem;
+    border-radius: 16px;
+  }
+  
+  .user-show-page .profile-header h1 {
+    font-size: 1.75rem;
+  }
+  
+  .user-show-page .user-avatar {
+    width: 64px;
+    height: 64px;
+  }
+  
+  .user-show-page .avatar-circle {
+    font-size: 1.25rem;
+  }
+  
+  .user-show-page .info-value {
+    font-size: 1rem;
+  }
+}
+
+/* ---------- Accessibility ---------- */
+.user-show-page *:focus-visible {
+  outline: 2px solid #ff6b2e;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .user-show-page * {
+    transition: none !important;
+  }
+}

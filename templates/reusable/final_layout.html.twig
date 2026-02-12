@@ -22,12 +22,19 @@
 
     <nav>
       <ul style="list-style: none; padding: 0; margin: 0;">
+
+        {# Always show dashboard to admins only (or change as needed) #}
+        {% if is_granted('ROLE_ADMIN') %}
         <li>
           <a href="{{ path('app_admin_dashboard') }}" class="nav-link">
             <span class="nav-icon"><i class="bx bx-home"></i></span>
             <span>Dashboard</span>
           </a>
         </li>
+        {% endif %}
+
+        {# Staff and Admin: allowed pages #}
+        {% if is_granted('ROLE_STAFF') %}
         <li>
           <a href="{{ path('app_admin_analytics_index') }}" class="nav-link">
             <span class="nav-icon"><i class="bx bx-music"></i></span>
@@ -53,23 +60,49 @@
           </a>
         </li>
         <li>
-         <a href="{{ path('app_order_index') }}" class="nav-link">
+          <a href="{{ path('app_order_index') }}" class="nav-link">
             <span class="nav-icon"><i class="bx bx-cart"></i></span>
             <span>Orders</span>
           </a>
         </li>
+        {% endif %}
+
+        {# Admin-only links (User Management etc.) #}
+        {% if is_granted('ROLE_ADMIN') %}
         <li>
-          <a href="{{ path('app_user_management_index') }}" class="nav-link">
+          <a href="{{ path('app_user_index') }}" class="nav-link">
             <span class="nav-icon"><i class="bx bx-user"></i></span>
             <span>User Management</span>
           </a>
         </li>
         <li>
-          <a href="{{ path('app_login') }}" class="nav-link">
-            <span class="nav-icon"><i class="bx bx-log-out"></i></span>
-            <span>Logout</span>
+          <a href="{{ path('activity_log_index') }}" class="nav-link">  <!-- Changed from 'admin_activity_logs_index' -->
+            <span class="nav-icon"><i class="bx bx-history"></i></span>
+            <span>Activity Logs</span>
           </a>
         </li>
+        {% endif %}
+        
+
+        {# Logout (show to any logged-in user) #}
+     <!-- Inside the <nav> section, after logout link -->
+      {% if app.user %}
+      <!-- Profile Link - for all logged in users -->
+      <li>
+        <a href="{{ path('app_profile_index') }}" class="nav-link">
+          <span class="nav-icon"><i class="bx bx-user-circle"></i></span>
+          <span>My Profile</span>
+        </a>
+      </li>
+
+      <!-- Logout (show to any logged-in user) -->
+      <li>
+        <a href="{{ path('app_logout') }}" class="nav-link">
+          <span class="nav-icon"><i class="bx bx-log-out"></i></span>
+          <span>Logout</span>
+        </a>
+      </li>
+      {% endif %}
       </ul>
     </nav>
   </div>
@@ -91,6 +124,8 @@
   </div>
 
   {# {{ encore_entry_script_tags('base') }} #}
-  {% block javascripts %}{% endblock %}
+  {% block javascripts %}
+  
+  {% endblock %}
 </body>
 </html>

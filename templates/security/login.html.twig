@@ -1,0 +1,65 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Login{% endblock %}
+
+{# direct link to public css (no Encore) #}
+{% block stylesheets %}
+  <link rel="stylesheet" href="{{ asset('styles/global/login.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="login">
+  {# left side panel #}
+  <div class="login-left_panel">
+    <div class="logo-inline">
+      <h1>INFERN</h1>
+      <img src="{{ asset('images/logo_1.png') }}" alt="Inferno Flame Logo" class="logo-inline-image">
+    </div>
+    <p>GAMES</p>
+  </div>
+
+  {# right side panel #}
+  <div class="login-right_panel">
+    <div class="login-container" role="main" aria-labelledby="login-heading">
+      <h1 id="login-heading">LOGIN</h1>
+
+      <form class="login-form" method="post">
+        {% if error %}
+          <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+        {% endif %}
+
+        {% if app.user %}
+          <div class="mb-3">
+            You are logged in as {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Logout</a>
+          </div>
+        {% endif %}
+
+        <div class="login-row">
+          <label for="inputUsername">Username</label>
+          <input id="inputUsername" name="username" type="text" placeholder="your.username" value="{{ last_username }}" class="form-control" autocomplete="username" required autofocus>
+        </div>
+
+        <div class="login-row">
+          <label for="inputPassword">Password</label>
+          <input id="inputPassword" name="password" type="password" placeholder="••••••••" class="form-control" autocomplete="current-password" required>
+        </div>
+
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+        <button class="button btn btn-lg btn-primary" type="submit">Sign in</button>
+
+        <!-- Registration Link -->
+        <div class="register-link">
+          <p>Don't have an account? <a href="{{ path('app_register') }}">Create one now</a></p>
+        </div>
+
+        <div class="helper">Secure login for Inferno Games staff and administrators.</div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{# {% block javascripts %}
+  <script src="{{ asset('js/login.js') }}"></script>
+{% endblock %} #}

@@ -3,20 +3,22 @@
 namespace App\Controller;
 
 use App\Entity\GameManagement;
+use App\Entity\Stock;
 use App\Form\GameManagementType;
-use Symfony\Component\HttpFoundation\File\Exception\FileException;
-use Symfony\Component\String\Slugger\SluggerInterface;
 use App\Repository\GameManagementRepository;
+use App\Service\ActivityLogger;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\String\Slugger\SluggerInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-#[Route('/game/management')]
-final class GameManagementController extends AbstractController
+class GameManagementController extends AbstractController
 {
-    #[Route(name: 'app_game_management_index', methods: ['GET'])]
+    #[Route('/game/management', name: 'app_game_management_index', methods: ['GET'])]
     public function index(GameManagementRepository $gameManagementRepository): Response
     {
         return $this->render('Admin/game_management/index.html.twig', [
@@ -24,48 +26,82 @@ final class GameManagementController extends AbstractController
         ]);
     }
 
-   #[Route('/new', name: 'app_game_management_new', methods: ['GET', 'POST'])]
-public function new(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
-{
-    $game = new GameManagement();
-    $form = $this->createForm(GameManagementType::class, $game);
-    $form->handleRequest($request);
+    #[Route('/game/management/new', name: 'app_game_management_new', methods: ['GET', 'POST'])]
+    public function new(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger, ActivityLogger $logger, ValidatorInterface $validator): Response
+    {
+        $this->denyAccessUnlessGranted('ROLE_STAFF');
 
-    if ($form->isSubmitted() && $form->isValid()) {
-        // Handle image upload
-        $imageFile = $form->get('image')->getData();
+        $game = new GameManagement();
+        
+        // Get available stocks for the dropdown
+        $stocks = $entityManager->getRepository(Stock::class)->findAll();
+        
+        if ($request->isMethod('POST')) {
+            // Get form data
+            $formData = $request->request->all()['game_management'] ?? [];
+            
+            // Set basic fields
+            $game->setTitle($formData['title'] ?? '');
+            $game->setPrice($formData['price'] ?? '0.00');
+            $game->setDescription($formData['description'] ?? '');
+            
+            // Handle stock if provided
+            $stockId = $formData['stock'] ?? null;
+            if ($stockId && $stockId !== '') {
+                $stock = $entityManager->getRepository(Stock::class)->find($stockId);
+                if ($stock) {
+                    $game->setStock($stock);
+                }
+            }
+            
+            $game->setCreatedBy($this->getUser());
 
-        if ($imageFile) {
-            $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
-            $safeFilename = $slugger->slug($originalFilename);
-            $newFilename = $safeFilename.'-'.uniqid().'.'.$imageFile->guessExtension();
+            // Handle image upload
+            $imageFile = $request->files->get('game_management')['image'] ?? null;
+            if ($imageFile && $imageFile->getClientOriginalName() !== '') {
+                $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+                $safeFilename = $slugger->slug($originalFilename);
+                $newFilename = $safeFilename.'-'.uniqid().'.'.$imageFile->guessExtension();
 
-            try {
-                $imageFile->move(
-                    $this->getParameter('games_image_directory'),
-                    $newFilename
-                );
-            } catch (FileException $e) {
-                $this->addFlash('error', 'Image upload failed.');
+                try {
+                    $imageFile->move(
+                        $this->getParameter('games_image_directory'),
+                        $newFilename
+                    );
+                    $game->setImage($newFilename);
+                } catch (FileException $e) {
+                    $this->addFlash('error', 'Image upload failed: ' . $e->getMessage());
+                }
             }
 
-            $game->setImage($newFilename);
+            // Validate the game entity using injected validator
+            $errors = $validator->validate($game);
+            
+            if (count($errors) > 0) {
+                foreach ($errors as $error) {
+                    $this->addFlash('error', $error->getMessage());
+                }
+            } else {
+                try {
+                    $entityManager->persist($game);
+                    $entityManager->flush();
+
+                    $logger->log('CREATE', $game);
+                    $this->addFlash('success', 'Game added successfully!');
+                    return $this->redirectToRoute('app_game_management_index', [], Response::HTTP_SEE_OTHER);
+                } catch (\Exception $e) {
+                    $this->addFlash('error', 'Failed to save game: ' . $e->getMessage());
+                }
+            }
         }
 
-        $entityManager->persist($game);
-        $entityManager->flush();
-
-        $this->addFlash('success', 'Game added successfully!');
-        return $this->redirectToRoute('app_game_management_index', [], Response::HTTP_SEE_OTHER);
+        return $this->render('Admin/game_management/new.html.twig', [
+            'game_management' => $game,
+            'stocks' => $stocks,
+        ]);
     }
 
-    return $this->render('Admin/game_management/new.html.twig', [
-        'game_management' => $game,
-        'form' => $form,
-    ]);
-}
-
-    #[Route('/{id}', name: 'app_game_management_show', methods: ['GET'])]
+    #[Route('/game/management/{id}', name: 'app_game_management_show', methods: ['GET'])]
     public function show(GameManagement $gameManagement): Response
     {
         return $this->render('Admin/game_management/show.html.twig', [
@@ -73,86 +109,96 @@ public function new(Request $request, EntityManagerInterface $entityManager, Slu
         ]);
     }
 
-   #[Route('/{id}/edit', name: 'app_game_management_edit', methods: ['GET', 'POST'])]
-public function edit(Request $request, GameManagement $game, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
-{
-    $form = $this->createForm(GameManagementType::class, $game);
-    $form->handleRequest($request);
+    #[Route('/game/management/{id}/edit', name: 'app_game_management_edit', methods: ['GET', 'POST'])]
+    public function edit(Request $request, GameManagement $game, EntityManagerInterface $entityManager, SluggerInterface $slugger, ActivityLogger $logger): Response
+    {
+        $this->denyAccessUnlessGranted('EDIT', $game);
 
-    $oldImage = $game->getImage(); // Store current image filename
+        $form = $this->createForm(GameManagementType::class, $game, [
+            'require_image' => false,
+        ]);
+        
+        $form->handleRequest($request);
 
-    if ($form->isSubmitted() && $form->isValid()) {
-        $imageFile = $form->get('image')->getData();
+        $oldImage = $game->getImage();
 
-        if ($imageFile) {
-            // Generate a safe new filename
-            $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
-            $safeFilename = $slugger->slug($originalFilename);
-            $newFilename = $safeFilename.'-'.uniqid().'.'.$imageFile->guessExtension();
+        if ($form->isSubmitted() && $form->isValid()) {
+            $imageFile = $form->get('image')->getData();
 
-            try {
-                $imageFile->move(
-                    $this->getParameter('games_image_directory'),
-                    $newFilename
-                );
-            } catch (FileException $e) {
-                $this->addFlash('error', 'Image upload failed.');
+            if ($imageFile) {
+                $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+                $safeFilename = $slugger->slug($originalFilename);
+                $newFilename = $safeFilename.'-'.uniqid().'.'.$imageFile->guessExtension();
+
+                try {
+                    $imageFile->move(
+                        $this->getParameter('games_image_directory'),
+                        $newFilename
+                    );
+                } catch (FileException $e) {
+                    $this->addFlash('error', 'Image upload failed.');
+                }
+
+                if ($oldImage && file_exists($this->getParameter('games_image_directory') . '/' . $oldImage)) {
+                    unlink($this->getParameter('games_image_directory') . '/' . $oldImage);
+                }
+
+                $game->setImage($newFilename);
+            } else {
+                $game->setImage($oldImage);
             }
 
-            // Delete the old image file if it exists
-            if ($oldImage && file_exists($this->getParameter('games_image_directory') . '/' . $oldImage)) {
-                unlink($this->getParameter('games_image_directory') . '/' . $oldImage);
-            }
+            $entityManager->flush();
 
-            // Update with new filename
-            $game->setImage($newFilename);
-        } else {
-            // No new file uploaded → keep the old image
-            $game->setImage($oldImage);
+            $logger->log('UPDATE', $game);
+            $this->addFlash('success', 'Game updated successfully!');
+            return $this->redirectToRoute('app_game_management_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        $entityManager->flush();
-
-        $this->addFlash('success', 'Game updated successfully!');
-        return $this->redirectToRoute('app_game_management_index', [], Response::HTTP_SEE_OTHER);
+        return $this->render('Admin/game_management/edit.html.twig', [
+            'game_management' => $game,
+            'form' => $form->createView(),
+        ]);
     }
 
-    return $this->render('Admin/game_management/edit.html.twig', [
-        'game_management' => $game,
-        'form' => $form,
-    ]);
-}
-
-
-    #[Route('/{id}', name: 'app_game_management_delete', methods: ['POST'])]
-    public function delete(Request $request, GameManagement $gameManagement, EntityManagerInterface $entityManager): Response
+    #[Route('/game/management/{id}', name: 'app_game_management_delete', methods: ['POST'])]
+    public function delete(Request $request, GameManagement $gameManagement, EntityManagerInterface $entityManager, ActivityLogger $logger): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$gameManagement->getId(), $request->getPayload()->getString('_token'))) {
+        $this->denyAccessUnlessGranted('DELETE', $gameManagement);
 
-            // 1️⃣ Unlink related License Keys
+        if ($this->isCsrfTokenValid('delete'.$gameManagement->getId(), $request->request->get('_token'))) {
+            $gameName = $gameManagement->getTitle();
+            $gameId = $gameManagement->getId();
+
+            // Remove image file if exists
+            $image = $gameManagement->getImage();
+            if ($image && file_exists($this->getParameter('games_image_directory') . '/' . $image)) {
+                unlink($this->getParameter('games_image_directory') . '/' . $image);
+            }
+
+            // Clear relationships
             foreach ($gameManagement->getLicenseKeys() as $licenseKey) {
                 $licenseKey->setGame(null);
             }
 
-            // 2️⃣ Unlink related Orders
             foreach ($gameManagement->getOrders() as $order) {
                 $order->setGame(null);
             }
 
-            // 3️⃣ Unlink related Stock
             $stock = $gameManagement->getStock();
             if ($stock) {
                 $stock->setGame(null);
             }
 
-            // 4️⃣ Now you can safely delete the Game
             $entityManager->remove($gameManagement);
             $entityManager->flush();
+
+            $logger->log('DELETE', 'Game: ' . $gameName . ' (ID: ' . $gameId . ')');
+            $this->addFlash('success', 'Game deleted successfully!');
+        } else {
+            $this->addFlash('error', 'Invalid CSRF token.');
         }
 
         return $this->redirectToRoute('app_game_management_index', [], Response::HTTP_SEE_OTHER);
     }
-
 }
-
-

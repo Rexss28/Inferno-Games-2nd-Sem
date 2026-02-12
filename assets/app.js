@@ -15,6 +15,9 @@ import './styles/User/product/product_main.css';
 import './styles/User/product/edit.css';
 import './styles/User/product/new.css';
 import './styles/User/product/show.css';
+import './styles/global/profile_index.css';
+import './styles/global/profile_edit.css';
+import './styles/global/register.css';
 
 
 //admin
@@ -33,7 +36,14 @@ import './styles/Admin/license-key/key_new.css';
 import './styles/Admin/analytics_page.css';
 import './styles/Admin/admin_dashboard.css';
 import './styles/Admin/order_index.css';
-import './styles/Admin/user_index.css';
+import './styles/Admin/user/user_index.css';
+import './styles/Admin/user/user_edit.css';
+import './styles/Admin/user/user_new.css';
+import './styles/Admin/user/user_show.css';
+import './styles/Admin/activity_logs.css';
+
+
+// any CSS you import will output into a single css file (app.css in this case)
 
 
 

@@ -34,6 +34,13 @@
     letter-spacing: -0.02em;
 }
 
+.stock-Index-page .page-subtitle {
+    color: #B3B3B3;
+    font-size: 0.875rem;
+    margin: 0;
+    font-weight: 400;
+}
+
 /* Primary Buttons */
 .stock-Index-page .btn-primary {
     display: inline-flex;
@@ -174,32 +181,134 @@
     border: 1px solid rgba(179, 179, 179, 0.2);
 }
 
-/* Quantity and Status Cells */
-.stock-Index-page .quantity-cell {
-    font-weight: 600;
-    color: #FFFFFF;
-    font-size: 0.875rem;
+/* Quantity Badges */
+.stock-Index-page .quantity-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 0.8125rem;
+    background: rgba(46, 204, 113, 0.15);
+    color: #2ecc71;
+    border: 1px solid rgba(46, 204, 113, 0.3);
+    min-width: 36px;
+    text-align: center;
 }
 
-.stock-Index-page .status-active {
-    color: #FF6B2E;
-    font-weight: 600;
+.stock-Index-page .quantity-badge.quantity-low {
+    background: rgba(241, 196, 15, 0.15);
+    color: #f1c40f;
+    border-color: rgba(241, 196, 15, 0.3);
 }
 
-.stock-Index-page .status-inactive {
-    color: #B3B3B3;
-    font-weight: 600;
+.stock-Index-page .quantity-badge.quantity-zero {
+    background: rgba(231, 76, 60, 0.15);
+    color: #e74c3c;
+    border-color: rgba(231, 76, 60, 0.3);
 }
 
-.stock-Index-page .status-pending {
-    color: #FF2E2E;
+/* Status Badges */
+.stock-Index-page .status-badge {
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 0.75rem;
     font-weight: 600;
+    text-transform: capitalize;
+    display: inline-block;
+    border: 1px solid transparent;
 }
 
-/* Game Title */
+.stock-Index-page .status-in-stock {
+    background-color: rgba(16, 185, 129, 0.15);
+    color: #10b981;
+    border-color: rgba(16, 185, 129, 0.3);
+}
+
+.stock-Index-page .status-low-stock {
+    background-color: rgba(234, 179, 8, 0.15);
+    color: #eab308;
+    border-color: rgba(234, 179, 8, 0.3);
+}
+
+.stock-Index-page .status-out-stock {
+    background-color: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+    border-color: rgba(239, 68, 68, 0.3);
+}
+
+.stock-Index-page .status-discontinued {
+    background-color: rgba(107, 114, 128, 0.15);
+    color: #6b7280;
+    border-color: rgba(107, 114, 128, 0.3);
+}
+
+.stock-Index-page .status-preorder {
+    background-color: rgba(59, 130, 246, 0.15);
+    color: #3b82f6;
+    border-color: rgba(59, 130, 246, 0.3);
+}
+
+/* Game Info */
+.stock-Index-page .game-info {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
 .stock-Index-page .game-title {
     color: #FFFFFF;
     font-weight: 600;
+    font-size: 0.875rem;
+}
+
+.stock-Index-page .game-price {
+    font-size: 0.75rem;
+    color: #B3B3B3;
+    font-weight: 500;
+}
+
+/* Creator Info */
+.stock-Index-page .creator-info {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    padding-right: 25px; /* Space for the "You" badge */
+}
+
+.stock-Index-page .creator-name {
+    font-weight: 600;
+    color: #FFFFFF;
+    font-size: 0.875rem;
+    line-height: 1.2;
+}
+
+.stock-Index-page .creator-username {
+    font-size: 0.75rem;
+    color: #B3B3B3;
+    font-weight: 400;
+    line-height: 1.2;
+}
+
+.stock-Index-page .badge-you {
+    position: absolute;
+    top: -2px;
+    right: 0;
+    background: linear-gradient(135deg, #FF2E2E, #FF6B2E);
+    color: white;
+    font-size: 0.625rem;
+    padding: 2px 6px;
+    border-radius: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Muted Text */
+.stock-Index-page .text-muted {
+    color: #7f8c8d;
+    font-style: italic;
     font-size: 0.875rem;
 }
 
@@ -218,6 +327,14 @@
     border-radius: 0.375rem;
     transition: all 0.2s ease;
     text-decoration: none;
+    font-size: 1rem;
+    border: none;
+    cursor: pointer;
+}
+
+.stock-Index-page .btn-action.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 
 .stock-Index-page .btn-action svg {
@@ -226,28 +343,41 @@
 }
 
 .stock-Index-page .btn-view {
-    background: rgba(179, 179, 179, 0.1);
-    color: #B3B3B3;
-    border: 1px solid rgba(179, 179, 179, 0.2);
+    background: rgba(52, 152, 219, 0.15);
+    color: #3498db;
+    border: 1px solid rgba(52, 152, 219, 0.3);
 }
 
-.stock-Index-page .btn-view:hover {
-    background: rgba(179, 179, 179, 0.2);
-    color: #FFFFFF;
+.stock-Index-page .btn-view:hover:not(.disabled) {
+    background: rgba(52, 152, 219, 0.25);
+    color: #3498db;
     transform: translateY(-2px);
 }
 
 .stock-Index-page .btn-edit {
-    background: rgba(255, 107, 46, 0.1);
-    color: #FF6B2E;
-    border: 1px solid rgba(255, 107, 46, 0.3);
+    background: rgba(46, 204, 113, 0.15);
+    color: #2ecc71;
+    border: 1px solid rgba(46, 204, 113, 0.3);
 }
 
-.stock-Index-page .btn-edit:hover {
-    background: rgba(255, 107, 46, 0.2);
-    color: #FF6B2E;
+.stock-Index-page .btn-edit:hover:not(.disabled) {
+    background: rgba(46, 204, 113, 0.25);
+    color: #2ecc71;
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(255, 107, 46, 0.2);
+    box-shadow: 0 4px 8px rgba(46, 204, 113, 0.2);
+}
+
+.stock-Index-page .btn-delete {
+    background: rgba(231, 76, 60, 0.15);
+    color: #e74c3c;
+    border: 1px solid rgba(231, 76, 60, 0.3);
+}
+
+.stock-Index-page .btn-delete:hover:not(:disabled) {
+    background: rgba(231, 76, 60, 0.25);
+    color: #e74c3c;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(231, 76, 60, 0.2);
 }
 
 /* Empty State */
@@ -287,6 +417,18 @@
     .stock-Index-page .stocks-table {
         font-size: 0.75rem;
     }
+    
+    .stock-Index-page .status-badge,
+    .stock-Index-page .quantity-badge {
+        padding: 4px 8px;
+        font-size: 0.7rem;
+    }
+    
+    .stock-Index-page .btn-action {
+        width: 28px;
+        height: 28px;
+        font-size: 0.9rem;
+    }
 }
 
 @media (max-width: 768px) {
@@ -306,37 +448,31 @@
     .stock-Index-page .btn-primary {
         justify-content: center;
     }
+    
+    .stock-Index-page .stocks-table th,
+    .stock-Index-page .stocks-table td {
+        padding: 0.625rem 0.5rem;
+    }
+    
+    .stock-Index-page .creator-info {
+        padding-right: 20px;
+    }
+    
+    .stock-Index-page .badge-you {
+        font-size: 0.5rem;
+        padding: 1px 4px;
+        top: -1px;
+    }
 }
 
-.status-badge {
-  padding: 4px 8px;
-  border-radius: 6px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  text-transform: capitalize;
-}
-
-.status-in-stock {
-  background-color: rgba(16, 185, 129, 0.15);
-  color: #10b981;
-}
-
-.status-low-stock {
-  background-color: rgba(234, 179, 8, 0.15);
-  color: #eab308;
-}
-
-.status-out-stock {
-  background-color: rgba(239, 68, 68, 0.15);
-  color: #ef4444;
-}
-
-.status-discontinued {
-  background-color: rgba(107, 114, 128, 0.15);
-  color: #6b7280;
-}
-
-.status-preorder {
-  background-color: rgba(59, 130, 246, 0.15);
-  color: #3b82f6;
+/* Additional responsive for very small screens */
+@media (max-width: 576px) {
+    .stock-Index-page .game-info,
+    .stock-Index-page .creator-info {
+        min-width: 120px; /* Prevent text from breaking too much */
+    }
+    
+    .stock-Index-page .action-buttons {
+        gap: 0.25rem;
+    }
 }

@@ -29,6 +29,9 @@ Encore
     .addStyleEntry('edit', './assets/styles/User/product/edit.css')
     .addStyleEntry('new', './assets/styles/User/product/new.css')
     .addStyleEntry('show', './assets/styles/User/product/show.css')
+    .addStyleEntry('profile_index', './assets/styles/global/profile_index.css')
+    .addStyleEntry('profile_edit', './assets/styles/global/profile_edit.css')
+    .addStyleEntry('register', './assets/styles/global/register.css')
 
     // admin
     .addStyleEntry('index', './assets/styles/Admin/game-management/index.css')
@@ -46,9 +49,11 @@ Encore
     .addStyleEntry('analytics_page', './assets/styles/Admin/analytics_page.css')
     .addStyleEntry('admin_dashboard', './assets/styles/Admin/admin_dashboard.css')
     .addStyleEntry('order_index', './assets/styles/Admin/order_index.css')
-    .addStyleEntry('user_index', './assets/styles/Admin/user_index.css')
-
-
+    .addStyleEntry('user_index', './assets/styles/Admin/user/user_index.css')
+    .addStyleEntry('user_edit', './assets/styles/Admin/user/user_edit.css')
+    .addStyleEntry('user_new', './assets/styles/Admin/user/user_new.css')
+    .addStyleEntry('user_show', './assets/styles/Admin/user/user_show.css')
+    .addStyleEntry('activity_logs', './assets/styles/Admin/activity_logs.css')
 
     // .addEntry('login', './assets/styles/login.js')
     // .addEntry('home', './assets/styles/home.js')
