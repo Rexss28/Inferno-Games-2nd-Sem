@@ -12,13 +12,13 @@ services:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
     
-    App\Security\LicenseKeyVoter:
+    App\Security\Voter\LicenseKeyVoter:
         tags: [ 'security.voter' ]
 
-    App\Security\StockVoter:
+    App\Security\Voter\StockVoter:
         tags: [ 'security.voter' ]
 
-    App\Security\GameManagementVoter:
+    App\Security\Voter\GameManagementVoter:
         arguments:
             $security: '@security.helper'
         tags: [ 'security.voter' ]

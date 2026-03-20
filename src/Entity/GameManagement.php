@@ -8,16 +8,62 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Doctrine\Orm\Filter\RangeFilter;
+use ApiPlatform\Metadata\ApiFilter;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: GameManagementRepository::class)]
+#[ApiResource(
+    operations: [
+        new GetCollection(
+            normalizationContext: ['groups' => ['game:read']],
+            security: "is_granted('PUBLIC_ACCESS')"  // Public can browse games
+        ),
+        new Post(
+            denormalizationContext: ['groups' => ['game:write']],
+            security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_STAFF')"
+        ),
+        new Get(
+            normalizationContext: ['groups' => ['game:read', 'game:detail']],
+            security: "is_granted('PUBLIC_ACCESS')"  // Public can view game details
+        ),
+        new Put(
+            denormalizationContext: ['groups' => ['game:write']],
+            security: "is_granted('ROLE_ADMIN') or (is_granted('ROLE_STAFF') and object.getCreatedBy() == user)"
+        ),
+        new Patch(
+            denormalizationContext: ['groups' => ['game:write']],
+            security: "is_granted('ROLE_ADMIN') or (is_granted('ROLE_STAFF') and object.getCreatedBy() == user)"
+        ),
+        new Delete(
+            security: "is_granted('ROLE_ADMIN')"
+        )
+    ],
+    order: ['id' => 'DESC']
+)]
+#[ApiFilter(SearchFilter::class, properties: [
+    'title' => 'partial',
+    'price' => 'exact'
+])]
+#[ApiFilter(RangeFilter::class, properties: ['price'])]
 class GameManagement
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['game:read', 'game:detail'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['game:read', 'game:detail', 'game:write'])]
     private ?string $image = null;
 
     #[Assert\NotBlank(message: 'Game title cannot be empty.')]
@@ -28,6 +74,7 @@ class GameManagement
         maxMessage: 'The game title cannot exceed {{ limit }} characters.'
     )]
     #[ORM\Column(length: 255)]
+    #[Groups(['game:read', 'game:detail', 'game:write'])]
     private ?string $title = null;
 
     #[Assert\NotBlank(message: 'Description cannot be empty.')]
@@ -36,32 +83,38 @@ class GameManagement
         minMessage: 'Please provide a more detailed description (at least {{ limit }} characters).'
     )]
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups(['game:read', 'game:detail', 'game:write'])]
     private ?string $description = null;
 
     #[Assert\NotBlank(message: 'Price is required.')]
     #[Assert\Type('numeric', message: 'Price must be a valid number.')]
     #[Assert\Positive(message: 'Price must be greater than 0.')]
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
+    #[Groups(['game:read', 'game:detail', 'game:write'])]
     private ?string $price = null;
 
     #[ORM\OneToOne(inversedBy: 'game', cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: true)]
+    #[Groups(['game:read', 'game:detail'])]
     private ?Stock $stock = null;
 
     /**
      * @var Collection<int, LicenseKey>
      */
     #[ORM\OneToMany(targetEntity: LicenseKey::class, mappedBy: 'game')]
+    #[Groups(['game:detail'])]
     private Collection $licenseKeys;
 
     /**
      * @var Collection<int, Order>
      */
     #[ORM\OneToMany(targetEntity: Order::class, mappedBy: 'game')]
+    #[Groups(['game:detail'])]
     private Collection $orders;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: false)] // Changed to NOT NULL - game must have a creator
+    #[Groups(['game:read', 'game:detail'])]
     private ?User $createdBy = null;
 
     public function __construct()

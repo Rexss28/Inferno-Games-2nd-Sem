@@ -1,5 +1,5 @@
 <?php
-namespace App\Security;
+namespace App\Security\Voter;
 
 use App\Entity\GameManagement;
 use App\Entity\User;

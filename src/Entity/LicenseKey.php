@@ -5,13 +5,58 @@ namespace App\Entity;
 use Symfony\Component\Validator\Constraints as Assert;
 use App\Repository\LicenseKeyRepository;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: LicenseKeyRepository::class)]
+#[ApiResource(
+    operations: [
+        new GetCollection(
+            normalizationContext: ['groups' => ['license_key:read']],
+            security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_STAFF')"
+        ),
+        new Post(
+            denormalizationContext: ['groups' => ['license_key:write']],
+            security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_STAFF')"
+        ),
+        new Get(
+            normalizationContext: ['groups' => ['license_key:read', 'license_key:detail']],
+            security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_STAFF') or (is_granted('ROLE_USER') and object.getCreatedBy() == user)"
+        ),
+        new Put(
+            denormalizationContext: ['groups' => ['license_key:write']],
+            security: "is_granted('ROLE_ADMIN') or (is_granted('ROLE_STAFF') and object.getCreatedBy() == user)"
+        ),
+        new Patch(
+            denormalizationContext: ['groups' => ['license_key:write']],
+            security: "is_granted('ROLE_ADMIN') or (is_granted('ROLE_STAFF') and object.getCreatedBy() == user)"
+        ),
+        new Delete(
+            security: "is_granted('ROLE_ADMIN')"
+        )
+    ],
+    order: ['id' => 'DESC']
+)]
+#[ApiFilter(SearchFilter::class, properties: [
+    'code' => 'partial',
+    'status' => 'exact',
+    'game' => 'exact',
+    'order' => 'exact'
+])]
 class LicenseKey
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['license_key:read', 'license_key:detail'])]
     private ?int $id = null;
 
     #[Assert\NotBlank(message: 'License key code cannot be empty.')]
@@ -22,22 +67,27 @@ class LicenseKey
         maxMessage: 'License key cannot exceed {{ limit }} characters.'
     )]
     #[ORM\Column(length: 255)]
+    #[Groups(['license_key:read', 'license_key:detail', 'license_key:write'])]
     private ?string $code = null;
 
     // ✅ Default to "Available"
     #[ORM\Column(length: 255)]
+    #[Groups(['license_key:read', 'license_key:detail', 'license_key:write'])]
     private ?string $status = 'Available';
 
     #[ORM\ManyToOne(inversedBy: 'licenseKeys')]
+    #[Groups(['license_key:read', 'license_key:detail', 'license_key:write'])]
     private ?GameManagement $game = null;
 
     #[ORM\ManyToOne(inversedBy: 'licenseKeys')]
     #[ORM\JoinColumn(onDelete: "SET NULL")]
+    #[Groups(['license_key:read', 'license_key:detail', 'license_key:write'])]
     private ?Order $order = null; // singular for clarity
 
     // ✅ ADD THIS: Ownership tracking
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['license_key:read', 'license_key:detail'])]
     private ?User $createdBy = null;
 
     // ─────────────────────────────
