@@ -1,62 +1,46 @@
-FROM php:8.4-fpm as builder
+FROM php:8.4-fpm
 
 WORKDIR /app
 
+# Install dependencies
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
     curl \
-    nodejs \
-    npm \
+    nginx \
     && docker-php-ext-install pdo pdo_mysql \
     && rm -rf /var/lib/apt/lists/*
 
+# Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-ENV COMPOSER_ALLOW_SUPERUSER=1
-
-COPY composer.json composer.lock ./
-
-RUN composer install --no-interaction --no-scripts --optimize-autoloader
-
+# Copy application files
 COPY . .
 
-RUN if [ ! -f /app/.env ]; then echo "APP_ENV=${APP_ENV:-prod}\nAPP_DEBUG=${APP_DEBUG:-false}\nAPP_SECRET=${APP_SECRET:-ChangeMe}\n" > /app/.env; fi
+# Install Composer dependencies
+RUN composer install --no-interaction --optimize-autoloader --no-dev
 
-# Now run post-install scripts after app code is available
-RUN composer install --no-interaction --optimize-autoloader --no-ansi || true
-RUN php bin/console importmap:install --no-interaction
+# Create .env file from environment variables
+RUN echo "APP_ENV=${APP_ENV:-prod}" > .env && \
+    echo "APP_DEBUG=0" >> .env && \
+    echo "APP_SECRET=${APP_SECRET:-ChangeMe}" >> .env
 
-RUN php bin/console cache:warmup --env=prod --no-debug || true
+# Set permissions
+RUN chown -R www-data:www-data /app/var /app/public/uploads && \
+    chmod -R 775 /app/var /app/public/uploads
 
-FROM php:8.4-fpm as runtime
-
-WORKDIR /app
-
-RUN apt-get update && apt-get install -y \
-    nginx \
-    curl \
-    && docker-php-ext-install pdo pdo_mysql \
-    && rm -rf /var/lib/apt/lists/*
-
-COPY --from=builder /app /app
-
-RUN mkdir -p /app/var && \
-    chown -R www-data:www-data /app && \
-    chmod -R 755 /app && \
-    chmod -R 775 /app/var
-
+# Configure Nginx
 COPY nginx-main.conf /etc/nginx/nginx.conf
+RUN rm -rf /etc/nginx/conf.d/*
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-RUN rm -rf /etc/nginx/conf.d/* /etc/nginx/sites-enabled /etc/nginx/sites-available
-COPY nginx.conf /etc/nginx/conf.d/symfony.conf
-
-COPY entrypoint.sh /usr/local/bin/docker-entrypoint.sh
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+# Entrypoint
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
 
 HEALTHCHECK --interval=10s --timeout=3s --start-period=10s --retries=3 \
     CMD curl -f http://localhost/ || exit 1
 
 EXPOSE 80
 
-ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]

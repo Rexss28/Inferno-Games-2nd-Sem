@@ -16,17 +16,23 @@ services:
     networks:
       - inferno_network
     environment:
-      DATABASE_URL: "mysql://inferno_user:inferno_games_password@mysql:3306/inferno_db?serverVersion=8.0.32&charset=utf8mb4"
+      # Use the split parameters here too instead of a hardcoded string!
+      MYSQLUSER: ${MYSQLUSER}
+      MYSQLPASSWORD: ${MYSQLPASSWORD}
+      MYSQLHOST: mysql
+      MYSQLPORT: 3306
+      MYSQLDATABASE: ${MYSQLDATABASE}
 
   # MySQL Database
   mysql:
     image: mysql:8.0
     restart: unless-stopped
     environment:
-    MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-    MYSQL_DATABASE: ${MYSQL_DATABASE}
-    MYSQL_USER: ${MYSQL_USER}
-    MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      # Fixed Indentation Here!
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQLDATABASE}
+      MYSQL_USER: ${MYSQLUSER}
+      MYSQL_PASSWORD: ${MYSQLPASSWORD}
     ports:
       - "3306:3306"
     volumes:
@@ -42,8 +48,8 @@ services:
     environment:
       PMA_HOST: mysql
       PMA_PORT: 3306
-      PMA_USER: inferno_user
-      PMA_PASSWORD: inferno_games_password
+      PMA_USER: ${MYSQLUSER}
+      PMA_PASSWORD: ${MYSQLPASSWORD}
     ports:
       - "8080:80"
     depends_on:
