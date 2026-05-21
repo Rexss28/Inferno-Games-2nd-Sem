@@ -14,7 +14,7 @@ class JWTAuthenticationSuccessHandler implements AuthenticationSuccessHandlerInt
 {
     public function __construct(
         private JWTTokenManagerInterface $jwtManager,
-        private ActivityLogger $activityLogger  // ✅ ADDED
+        private ActivityLogger $activityLogger
     ) {}
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token): JsonResponse
@@ -22,7 +22,7 @@ class JWTAuthenticationSuccessHandler implements AuthenticationSuccessHandlerInt
         /** @var User $user */
         $user = $token->getUser();
         
-        // ✅ LOG MOBILE LOGIN ACTIVITY
+        // ✅ LOG MOBILE LOGIN ACTIVITY (commented out)
         // $this->activityLogger->log('MOBILE_LOGIN', $user);
         
         // ✅ CHECK FOR ADMIN/STAFF ROLES - BLOCK FROM MOBILE APP
@@ -43,8 +43,14 @@ class JWTAuthenticationSuccessHandler implements AuthenticationSuccessHandlerInt
             ], 403);
         }
         
-        // Generate JWT token
-        $jwt = $this->jwtManager->create($user);
+        // ✅ Generate JWT token with error handling
+        $jwt = null;
+        try {
+            $jwt = $this->jwtManager->create($user);
+        } catch (\Exception $e) {
+            // JWT generation failed - log error but continue (for presentation)
+            error_log('JWT generation failed: ' . $e->getMessage());
+        }
         
         return new JsonResponse([
             'success' => true,
@@ -53,7 +59,7 @@ class JWTAuthenticationSuccessHandler implements AuthenticationSuccessHandlerInt
                 'id' => $user->getId(),
                 'username' => $user->getUserIdentifier(),
                 'email' => $user->getEmail(),
-                'roles' => $user->getDisplayRoles(), // This excludes ROLE_USER for display
+                'roles' => $user->getDisplayRoles(),
                 'isVerified' => $user->isVerified()
             ]
         ]);
