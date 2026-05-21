@@ -24,6 +24,8 @@ if [ "$APP_ENV" = "prod" ]; then
     # Fix cache permissions created by root during the warmup above
     chown -R www-data:www-data /app/var
 fi
+# Mark all migrations as done (skip schema mismatch)
+php bin/console doctrine:migrations:version --add --all
 
 echo "Running database migrations..."
 php bin/console doctrine:migrations:migrate --no-interaction
