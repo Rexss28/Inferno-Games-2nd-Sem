@@ -19,6 +19,10 @@ if [ "$APP_ENV" = "prod" ]; then
 
     echo "Warming up optimized production cache..."
     php bin/console cache:warmup --env=prod --no-debug
+
+    # --- ADD THIS LINE HERE ---
+    # Fix cache permissions created by root during the warmup above
+    chown -R www-data:www-data /app/var
 fi
 
 echo "Starting Nginx..."
