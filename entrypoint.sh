@@ -3,6 +3,12 @@ set -e
 
 echo "=== Starting Container ==="
 
+# Create and set permissions for image upload directory
+echo "Creating games image directory..."
+mkdir -p /app/public/images/games
+chmod -R 775 /app/public/images/games
+chown -R www-data:www-data /app/public/images/games
+
 # Start PHP-FPM in the background
 echo "Starting PHP-FPM..."
 php-fpm -D
