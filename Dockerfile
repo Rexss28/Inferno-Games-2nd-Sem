@@ -2,12 +2,14 @@ FROM php:8.4-fpm
 
 WORKDIR /app
 
-# Install dependencies
+# Install dependencies (Including nodejs and npm)
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
     curl \
     nginx \
+    nodejs \
+    npm \
     && docker-php-ext-install pdo pdo_mysql \
     && rm -rf /var/lib/apt/lists/*
 
@@ -27,12 +29,17 @@ RUN echo "APP_ENV=${APP_ENV:-prod}" > .env && \
 # Install Composer dependencies with --no-scripts to prevent runtime database checks
 RUN composer install --no-interaction --optimize-autoloader --no-dev --no-scripts
 
+# --- NEW: COMPILE WEBPACK ENCORE FRONTEND ASSETS ---
+RUN npm install
+RUN npm run build
+# --------------------------------------------------
+
 # 1. Force creation of missing directories so the permissions command won't crash
 RUN mkdir -p /app/var /app/public/uploads
 
-# 2. Set permissions safely now that the directories definitely exist
-RUN chown -R www-data:www-data /app/var /app/public/uploads && \
-    chmod -R 775 /app/var /app/public/uploads
+# 2. Set permissions safely now that the directories and assets definitely exist
+RUN chown -R www-data:www-data /app/var /app/public/uploads /app/public/build && \
+    chmod -R 775 /app/var /app/public/uploads /app/public/build
 
 # Configure Nginx
 COPY nginx-main.conf /etc/nginx/nginx.conf
