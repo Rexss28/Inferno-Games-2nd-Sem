@@ -19,14 +19,13 @@ ENV COMPOSER_ALLOW_SUPERUSER=1
 # Copy application files
 COPY . .
 
-# Install Composer dependencies
-RUN composer install --no-interaction --optimize-autoloader --no-dev
-
-
-# Create .env file from environment variables
+# 1. Create .env file from environment variables BEFORE running composer
 RUN echo "APP_ENV=${APP_ENV:-prod}" > .env && \
     echo "APP_DEBUG=0" >> .env && \
     echo "APP_SECRET=${APP_SECRET:-ChangeMe}" >> .env
+
+# 2. Install Composer dependencies with --no-scripts to prevent runtime database checks
+RUN composer install --no-interaction --optimize-autoloader --no-dev --no-scripts
 
 # Set permissions
 RUN chown -R www-data:www-data /app/var /app/public/uploads && \

@@ -18,14 +18,13 @@ fi
 
 echo "PHP-FPM is running"
 
-# Run migrations if in production
+# Clear and optimize the Symfony cache at runtime
 if [ "$APP_ENV" = "prod" ]; then
-    echo "Running migrations..."
-    php bin/console doctrine:migrations:migrate --no-interaction || true
-    echo "Clearing cache..."
+    echo "Clearing production cache..."
     php bin/console cache:clear --env=prod --no-debug
-    echo "Warming cache..."
-    php bin/console cache:warmup --env=prod
+
+    echo "Warming up optimized production cache..."
+    php bin/console cache:warmup --env=prod --no-debug
 fi
 
 echo "Starting Nginx..."
