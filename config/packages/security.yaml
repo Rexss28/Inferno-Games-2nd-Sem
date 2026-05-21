@@ -36,8 +36,8 @@ security:
                 # username_path: email
                 username_path: username
                 password_path: password
-                success_handler: App\Security\JWTAuthenticationSuccessHandler
-                failure_handler: lexik_jwt_authentication.handler.authentication_failure
+                # success_handler: App\Security\JWTAuthenticationSuccessHandler
+                # failure_handler: lexik_jwt_authentication.handler.authentication_failure
         
         api:
             pattern: ^/api
