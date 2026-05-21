@@ -30,21 +30,19 @@ security:
         
         api_login:
             pattern: ^/api/login
-            # stateless: true
-            stateless: false
+            stateless: true
             json_login:
                 check_path: /api/login
                 # username_path: email
                 username_path: username
                 password_path: password
-                # success_handler: App\Security\JWTAuthenticationSuccessHandler
-                # failure_handler: lexik_jwt_authentication.handler.authentication_failure
+                success_handler: App\Security\JWTAuthenticationSuccessHandler
+                failure_handler: lexik_jwt_authentication.handler.authentication_failure
         
         api:
             pattern: ^/api
-            stateless: false
-            # stateless: true
-            # jwt: ~
+            stateless: true
+            jwt: ~
         
         main:
             lazy: true
