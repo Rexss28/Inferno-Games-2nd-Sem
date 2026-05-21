@@ -21,6 +21,8 @@ ENV COMPOSER_ALLOW_SUPERUSER=1
 # Copy application files
 COPY . .
 
+COPY config/jwt/ /app/config/jwt/
+
 # Create .env file from environment variables BEFORE running composer
 RUN echo "APP_ENV=${APP_ENV:-prod}" > .env && \
     echo "APP_DEBUG=0" >> .env && \
