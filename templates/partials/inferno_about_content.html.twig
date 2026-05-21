@@ -1,0 +1,104 @@
+<main class="ig-about-page" id="ig-main">
+    <section class="ig-about-hero" aria-labelledby="about-hero-heading">
+        <div class="ig-about-hero__bg" style="background-image: url('https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&amp;fit=crop&amp;w=1920&amp;q=80');"></div>
+        <div class="ig-about-hero__inner">
+            <p class="ig-about-hero__eyebrow">About Inferno Games</p>
+            <h1 id="about-hero-heading" class="ig-about-hero__title">We fuel the nights you talk about tomorrow</h1>
+            <p class="ig-about-hero__lead">Inferno Games is a Steam-style digital store and client experience — built so discovering games, grabbing deals, and playing with your crew feels effortless.</p>
+        </div>
+    </section>
+
+    <section class="ig-section ig-about-mission" aria-labelledby="mission-heading">
+        <div class="ig-about-mission__card">
+            <h2 id="mission-heading" class="ig-about-mission__title">Our mission</h2>
+            <p class="ig-about-mission__text">Put players first: fair discovery, frictionless installs, and a library that respects your time and your wallet. If it does not make gaming easier or more fun, it does not ship.</p>
+        </div>
+    </section>
+
+    <section class="ig-section ig-about-split" aria-labelledby="story-heading">
+        <div class="ig-about-split__text">
+            <h2 id="story-heading" class="ig-section__title">Our story</h2>
+            <p class="ig-about-split__p">Inferno started as a simple idea — <strong>one place</strong> for browsing titles, watching for sales, and launching everything without juggling five launchers. We obsess over the moment between “I heard about this game” and “I am already in matchmaking.”</p>
+            <p class="ig-about-split__p">Today, Inferno Games is a <strong>student-built Symfony application</strong>: a real storefront workflow paired with solid engineering practices. The same habits that power this demo — clear data models, hosted infrastructure, and careful CRUD flows — scale to production systems.</p>
+        </div>
+        <div class="ig-about-split__visual" role="img" aria-label="Gaming and development atmosphere" style="background-image: url('https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&amp;fit=crop&amp;w=900&amp;q=80');"></div>
+    </section>
+
+    <section class="ig-section ig-team" aria-labelledby="team-heading">
+        <div class="ig-section__intro ig-team__intro">
+            <h2 id="team-heading" class="ig-section__title">Meet the Team</h2>
+            <p class="ig-section__lead">Inferno Games is a solo effort — one builder behind the storefront, the design, the database, and the late-night deploys. Every role below is the same person, because that is how the work actually got done.</p>
+        </div>
+
+        <div class="ig-team__spotlight">
+            <div class="ig-team__avatar" aria-hidden="true">RC</div>
+            <div class="ig-team__spotlight-body">
+                <p class="ig-team__spotlight-label">The whole team</p>
+                <p class="ig-team__spotlight-name">{{ team_member_name }}</p>
+                <p class="ig-team__spotlight-meta">Developer · Designer · Writer · Ops — all hats, one name.</p>
+            </div>
+        </div>
+
+        <ul class="ig-team__grid">
+            {% for position in team_positions %}
+                <li class="ig-team-card">
+                    <p class="ig-team-card__position">{{ position }}</p>
+                    <p class="ig-team-card__name">{{ team_member_name }}</p>
+                </li>
+            {% endfor %}
+        </ul>
+    </section>
+
+    <section class="ig-section" aria-labelledby="values-heading">
+        <div class="ig-section__intro" style="max-width: 40rem; margin-bottom: 32px;">
+            <h2 id="values-heading" class="ig-section__title">What we stand for</h2>
+            <p class="ig-section__lead">These principles guide every screen we design — from the storefront to admin workflows.</p>
+        </div>
+        <div class="ig-values-grid">
+            <div class="ig-values-card">
+                <span class="ig-values-card__icon" aria-hidden="true">🎯</span>
+                <h3 class="ig-values-card__title">Clarity over clutter</h3>
+                <p class="ig-values-card__text">You should find what you want in seconds — genres, deals, and your library, without noise.</p>
+            </div>
+            <div class="ig-values-card">
+                <span class="ig-values-card__icon" aria-hidden="true">🤝</span>
+                <h3 class="ig-values-card__title">Play together</h3>
+                <p class="ig-values-card__text">Multiplayer and co-op are not an afterthought. Friends lists, invites, and voice-ready flows matter.</p>
+            </div>
+            <div class="ig-values-card">
+                <span class="ig-values-card__icon" aria-hidden="true">🔒</span>
+                <h3 class="ig-values-card__title">Trust the purchase</h3>
+                <p class="ig-values-card__text">Transparent pricing, secure checkout patterns, and support paths when something goes wrong.</p>
+            </div>
+            <div class="ig-values-card">
+                <span class="ig-values-card__icon" aria-hidden="true">⚙️</span>
+                <h3 class="ig-values-card__title">Engineering that scales</h3>
+                <p class="ig-values-card__text">Symfony, API Platform-friendly structure, and database-backed features you can demonstrate end to end.</p>
+            </div>
+        </div>
+    </section>
+
+    {# <section class="ig-section" aria-labelledby="platform-heading">
+        <div class="ig-platform-card" id="platform-coursework">
+            <h2 id="platform-heading" class="ig-platform-card__title">Platform Technology midterm alignment</h2>
+            <p class="ig-platform-card__lead">Per the <strong>Midterm Project</strong> brief, deliverables include deployment on a <strong>Linux VM</strong>, a custom <strong>database entity</strong> (table named per course rules), working <strong>CRUD</strong> for that entity, use of the <strong>provided hosted database</strong> (not localhost-only), and a <strong>video</strong> that shows the app running, CRUD in action, and proof rows exist in the hosted DB. Inferno Games is organized so those checkpoints sit alongside a realistic game-store experience.</p>
+            <ul class="ig-platform-card__list">
+                <li>Symfony web application with dedicated routes for landing, about, and contact experiences</li>
+                <li>Entity layer designed for create, read, update, and delete against hosted MySQL (not localhost-only)</li>
+                <li>Deployment path aligned with Linux VM hosting and environment configuration</li>
+            </ul>
+        </div>
+    </section> #}
+
+    <section class="ig-about-closing ig-section" aria-labelledby="closing-heading">
+        <h2 id="closing-heading" class="ig-visually-hidden">Get started</h2>
+        <div class="ig-about-closing__inner">
+            <p class="ig-about-closing__tagline">Ready to browse or need help?</p>
+            <div class="ig-about-closing__actions">
+                {# <a class="ig-btn-hero ig-btn-hero--primary" href="{{ path('app_product_index') }}">Shop games</a> #}
+                <a class="ig-btn-hero ig-btn-hero--ghost" href="{{ path('app_contact_page') }}">Contact support</a>
+                <a class="ig-btn-hero ig-btn-hero--ghost" href="{{ path('app_landing_page') }}">Back to home</a>
+            </div>
+        </div>
+    </section>
+</main>

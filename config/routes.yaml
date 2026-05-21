@@ -16,3 +16,33 @@ api_login_check:
 api_logout:
     path: /api/logout
     methods: ['POST']
+
+api_register:
+    path: /api/register
+    controller: App\Controller\ApiRegistrationController::register
+    methods: ['POST']
+
+api_verify_email:
+    path: /api/verify-email
+    controller: App\Controller\ApiEmailVerificationController::verifyEmail
+    methods: ['POST']
+
+api_resend_verification:
+    path: /api/resend-verification
+    controller: App\Controller\ApiEmailVerificationController::resendVerification
+    methods: ['POST']
+
+api_verification_status:
+    path: /api/verification-status
+    controller: App\Controller\ApiEmailVerificationController::verificationStatus
+    methods: ['GET']
+
+app_google_auth:
+    path: /api/auth/google
+    controller: App\Controller\GoogleController::connect
+    methods: ['GET']
+
+app_google_auth_callback:
+    path: /api/auth/google/callback
+    controller: App\Controller\GoogleController::callback
+    methods: ['GET']

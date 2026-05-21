@@ -9,6 +9,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class RegistrationFormType extends AbstractType
 {
@@ -16,6 +18,13 @@ class RegistrationFormType extends AbstractType
     {
         $builder
             ->add('username')
+            ->add('email', EmailType::class, [
+                    'attr' => ['autocomplete' => 'email'],
+                    'constraints' => [
+                        new Assert\NotBlank(['message' => 'Please enter your email']),
+                        new Assert\Email(['message' => 'Please enter a valid email address']),
+                    ],
+                ])
             ->add('plainPassword', PasswordType::class, [
                 // instead of being set onto the object directly,
                 // this is read and encoded in the controller

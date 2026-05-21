@@ -47,6 +47,10 @@ class Order
     #[ORM\OneToMany(targetEntity: LicenseKey::class, mappedBy: 'orders')]
     private Collection $licenseKeys;
 
+    #[ORM\ManyToOne(inversedBy: 'orders')]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?User $customer = null;
+
     public function __construct()
     {
         $this->licenseKeys = new ArrayCollection();
@@ -143,6 +147,18 @@ class Order
                 $licenseKey->setOrder(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCustomer(): ?User
+    {
+        return $this->customer;
+    }
+
+    public function setCustomer(?User $customer): static
+    {
+        $this->customer = $customer;
 
         return $this;
     }

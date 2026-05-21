@@ -1,0 +1,29 @@
+{# Optional: ig_nav — 'games' | 'store' | 'about' | 'support' for active state #}
+<header class="ig-header">
+    <a href="{{ path('app_landing_page') }}" class="ig-header__brand">
+        <span class="ig-header__logo" aria-hidden="true">🔥</span>
+        <span>Inferno Games</span>
+    </a>
+
+    <nav class="ig-nav" aria-label="Primary">
+        {# <a class="ig-nav__link{% if ig_nav|default('') == 'games' %} ig-nav__link--active{% endif %}" href="{{ path('app_product_index') }}">Games <span class="ig-nav__chev" aria-hidden="true"></span></a>
+        <a class="ig-nav__link{% if ig_nav|default('') == 'store' %} ig-nav__link--active{% endif %}" href="{{ path('app_product_index') }}">Store <span class="ig-nav__chev" aria-hidden="true"></span></a> #}
+        <a class="ig-nav__link{% if ig_nav|default('') == 'about' %} ig-nav__link--active{% endif %}" href="{{ path('app_about_page') }}">About <span class="ig-nav__chev" aria-hidden="true"></span></a>
+        <a class="ig-nav__link{% if ig_nav|default('') == 'support' %} ig-nav__link--active{% endif %}" href="{{ path('app_contact_page') }}">Support <span class="ig-nav__chev" aria-hidden="true"></span></a>
+    </nav>
+
+    <div class="ig-header__actions">
+        <a href="{{ path('app_register') }}" class="ig-btn-cta">Join free</a>
+        {# <a href="{{ path('app_product_index') }}" class="ig-icon-btn" aria-label="Search store">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <circle cx="11" cy="11" r="7"/>
+                <path d="M20 20l-4-4"/>
+            </svg>
+        </a> #}
+        <a href="{{ path('app_login') }}" class="ig-icon-btn" aria-label="Account">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M12 12a4 4 0 100-8 4 4 0 000 8zm-7 9a7 7 0 1114 0H5z"/>
+            </svg>
+        </a>
+    </div>
+</header>

@@ -1,0 +1,225 @@
+<a class="ig-skip" href="#ig-main">Skip to content</a>
+{% include 'partials/inferno_store_header.html.twig' %}
+
+<main id="ig-main">
+    <section class="ig-hero" aria-label="Featured titles">
+        <div class="ig-hero__slide ig-hero__slide--active">
+            <div class="ig-hero__bg" style="background-image: url('https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&amp;fit=crop&amp;w=1920&amp;q=80');"></div>
+            <div class="ig-hero__content">
+                <p class="ig-hero__kicker">Tonight’s most-played on Inferno</p>
+                <h1 class="ig-hero__title">Neon Abyss II</h1>
+                <p class="ig-hero__tag">New season — out now</p>
+                <p class="ig-hero__hook">Roguelike chaos, endless builds, and one more run you swear is the last. Your squad is already online.</p>
+                <div class="ig-hero__actions">
+                    <a class="ig-btn-hero ig-btn-hero--primary" href="{{ path('app_product_index') }}">Shop &amp; play tonight</a>
+                    <a class="ig-btn-hero ig-btn-hero--ghost" href="{{ path('app_register') }}">Create a free account</a>
+                </div>
+            </div>
+        </div>
+        <div class="ig-hero__slide">
+            <div class="ig-hero__bg" style="background-image: url('https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&amp;fit=crop&amp;w=1920&amp;q=80');"></div>
+            <div class="ig-hero__content">
+                <p class="ig-hero__kicker">Players are logging in for this</p>
+                <h1 class="ig-hero__title">Solar Frontier</h1>
+                <p class="ig-hero__tag">Top seller this week</p>
+                <p class="ig-hero__hook">Epic space battles, a living universe, and updates that keep the meta fresh. Buy once, own it — jump in before the next event.</p>
+                <div class="ig-hero__actions">
+                    <a class="ig-btn-hero ig-btn-hero--primary" href="{{ path('app_product_index') }}">See why it’s #1</a>
+                    <a class="ig-btn-hero ig-btn-hero--ghost" href="#ig-client">Get the Inferno client</a>
+                </div>
+            </div>
+        </div>
+        <div class="ig-hero__slide">
+            <div class="ig-hero__bg" style="background-image: url('https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?auto=format&amp;fit=crop&amp;w=1920&amp;q=80');"></div>
+            <div class="ig-hero__content">
+                <p class="ig-hero__kicker">Limited time — don’t queue alone</p>
+                <h1 class="ig-hero__title">Ashfall Protocol</h1>
+                <p class="ig-hero__tag">Co-op &amp; ranked — free weekend</p>
+                <p class="ig-hero__hook">Free weekend means your friends have zero excuse. Stack a squad, climb ranked, and carry the clip-worthy moment.</p>
+                <div class="ig-hero__actions">
+                    <a class="ig-btn-hero ig-btn-hero--primary" href="{{ path('app_product_index') }}">Grab it on Inferno</a>
+                    <a class="ig-btn-hero ig-btn-hero--ghost" href="{{ path('app_register') }}">Invite your crew — free</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="ig-hero__dots" role="tablist" aria-label="Hero slides">
+            <button type="button" class="ig-hero__dot ig-hero__dot--active" role="tab" aria-selected="true" aria-label="Slide 1"></button>
+            <button type="button" class="ig-hero__dot" role="tab" aria-selected="false" aria-label="Slide 2"></button>
+            <button type="button" class="ig-hero__dot" role="tab" aria-selected="false" aria-label="Slide 3"></button>
+        </div>
+        <p class="ig-hero__watermark">Inferno Games</p>
+    </section>
+
+    <section class="ig-proof" aria-label="Community highlights">
+        <div class="ig-proof__inner">
+            <div class="ig-proof__stat">
+                <span class="ig-proof__num">2.4M+</span>
+                <span class="ig-proof__label">games launched from Inferno last month</span>
+            </div>
+            <div class="ig-proof__stat">
+                <span class="ig-proof__num">18k</span>
+                <span class="ig-proof__label">new players joined this week</span>
+            </div>
+            <div class="ig-proof__stat">
+                <span class="ig-proof__num">4.9★</span>
+                <span class="ig-proof__label">average client rating from the community</span>
+            </div>
+            <div class="ig-proof__stat">
+                <span class="ig-proof__num">24/7</span>
+                <span class="ig-proof__label">downloads &amp; library access</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="ig-pitch" aria-labelledby="pitch-heading">
+        <h2 id="pitch-heading" class="ig-visually-hidden">Why play through Inferno Games</h2>
+        <div class="ig-pitch__grid">
+            <div class="ig-pitch__card">
+                <span class="ig-pitch__icon" aria-hidden="true">⚡</span>
+                <h3 class="ig-pitch__title">Play in minutes</h3>
+                <p class="ig-pitch__text">Buy, download, and patch from one client. Less time in menus — more time carrying your team.</p>
+            </div>
+            <div class="ig-pitch__card">
+                <span class="ig-pitch__icon" aria-hidden="true">💰</span>
+                <h3 class="ig-pitch__title">Deals worth queueing for</h3>
+                <p class="ig-pitch__text">Seasonal sales, bundles, and wishlist alerts so you never pay full price for your next obsession.</p>
+            </div>
+            <div class="ig-pitch__card">
+                <span class="ig-pitch__icon" aria-hidden="true">🎮</span>
+                <h3 class="ig-pitch__title">Built for friends</h3>
+                <p class="ig-pitch__text">Share libraries, hop into multiplayer, and see what your circle is playing — FOMO optional, fun required.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="ig-about-cta" aria-labelledby="about-cta-heading">
+        <div class="ig-about-cta__inner">
+            <h2 id="about-cta-heading" class="ig-about-cta__title">Why we built Inferno</h2>
+            <p class="ig-about-cta__text">Players deserve a store that feels fast, fair, and built for late nights with friends — read our story and how we work.</p>
+            <a class="ig-about-cta__btn" href="{{ path('app_about_page') }}">About Inferno Games</a>
+        </div>
+    </section>
+
+    <section class="ig-section" aria-labelledby="featured-heading">
+        <div class="ig-section__head">
+            <div class="ig-section__intro">
+                <h2 id="featured-heading" class="ig-section__title">Your next all-nighter starts here</h2>
+                <p class="ig-section__lead">Thousands of titles, one cart, instant access. Pick a platform — we will show you what the community is buying right now.</p>
+            </div>
+            <div class="ig-filters" role="group" aria-label="Filter by platform">
+                <button type="button" class="ig-filter ig-filter--active" data-platform="all">All</button>
+                <button type="button" class="ig-filter" data-platform="pc">PC</button>
+                <button type="button" class="ig-filter" data-platform="console">Console</button>
+                <button type="button" class="ig-filter" data-platform="mobile">Mobile</button>
+            </div>
+        </div>
+
+        <div class="ig-game-grid">
+            <a href="{{ path('app_product_index') }}" class="ig-game-card" data-platform="pc">
+                <img src="https://images.unsplash.com/photo-1552820728-8b83bb6b773f?auto=format&amp;fit=crop&amp;w=600&amp;q=80" alt="Stylized action game artwork" width="600" height="900" loading="lazy">
+                <span class="ig-game-card__footer">
+                    <span class="ig-game-card__label">Rift Runners</span>
+                    <span class="ig-game-card__teaser">Trending with speedrunners</span>
+                </span>
+            </a>
+            <a href="{{ path('app_product_index') }}" class="ig-game-card" data-platform="pc">
+                <img src="https://images.unsplash.com/photo-1538481199705-c710c4e965fc?auto=format&amp;fit=crop&amp;w=600&amp;q=80" alt="Dark fantasy landscape" width="600" height="900" loading="lazy">
+                <span class="ig-game-card__footer">
+                    <span class="ig-game-card__label">Cinder Crown</span>
+                    <span class="ig-game-card__teaser">“Just one more boss” energy</span>
+                </span>
+            </a>
+            <a href="{{ path('app_product_index') }}" class="ig-game-card" data-platform="console">
+                <img src="https://images.unsplash.com/photo-1612287230202-1ff1d85d1bdf?auto=format&amp;fit=crop&amp;w=600&amp;q=80" alt="Futuristic racing scene" width="600" height="900" loading="lazy">
+                <span class="ig-game-card__footer">
+                    <span class="ig-game-card__label">Velocity Drift X</span>
+                    <span class="ig-game-card__teaser">Couch co-op approved</span>
+                </span>
+            </a>
+            <a href="{{ path('app_product_index') }}" class="ig-game-card" data-platform="mobile">
+                <img src="https://images.unsplash.com/photo-1614294146560-9e814cfe0c93?auto=format&amp;fit=crop&amp;w=600&amp;q=80" alt="Colorful abstract game art" width="600" height="900" loading="lazy">
+                <span class="ig-game-card__footer">
+                    <span class="ig-game-card__label">Pocket Tactics</span>
+                    <span class="ig-game-card__teaser">Perfect for commute grinders</span>
+                </span>
+            </a>
+        </div>
+
+        <div class="ig-center-cta">
+            <a class="ig-btn-outline" href="{{ path('app_product_index') }}">Open the store — your backlog can wait</a>
+        </div>
+    </section>
+
+    <section class="ig-section" aria-labelledby="news-heading">
+        <div class="ig-section__intro" style="margin-bottom: 28px;">
+            <h2 id="news-heading" class="ig-section__title">Deals, drops &amp; reasons to stay up late</h2>
+            <p class="ig-section__lead">Real savings, real patches, real reasons to text your friends “download this tonight.”</p>
+        </div>
+        <div class="ig-news">
+            <article class="ig-news-card ig-news-card--hero">
+                <div class="ig-news-card__img" style="background-image: url('https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&amp;fit=crop&amp;w=1200&amp;q=80');" role="img" aria-label="Studio announcement artwork"></div>
+                <div class="ig-news-card__body">
+                    <h3 class="ig-news-card__headline">Spring sale: up to 70% off — stack your wishlist before your friends do</h3>
+                    <p class="ig-news-card__meta">April 2, 2026 · Store</p>
+                </div>
+            </article>
+            <div class="ig-news-stack">
+                <article class="ig-news-card ig-news-card--compact">
+                    <div class="ig-news-card__img" style="background-image: url('https://images.unsplash.com/photo-1511882150382-421056c89033?auto=format&amp;fit=crop&amp;w=800&amp;q=80');" role="img" aria-label="Esports arena"></div>
+                    <div class="ig-news-card__body">
+                        <h3 class="ig-news-card__headline">New ranked season: climb fresh — prove the grind was worth it</h3>
+                        <p class="ig-news-card__meta">March 28, 2026 · Community</p>
+                    </div>
+                </article>
+                <article class="ig-news-card ig-news-card--compact">
+                    <div class="ig-news-card__img" style="background-image: url('https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?auto=format&amp;fit=crop&amp;w=800&amp;q=80');" role="img" aria-label="Controller on desk"></div>
+                    <div class="ig-news-card__body">
+                        <h3 class="ig-news-card__headline">Better controller support on PC — play the way you actually want to</h3>
+                        <p class="ig-news-card__meta">March 22, 2026 · Client</p>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <section id="ig-client" class="ig-client" aria-labelledby="client-heading">
+        <div>
+            <div class="ig-client__logo"><span aria-hidden="true">🔥</span> Inferno Client</div>
+            <h2 id="client-heading">Stop juggling launchers. Start playing.</h2>
+            <p>One download puts your library, friends, and updates in the same place — so the only thing between you and “one more round” is how fast you can click Play.</p>
+            <ul class="ig-client__list">
+                <li>Auto-updates so you never miss patch night</li>
+                <li>Cloud saves — pick up on another rig like nothing happened</li>
+                <li>Voice-ready for squads (no extra apps required)</li>
+            </ul>
+            <div class="ig-client__cta-row">
+                <a href="{{ path('app_register') }}" class="ig-btn-cta">Download the client — it’s free</a>
+                <span class="ig-client__note">No subscription. Just games.</span>
+            </div>
+        </div>
+        <div class="ig-client__mock" aria-hidden="true">
+            <div class="ig-client__mock-bar">
+                <span class="ig-client__mock-dot"></span>
+                <span class="ig-client__mock-dot"></span>
+                <span class="ig-client__mock-dot"></span>
+            </div>
+            <div class="ig-client__mock-body">
+                <div class="ig-client__mock-sidebar">
+                    <span class="ig-client__mock-line"></span>
+                    <span class="ig-client__mock-line ig-client__mock-line--short"></span>
+                    <span class="ig-client__mock-line"></span>
+                    <span class="ig-client__mock-line ig-client__mock-line--short"></span>
+                    <span class="ig-client__mock-line"></span>
+                </div>
+                <div class="ig-client__mock-main">
+                    <div class="ig-client__mock-hero"></div>
+                    <span class="ig-client__mock-line"></span>
+                    <span class="ig-client__mock-line ig-client__mock-line--short" style="margin-top:10px;"></span>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+{% include 'partials/inferno_store_footer.html.twig' %}

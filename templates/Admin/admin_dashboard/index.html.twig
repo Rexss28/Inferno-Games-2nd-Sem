@@ -1,6 +1,6 @@
 {% extends 'reusable/final_layout.html.twig' %}
 
-{% block title %}Admin Dashboard{% endblock %}
+{% block title %}Admin Dashboard | Inferno Games{% endblock %}
 
 {% block stylesheets %}
   {{ parent() }}
@@ -13,10 +13,11 @@
     <div class="dashboard-header">
         <div>
             <h1 class="dashboard-title">Admin Dashboard</h1>
+            <p class="dashboard-subtitle">Welcome back, {{ app.user.name ?? app.user.email }}</p>
         </div>
         <div class="header-badge">
             <span class="pulse-dot"></span>
-            Live
+            Live Dashboard
         </div>
     </div>
 
@@ -28,7 +29,7 @@
                 <p class="kpi-label">Total Games</p>
                 <p class="kpi-value">{{ totalGames }}</p>
                 <div class="kpi-trend">
-                    <span class="trend-up">↑ Active</span>
+                    <span class="trend-up">↑ Active Games</span>
                 </div>
             </div>
         </div>
@@ -50,7 +51,7 @@
                 <p class="kpi-label">Total Staff</p>
                 <p class="kpi-value">{{ totalStaff }}</p>
                 <div class="kpi-trend">
-                    <span class="trend-neutral">→ Team</span>
+                    <span class="trend-neutral">→ Team Members</span>
                 </div>
             </div>
         </div>
@@ -70,8 +71,10 @@
     <!-- QUICK ACTIONS -->
     <div class="action-section">
         <div class="section-header">
-            <h2 class="section-title">⚡ Quick Actions</h2>
-            <p class="section-subtitle">Streamline your workflow</p>
+            <div>
+                <h2 class="section-title">Quick Actions</h2>
+                <p class="section-subtitle">Streamline your workflow</p>
+            </div>
         </div>
         <div class="action-grid">
             <a href="{{ path('app_game_management_new') }}" class="action-btn action-indigo">
@@ -79,7 +82,7 @@
                 <span class="action-text">Add New Game</span>
             </a>
             <a href="{{ path('app_stock_new') }}" class="action-btn action-blue">
-                <span class="action-icon">🧱</span>
+                <span class="action-icon">📦</span>
                 <span class="action-text">Add Stock</span>
             </a>
             <a href="{{ path('app_license_key_new') }}" class="action-btn action-purple">
@@ -93,12 +96,18 @@
         </div>
     </div>
 
-    <!-- RECENT ACTIVITY LOGS (NOW IN WIDE SECTION) -->
-    <div class="alert-section">  <!-- Using alert-section for full width -->
+    <!-- RECENT ACTIVITY LOGS (FULL WIDTH) -->
+    <div class="alert-section">
         <div class="section-header">
-            <h2 class="section-title section-title-blue">📋 Recent Activity Logs</h2>
-            <p class="section-subtitle">Latest system activities</p>
+            <div>
+                <h2 class="section-title section-title-blue">📋 Recent Activity Logs</h2>
+                <p class="section-subtitle">Latest system activities</p>
+            </div>
+            <a href="{{ path('activity_log_index') }}" class="view-all-link">
+                View All Logs →
+            </a>
         </div>
+        
         {% if recentActivityLogs is not empty %}
             <div class="table-container">
                 <table class="data-table">
@@ -137,7 +146,7 @@
                                     </span>
                                 </td>
                                 <td class="log-target">
-                                    {{ log.targetData }}
+                                    {{ log.targetData|length > 50 ? log.targetData|slice(0, 50) ~ '...' : log.targetData }}
                                 </td>
                                 <td>
                                     <span class="log-time">
@@ -149,6 +158,11 @@
                     </tbody>
                 </table>
             </div>
+            <div class="text-center mt-3">
+                <a href="{{ path('activity_log_index') }}" class="btn btn-outline-primary">
+                    View All Activity Logs →
+                </a>
+            </div>
         {% else %}
             <div class="empty-state">
                 <div class="empty-icon">📊</div>
@@ -156,21 +170,22 @@
                 <p class="empty-subtext">System activities will appear here</p>
             </div>
         {% endif %}
-        <div class="text-center mt-3">
-            <a href="{{ path('activity_log_index') }}" class="btn btn-outline-primary">
-                View All Activity Logs →
-            </a>
-        </div>
     </div>
 
-    <!-- ACTIVITY GRID (NOW WITH LOW STOCK AND RECENT GAMES) -->
+    <!-- TWO COLUMN GRID FOR LOW STOCK & RECENT GAMES -->
     <div class="activity-grid">
-        <!-- Low Stock Alert (moved to smaller card) -->
+        <!-- Low Stock Alert Card -->
         <div class="activity-card">
             <div class="section-header">
-                <h2 class="section-title section-title-alert">⚠️ Low Stock Alerts</h2>
-                <p class="section-subtitle">Items requiring attention</p>
+                <div>
+                    <h2 class="section-title section-title-alert">⚠️ Low Stock Alerts</h2>
+                    <p class="section-subtitle">Items requiring attention</p>
+                </div>
+                <a href="{{ path('app_stock_index') }}" class="view-all-link">
+                    Manage Stock →
+                </a>
             </div>
+            
             {% if lowStockGames is not empty %}
                 <div class="table-container">
                     <table class="data-table">
@@ -201,7 +216,7 @@
                     </table>
                 </div>
             {% else %}
-                <div class="empty-state empty-state-compact">
+                <div class="empty-state-compact">
                     <div class="empty-icon">✅</div>
                     <p class="empty-text">All stocks are sufficient</p>
                     <p class="empty-subtext">No action required</p>
@@ -209,12 +224,18 @@
             {% endif %}
         </div>
 
-        <!-- Recent Games -->
+        <!-- Recent Games Card -->
         <div class="activity-card">
             <div class="section-header">
-                <h2 class="section-title section-title-indigo">🎮 Recently Added Games</h2>
-                <a href="{{ path('app_game_management_new') }}" class="view-all-link">Add new →</a>
+                <div>
+                    <h2 class="section-title section-title-indigo">🎮 Recently Added Games</h2>
+                    <p class="section-subtitle">Latest games in catalog</p>
+                </div>
+                <a href="{{ path('app_game_management_index') }}" class="view-all-link">
+                    View All Games →
+                </a>
             </div>
+            
             {% if recentGames is not empty %}
                 <ul class="game-list">
                     {% for game in recentGames %}
@@ -225,17 +246,17 @@
                                         <img 
                                             src="{{ asset('images/games/' ~ game.image) }}" 
                                             alt="{{ game.title }}"
+                                            loading="lazy"
                                         >
                                     {% else %}
                                         <div class="image-placeholder">
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20">
                                                 <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                     d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                                             </svg>
                                         </div>
                                     {% endif %}
                                 </div>
-
                                 <div class="game-info">
                                     <span class="game-title-text">{{ game.title }}</span>
                                     <span class="game-id">ID: {{ game.id }}</span>
@@ -246,11 +267,24 @@
                     {% endfor %}
                 </ul>
             {% else %}
-                <div class="empty-state empty-state-compact">
+                <div class="empty-state-compact">
                     <p class="empty-text">No recent games added</p>
+                    <p class="empty-subtext">Click "Add New Game" to get started</p>
                 </div>
             {% endif %}
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+    // Optional: Auto-refresh dashboard data every 30 seconds
+    if (typeof window.autoRefreshEnabled !== 'undefined' && window.autoRefreshEnabled) {
+        setInterval(function() {
+            location.reload();
+        }, 30000);
+    }
+</script>
 {% endblock %}

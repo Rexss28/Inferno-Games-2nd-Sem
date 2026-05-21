@@ -1,0 +1,266 @@
+<?php
+
+namespace App\Controller\Customer;
+
+use App\Entity\Order;
+use App\Entity\GameManagement;
+use App\Entity\User;
+use App\Service\ActivityLogger;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
+
+#[Route('/api/orders')]
+#[IsGranted('ROLE_USER')]
+class CustomerOrderController extends AbstractController
+{
+    #[Route('', name: 'api_orders_create', methods: ['POST'])]
+    public function createOrder(
+        Request $request,
+        SessionInterface $session,
+        EntityManagerInterface $em,
+        ActivityLogger $activityLogger
+    ): JsonResponse {
+        /** @var User $user */
+        $user = $this->getUser();
+        $data = json_decode($request->getContent(), true);
+
+        if (!isset($data['items']) || empty($data['items'])) {
+            return $this->json(['error' => 'Cart is empty'], 400);
+        }
+
+        $createdOrders = [];
+        $alreadyPurchased = [];
+        $totalAmount = 0;
+        $purchasedGames = [];
+
+        foreach ($data['items'] as $item) {
+            $game = $em->getRepository(GameManagement::class)->find($item['gameId']);
+            if (!$game) {
+                return $this->json(['error' => "Game {$item['gameId']} not found"], 404);
+            }
+            
+            // Check if user already purchased this game
+            $existingOrder = $em->getRepository(Order::class)->findOneBy([
+                'customer' => $user,
+                'game' => $game,
+                'status' => 'Completed'
+            ]);
+            
+            if ($existingOrder) {
+                $alreadyPurchased[] = $game->getTitle();
+                continue; // Skip this game
+            }
+            
+            // Create a separate order for EACH game (fix for bulk buying)
+            $order = new Order();
+            $order->setOrderNumber('INF-' . time() . '-' . $user->getId() . '-' . $game->getId());
+            $order->setQuantity(1);
+            $order->setTotalAmount((string) $game->getPrice());
+            $order->setStatus('Completed');
+            $order->setCustomer($user);
+            $order->setGame($game);
+            
+            $em->persist($order);
+            $createdOrders[] = $order;
+            $totalAmount += (float) $game->getPrice();
+            $purchasedGames[] = $game->getTitle();
+        }
+
+        // If user tried to purchase already-owned games only
+        if (!empty($alreadyPurchased) && empty($createdOrders)) {
+            return $this->json([
+                'error' => 'You already own these games: ' . implode(', ', $alreadyPurchased)
+            ], 400);
+        }
+
+        // Flush all orders to database
+        $em->flush();
+        
+        // Clear cart after order
+        $session->set('user_cart_' . $user->getId(), []);
+
+        // Log the checkout/purchase activity
+        $activityLogger->log('CHECKOUT', sprintf(
+            'User purchased: %s | Total: ₱%s | Orders: %d',
+            implode(', ', $purchasedGames),
+            number_format($totalAmount, 2),
+            count($createdOrders)
+        ));
+
+        $response = [
+            'message' => 'Order(s) created successfully',
+            'orders' => array_map(function($order) {
+                return [
+                    'id' => $order->getId(),
+                    'orderNumber' => $order->getOrderNumber(),
+                    'totalAmount' => $order->getTotalAmount(),
+                    'status' => $order->getStatus(),
+                    'gameTitle' => $order->getGame()->getTitle(),
+                ];
+            }, $createdOrders)
+        ];
+        
+        if (!empty($alreadyPurchased)) {
+            $response['warning'] = 'You already own: ' . implode(', ', $alreadyPurchased);
+        }
+        
+        return $this->json($response, 201);
+    }
+
+    #[Route('', name: 'api_orders_list', methods: ['GET'])]
+    public function getOrders(EntityManagerInterface $em): JsonResponse
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+        
+        $orders = $em->getRepository(Order::class)->findBy(
+            ['customer' => $user],
+            ['id' => 'DESC']
+        );
+
+        $orderData = [];
+        foreach ($orders as $order) {
+            $orderData[] = [
+                'id' => $order->getId(),
+                'orderNumber' => $order->getOrderNumber(),
+                'quantity' => $order->getQuantity(),
+                'totalAmount' => $order->getTotalAmount(),
+                'status' => $order->getStatus(),
+                'gameTitle' => $order->getGame()?->getTitle(),
+            ];
+        }
+
+        return $this->json($orderData);
+    }
+
+    #[Route('/{id}', name: 'api_orders_detail', methods: ['GET'])]
+    public function getOrderDetail(int $id, EntityManagerInterface $em): JsonResponse
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+        
+        $order = $em->getRepository(Order::class)->findOneBy([
+            'id' => $id,
+            'customer' => $user
+        ]);
+
+        if (!$order) {
+            return $this->json(['error' => 'Order not found'], 404);
+        }
+
+        // Safely get game data
+        $game = $order->getGame();
+        $gameData = null;
+        if ($game) {
+            $gameData = [
+                'id' => $game->getId(),
+                'title' => $game->getTitle(),
+                'description' => $game->getDescription(),
+                'image' => $game->getImage(),
+            ];
+        }
+
+        // Get license keys
+        $licenseKeys = [];
+        foreach ($order->getLicenseKeys() as $key) {
+            $licenseKeys[] = [
+                'code' => $key->getCode(),
+                'status' => $key->getStatus(),
+            ];
+        }
+
+        return $this->json([
+            'id' => $order->getId(),
+            'orderNumber' => $order->getOrderNumber(),
+            'quantity' => $order->getQuantity(),
+            'totalAmount' => $order->getTotalAmount(),
+            'status' => $order->getStatus(),
+            'game' => $gameData,
+            'licenseKeys' => $licenseKeys,
+        ]);
+    }
+
+    // Check if user already owns a game
+    #[Route('/check-owned/{gameId}', name: 'api_check_game_owned', methods: ['GET'])]
+    #[IsGranted('ROLE_USER')]
+    public function checkGameOwned(int $gameId, EntityManagerInterface $em): JsonResponse
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+        
+        $existingOrder = $em->getRepository(Order::class)->findOneBy([
+            'customer' => $user,
+            'game' => $gameId,
+            'status' => 'Completed'
+        ]);
+        
+        return $this->json([
+            'owned' => $existingOrder !== null
+        ]);
+    }
+
+    // Get user's library (all purchased games) - No date sorting
+    #[Route('/library', name: 'api_user_library', methods: ['GET'])]
+    #[IsGranted('ROLE_USER')]
+    public function getUserLibrary(EntityManagerInterface $em): JsonResponse
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+        
+        // Get all completed orders for this user
+        $orders = $em->getRepository(Order::class)->findBy([
+            'customer' => $user,
+            'status' => 'Completed'
+        ]);
+        
+        // Get unique games from orders
+        $library = [];
+        $gameIds = [];
+        
+        foreach ($orders as $order) {
+            $game = $order->getGame();
+            if ($game && !in_array($game->getId(), $gameIds)) {
+                $gameIds[] = $game->getId();
+                
+                // Get license key for this game (if any)
+                $licenseKey = null;
+                foreach ($order->getLicenseKeys() as $key) {
+                    $licenseKey = $key->getCode();
+                    break; // Take the first license key
+                }
+                
+                $library[] = [
+                    'id' => $game->getId(),
+                    'title' => $game->getTitle(),
+                    'description' => $game->getDescription(),
+                    'image' => $game->getImage(),
+                    'price' => $game->getPrice(),
+                    'orderNumber' => $order->getOrderNumber(),
+                    'licenseKey' => $licenseKey,
+                ];
+            }
+        }
+        
+        return $this->json($library);
+    }
+
+    #[Route('/logout', name: 'api_logout', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function logout(ActivityLogger $activityLogger): JsonResponse
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+        
+        $activityLogger->log('LOGOUT', $user);
+        
+        return $this->json([
+            'success' => true,
+            'message' => 'Successfully logged out'
+        ]);
+    }
+}

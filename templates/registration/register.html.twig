@@ -23,53 +23,113 @@
     {# right side panel #}
     <div class="register-right_panel">
         <div class="register-container" role="main" aria-labelledby="register-heading">
-            <h1 id="register-heading">CREATE ACCOUNT</h1>
-            
-            <div class="form-intro">
-                <p>Join the Inferno Games community</p>
+            <div class="register-header">
+                <h1 id="register-heading">CREATE ACCOUNT</h1>
+                <div class="form-intro">
+                    <p>Join the Inferno Games community</p>
+                </div>
             </div>
 
-            {{ form_start(registrationForm, {'attr': {'class': 'register-form'}}) }}
+            {{ form_start(registrationForm, {'attr': {'class': 'register-form', 'novalidate': 'novalidate'}}) }}
             
                 {% if form_errors(registrationForm) %}
                     <div class="alert alert-danger">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/>
+                            <line x1="12" y1="8" x2="12" y2="12"/>
+                            <line x1="12" y1="16" x2="12.01" y2="16"/>
+                        </svg>
                         {{ form_errors(registrationForm) }}
                     </div>
                 {% endif %}
 
                 <div class="form-group">
-                    {{ form_label(registrationForm.username) }}
-                    {{ form_widget(registrationForm.username, {
-                        'attr': {
-                            'class': 'form-control',
-                            'placeholder': 'Choose a username',
-                            'autocomplete': 'username'
-                        }
-                    }) }}
+                    {{ form_label(registrationForm.username, 'Username', {'label_attr': {'class': 'form-label'}}) }}
+                    <div class="input-wrapper">
+                        <span class="input-icon">👤</span>
+                        {{ form_widget(registrationForm.username, {
+                            'attr': {
+                                'class': 'form-control',
+                                'placeholder': 'Choose a username',
+                                'autocomplete': 'username'
+                            }
+                        }) }}
+                    </div>
                     {% if form_errors(registrationForm.username) %}
-                        <div class="form-error">{{ form_errors(registrationForm.username) }}</div>
+                        <div class="form-error">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"/>
+                                <line x1="12" y1="8" x2="12" y2="12"/>
+                                <line x1="12" y1="16" x2="12.01" y2="16"/>
+                            </svg>
+                            {{ form_errors(registrationForm.username) }}
+                        </div>
                     {% endif %}
                 </div>
 
                 <div class="form-group">
-                    {{ form_label(registrationForm.plainPassword) }}
-                    {{ form_widget(registrationForm.plainPassword, {
-                        'attr': {
-                            'class': 'form-control',
-                            'placeholder': 'Create a strong password',
-                            'autocomplete': 'new-password'
-                        }
-                    }) }}
-                    {% if form_errors(registrationForm.plainPassword) %}
-                        <div class="form-error">{{ form_errors(registrationForm.plainPassword) }}</div>
-                    {% endif %}
-                    <div class="password-hints">
-                        <small>Use at least 6 characters</small>
+                    {{ form_label(registrationForm.email, 'Email', {'label_attr': {'class': 'form-label'}}) }}
+                    <div class="input-wrapper">
+                        <span class="input-icon">📧</span>
+                        {{ form_widget(registrationForm.email, {
+                            'attr': {
+                                'class': 'form-control',
+                                'placeholder': 'your@email.com',
+                                'autocomplete': 'email'
+                            }
+                        }) }}
                     </div>
+                    {% if form_errors(registrationForm.email) %}
+                        <div class="form-error">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"/>
+                                <line x1="12" y1="8" x2="12" y2="12"/>
+                                <line x1="12" y1="16" x2="12.01" y2="16"/>
+                            </svg>
+                            {{ form_errors(registrationForm.email) }}
+                        </div>
+                    {% endif %}
                 </div>
 
-                <button type="submit" class="button btn btn-lg btn-primary register-button">
-                    Create Account
+                <div class="form-group">
+                    {{ form_label(registrationForm.plainPassword, 'Password', {'label_attr': {'class': 'form-label'}}) }}
+                    <div class="input-wrapper">
+                        <span class="input-icon">🔒</span>
+                        {{ form_widget(registrationForm.plainPassword, {
+                            'attr': {
+                                'class': 'form-control',
+                                'placeholder': 'Create a strong password',
+                                'autocomplete': 'new-password'
+                            }
+                        }) }}
+                        <button type="button" class="password-toggle" aria-label="Show/hide password">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                <circle cx="12" cy="12" r="3"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="password-requirements">
+                        <small>✓ Use at least 6 characters</small>
+                    </div>
+                    {% if form_errors(registrationForm.plainPassword) %}
+                        <div class="form-error">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"/>
+                                <line x1="12" y1="8" x2="12" y2="12"/>
+                                <line x1="12" y1="16" x2="12.01" y2="16"/>
+                            </svg>
+                            {{ form_errors(registrationForm.plainPassword) }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <button type="submit" class="register-button">
+                    <span>Create Account</span>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="5" y1="12" x2="19" y2="12"/>
+                        <polyline points="12 5 19 12 12 19"/>
+                    </svg>
                 </button>
 
                 <div class="login-link">
@@ -77,10 +137,37 @@
                 </div>
 
                 <div class="helper">
-                    You will be automatically logged in and redirected to the home page after registration.
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <path d="M12 16v-4M12 8h.01"/>
+                    </svg>
+                    You will be automatically logged in after registration
                 </div>
             {{ form_end(registrationForm) }}
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        // Password visibility toggle
+        document.querySelectorAll('.password-toggle').forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                const input = this.closest('.input-wrapper').querySelector('input');
+                const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+                input.setAttribute('type', type);
+                
+                // Update icon
+                const svg = this.querySelector('svg');
+                if (type === 'text') {
+                    svg.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>';
+                } else {
+                    svg.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+                }
+            });
+        });
+    </script>
 {% endblock %}

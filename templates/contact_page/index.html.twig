@@ -1,0 +1,10 @@
+{% extends 'layout/storefront.html.twig' %}
+
+{% block title %}Contact &amp; Support — Inferno Games{% endblock %}
+
+{% block body %}
+    <a class="ig-skip" href="#ig-main">Skip to content</a>
+    {% include 'partials/inferno_store_header.html.twig' with { ig_nav: 'support' } %}
+    {% include 'partials/inferno_contact_content.html.twig' %}
+    {% include 'partials/inferno_store_footer.html.twig' %}
+{% endblock %}

@@ -2,7 +2,6 @@
 
 {% block title %}Login{% endblock %}
 
-{# direct link to public css (no Encore) #}
 {% block stylesheets %}
   <link rel="stylesheet" href="{{ asset('styles/global/login.css') }}">
 {% endblock %}
@@ -21,39 +20,90 @@
   {# right side panel #}
   <div class="login-right_panel">
     <div class="login-container" role="main" aria-labelledby="login-heading">
-      <h1 id="login-heading">LOGIN</h1>
+      <div class="login-header">
+        <h1 id="login-heading">WELCOME BACK</h1>
+        <div class="login-intro">
+          <p>Sign in to your account</p>
+        </div>
+      </div>
 
-      <form class="login-form" method="post">
-        {% if error %}
-          <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-        {% endif %}
+      {% if error %}
+        <div class="alert alert-danger">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="8" x2="12" y2="12"/>
+            <line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+          {{ error.messageKey|trans(error.messageData, 'security') }}
+        </div>
+      {% endif %}
 
-        {% if app.user %}
-          <div class="mb-3">
-            You are logged in as {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Logout</a>
-          </div>
-        {% endif %}
+      {% if app.session.get('oauth_error') %}
+        <div class="alert alert-danger">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="8" x2="12" y2="12"/>
+            <line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+          {{ app.session.get('oauth_error') }}
+          {% set _ = app.session.remove('oauth_error') %}
+        </div>
+      {% endif %}
 
+      <form class="login-form" method="POST" action="{{ path('app_login') }}">
         <div class="login-row">
-          <label for="inputUsername">Username</label>
-          <input id="inputUsername" name="username" type="text" placeholder="your.username" value="{{ last_username }}" class="form-control" autocomplete="username" required autofocus>
+          <label for="username">Username</label>
+          <div class="input-wrapper">
+            <span class="input-icon">👤</span>
+            <input id="username" name="username" type="text" placeholder="Enter your username" value="{{ last_username }}" required>
+          </div>
         </div>
 
         <div class="login-row">
-          <label for="inputPassword">Password</label>
-          <input id="inputPassword" name="password" type="password" placeholder="••••••••" class="form-control" autocomplete="current-password" required>
+          <label for="password">Password</label>
+          <div class="input-wrapper">
+            <span class="input-icon">🔒</span>
+            <input id="password" name="password" type="password" placeholder="••••••••" required>
+            <button type="button" class="password-toggle" aria-label="Show/hide password">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+            </button>
+          </div>
         </div>
 
         <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
 
-        <button class="button btn btn-lg btn-primary" type="submit">Sign in</button>
+        <button class="button" type="submit">
+          <span>Sign In</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="5" y1="12" x2="19" y2="12"/>
+            <polyline points="12 5 19 12 12 19"/>
+          </svg>
+        </button>
 
-        <!-- Registration Link -->
         <div class="register-link">
-          <p>Don't have an account? <a href="{{ path('app_register') }}">Create one now</a></p>
+          <p>Don't have an account? <a href="{{ path('app_register') }}">Create an account</a></p>
         </div>
 
-        <div class="helper">Secure login for Inferno Games staff and administrators.</div>
+        <div class="divider">
+          <span>OR</span>
+        </div>
+
+        <a href="{{ path('app_staff_google_auth') }}" class="google-login-btn">
+          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" class="google-icon">
+          Login with Google (Staff Only)
+        </a>
+        <div class="google-note">Only staff email domains are allowed</div>
+
+        <div class="helper">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M12 16v-4M12 8h.01"/>
+          </svg>
+          Contact your administrator if you need staff access
+        </div>
       </form>
     </div>
   </div>
@@ -61,5 +111,23 @@
 {% endblock %}
 
 {# {% block javascripts %}
-  <script src="{{ asset('js/login.js') }}"></script>
+    <script>
+        // Password visibility toggle
+        document.querySelectorAll('.password-toggle').forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                const input = this.closest('.input-wrapper').querySelector('input');
+                const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+                input.setAttribute('type', type);
+                
+                // Update icon
+                const svg = this.querySelector('svg');
+                if (type === 'text') {
+                    svg.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>';
+                } else {
+                    svg.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+                }
+            });
+        });
+    </script>
 {% endblock %} #}

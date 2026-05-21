@@ -1,0 +1,19 @@
+knpu_oauth2_client:
+    clients:
+        # API Google client (returns JSON)
+        google:
+            type: google
+            client_id: '%env(OAUTH_GOOGLE_CLIENT_ID)%'
+            client_secret: '%env(OAUTH_GOOGLE_CLIENT_SECRET)%'
+            redirect_route: app_google_auth_callback
+            redirect_params: {}
+            use_oidc_mode: true
+        
+        # Staff Web Google client (returns redirect)
+        google_staff:
+            type: google
+            client_id: '%env(OAUTH_GOOGLE_CLIENT_ID)%'
+            client_secret: '%env(OAUTH_GOOGLE_CLIENT_SECRET)%'
+            redirect_route: app_staff_google_callback
+            redirect_params: {}
+            use_oidc_mode: true
