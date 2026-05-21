@@ -18,7 +18,7 @@
       const filenameDisplay = document.getElementById('filenameDisplay');
       const fileSizeDisplay = document.getElementById('fileSizeDisplay');
       const removeImageBtn = document.getElementById('removeImageBtn');
-      
+   
       // Format file size
       function formatFileSize(bytes) {
         if (bytes === 0) return '0 Bytes';
@@ -74,7 +74,16 @@
 
   <div class="new-form-card">
     <form action="{{ path('app_game_management_new') }}" method="post" enctype="multipart/form-data">
-      <!-- Title -->
+      
+      {# Display general or token flash errors at the top of the form #}
+      {% for flash in app.flashes('error') %}
+        {% if not (flash matches '/title/i' or flash matches '/price/i' or flash matches '/image/i' or flash matches '/description/i') %}
+          <div class="error-message" style="color: #ff2e2e; font-size: 0.9rem; margin-bottom: 1rem; padding: 0.5rem; background-color: rgba(255,46,46,0.1); border-left: 3px solid #ff2e2e;">
+            {{ flash }}
+          </div>
+        {% endif %}
+      {% endfor %}
+
       <div class="form-group">
         <label class="form-label" for="game_management_title">
           Game Title
@@ -89,7 +98,6 @@
         {% endfor %}
       </div>
 
-      <!-- Price -->
       <div class="form-group">
         <label class="form-label" for="game_management_price">
           Price ($)
@@ -104,7 +112,6 @@
         {% endfor %}
       </div>
 
-      <!-- Image Upload -->
       <div class="form-group">
         <label class="form-label" for="game_management_image">
           Game Image
@@ -126,7 +133,6 @@
           {% endif %}
         {% endfor %}
         
-        <!-- Compact Image Preview -->
         <div class="image-preview-container">
           <div id="imagePreview" class="image-preview">
             <img id="previewImage" class="preview-image" alt="Selected image">
@@ -141,21 +147,18 @@
         </div>
       </div>
 
-      <!-- Stock -->
       <div class="form-group">
         <label class="form-label" for="game_management_stock">
           Stock
         </label>
         <select id="game_management_stock" name="game_management[stock]" class="form-input">
           <option value="">Select stock (optional)</option>
-          <!-- Add your stock options here dynamically -->
           {% for stock in stocks ?? [] %}
             <option value="{{ stock.id }}">{{ stock.name ?? stock.id }}</option>
           {% endfor %}
         </select>
       </div>
 
-      <!-- Description -->
       <div class="form-group">
         <label class="form-label" for="game_management_description">
           Description
@@ -169,7 +172,6 @@
         {% endfor %}
       </div>
 
-      <!-- CSRF Token and Submit -->
       <input type="hidden" name="_token" value="{{ csrf_token('new_game') }}">
       <button type="submit" class="primary-action">
         Create Game
