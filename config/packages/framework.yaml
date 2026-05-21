@@ -11,18 +11,14 @@ framework:
     csrf_protection:
         enabled: true
     
-    # Add ALL ngrok domains to trusted hosts:
-    trusted_hosts: 
-        - 'localhost'
-        - '127.0.0.1'
-        - '^.+\.ngrok-free\.dev$'
-        - '^.+\.ngrok\.io$'
-        - '^10\.0\.2\.2$'  # Android emulator host
-
+   # For CSRF tokens and routing to work through reverse proxies (like Railway & Ngrok):
+    trusted_proxies: '127.0.0.1,REMOTE_ADDR,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16'
     
-    # For CSRF tokens to work through reverse proxy:
-    trusted_proxies: '127.0.0.1,localhost,REMOTE_ADDR,ngrok-free.dev,ngrok.io'
+    # Tell Symfony to trust ALL standard proxy headers forwarded by Nginx/Railway
     trusted_headers: ['x-forwarded-for', 'x-forwarded-host', 'x-forwarded-proto', 'x-forwarded-port']
+
+    # Combine all allowed domains into ONE clean, fallback regular expression string
+    trusted_hosts: ['^(localhost|127\.0\.0\.1|10\.0\.2\.2|.*\.ngrok-free\.dev|.*\.ngrok\.io|.*\.railway\.app)$']
 
 
 
