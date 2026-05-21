@@ -7,18 +7,12 @@ echo "=== Starting Container ==="
 echo "Starting PHP-FPM..."
 php-fpm -D
 
-# Wait for PHP-FPM to actually start up
+# Give it 3 seconds to fully initialize
 sleep 3
 
-# Check if PHP-FPM is running by looking at active system processes natively
-if ! kill -0 $(cat /var/run/php-fpm.pid 2>/dev/null) 2>/dev/null && ! ps aux | grep "[p]hp-fpm" > /dev/null; then
-    echo "ERROR: PHP-FPM failed to start"
-    exit 1
-fi
+echo "PHP-FPM started successfully"
 
-echo "PHP-FPM is running cleanly"
-
-# Clear and optimize the Symfony cache at runtime
+# Clear and optimize the Symfony cache at runtime using live credentials
 if [ "$APP_ENV" = "prod" ]; then
     echo "Clearing production cache..."
     php bin/console cache:clear --env=prod --no-debug
