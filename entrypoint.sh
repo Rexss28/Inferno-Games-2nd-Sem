@@ -25,5 +25,8 @@ if [ "$APP_ENV" = "prod" ]; then
     chown -R www-data:www-data /app/var
 fi
 
+echo "Running database migrations..."
+php bin/console doctrine:migrations:migrate --no-interaction
+
 echo "Starting Nginx..."
 nginx -g "daemon off;"
