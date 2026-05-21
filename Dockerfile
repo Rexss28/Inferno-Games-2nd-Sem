@@ -14,11 +14,14 @@ RUN apt-get update && apt-get install -y \
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
+ENV COMPOSER_ALLOW_SUPERUSER=1
+
 # Copy application files
 COPY . .
 
 # Install Composer dependencies
 RUN composer install --no-interaction --optimize-autoloader --no-dev
+
 
 # Create .env file from environment variables
 RUN echo "APP_ENV=${APP_ENV:-prod}" > .env && \
