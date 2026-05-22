@@ -222,10 +222,13 @@ class CustomerOrderController extends AbstractController
     }
 
     // ✅ UPDATED: Get user's library with error handling
-    #[Route('/library', name: 'api_user_library', methods: ['GET'])]
+#[Route('/library', name: 'api_user_library', methods: ['GET'])]
 #[IsGranted('ROLE_USER')]
 public function getUserLibrary(EntityManagerInterface $em): JsonResponse
 {
+
+    file_put_contents('debug.txt', 'Method was called at ' . date('Y-m-d H:i:s') . "\n", FILE_APPEND);
+    
     /** @var User $user */
     $user = $this->getUser();
     
