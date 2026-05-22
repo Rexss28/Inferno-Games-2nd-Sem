@@ -221,49 +221,59 @@ class CustomerOrderController extends AbstractController
         ]);
     }
 
-    // Get user's library (all purchased games) - No date sorting
+    // ✅ UPDATED: Get user's library with error handling
     #[Route('/library', name: 'api_user_library', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function getUserLibrary(EntityManagerInterface $em): JsonResponse
     {
-        /** @var User $user */
-        $user = $this->getUser();
-        
-        // Get all completed orders for this user
-        $orders = $em->getRepository(Order::class)->findBy([
-            'customer' => $user,
-            'status' => 'Completed'
-        ]);
-        
-        // Get unique games from orders
-        $library = [];
-        $gameIds = [];
-        
-        foreach ($orders as $order) {
-            $game = $order->getGame();
-            if ($game && !in_array($game->getId(), $gameIds)) {
-                $gameIds[] = $game->getId();
-                
-                // Get license key for this game (if any)
-                $licenseKey = null;
-                foreach ($order->getLicenseKeys() as $key) {
-                    $licenseKey = $key->getCode();
-                    break; // Take the first license key
-                }
-                
-                $library[] = [
-                    'id' => $game->getId(),
-                    'title' => $game->getTitle(),
-                    'description' => $game->getDescription(),
-                    'image' => $game->getImage(),
-                    'price' => $game->getPrice(),
-                    'orderNumber' => $order->getOrderNumber(),
-                    'licenseKey' => $licenseKey,
-                ];
+        try {
+            /** @var User $user */
+            $user = $this->getUser();
+            
+            if (!$user) {
+                return $this->json(['error' => 'User not found'], 401);
             }
+            
+            // Get all completed orders for this user
+            $orders = $em->getRepository(Order::class)->findBy([
+                'customer' => $user,
+                'status' => 'Completed'
+            ]);
+            
+            // Get unique games from orders
+            $library = [];
+            $gameIds = [];
+            
+            foreach ($orders as $order) {
+                $game = $order->getGame();
+                if ($game && !in_array($game->getId(), $gameIds)) {
+                    $gameIds[] = $game->getId();
+                    
+                    // Simplified library data - no license keys to avoid relationship issues
+                    $library[] = [
+                        'id' => $game->getId(),
+                        'title' => $game->getTitle(),
+                        'description' => $game->getDescription(),
+                        'image' => $game->getImage(),
+                        'price' => $game->getPrice(),
+                        'orderNumber' => $order->getOrderNumber(),
+                    ];
+                }
+            }
+            
+            return $this->json($library);
+            
+        } catch (\Exception $e) {
+            // Log the error to help debugging
+            error_log('LIBRARY API ERROR: ' . $e->getMessage());
+            error_log('LIBRARY API TRACE: ' . $e->getTraceAsString());
+            
+            return $this->json([
+                'error' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ], 500);
         }
-        
-        return $this->json($library);
     }
 
     #[Route('/logout', name: 'api_logout', methods: ['POST'])]
