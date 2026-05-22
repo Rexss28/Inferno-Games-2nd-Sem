@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Order;
 use App\Form\OrderType;
 use App\Repository\OrderRepository;
+use App\Service\ActivityLogger;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -69,11 +70,27 @@ final class OrderController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_order_delete', methods: ['POST'])]
-    public function delete(Request $request, Order $order, EntityManagerInterface $entityManager): Response
+    public function delete(Request $request, Order $order, EntityManagerInterface $entityManager, ActivityLogger $logger): Response
     {
         if ($this->isCsrfTokenValid('delete'.$order->getId(), $request->getPayload()->getString('_token'))) {
+            
+            // ✅ RETURN LICENSE KEYS TO AVAILABLE POOL BEFORE DELETING ORDER
+            foreach ($order->getLicenseKeys() as $licenseKey) {
+                $licenseKey->setOrder(null);
+                $licenseKey->setStatus('Available');
+                $entityManager->persist($licenseKey);
+            }
+            
+            $orderNumber = $order->getOrderNumber();
+            $orderId = $order->getId();
+            
             $entityManager->remove($order);
             $entityManager->flush();
+
+            $logger->log('DELETE', 'Order: ' . $orderNumber . ' (ID: ' . $orderId . ')');
+            $this->addFlash('success', 'Order deleted successfully!');
+        } else {
+            $this->addFlash('error', 'Invalid CSRF token.');
         }
 
         return $this->redirectToRoute('app_order_index', [], Response::HTTP_SEE_OTHER);
