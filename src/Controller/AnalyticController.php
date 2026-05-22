@@ -26,12 +26,18 @@ final class AnalyticController extends AbstractController
         $totalGames = $gameRepo->count([]);
         $totalOrders = $orderRepo->count([]);
         $totalStocks = $stockRepo->count([]);
-        $totalLicenseKeys = $licenseRepo->count([]);
+        
+        // ✅ FIXED: Only count AVAILABLE license keys
+        $availableLicenseKeys = $licenseRepo->count(['status' => 'Available']);
+        $soldLicenseKeys = $licenseRepo->count(['status' => 'Sold']);
+        $totalLicenseKeys = $availableLicenseKeys + $soldLicenseKeys;
 
-        // 2️⃣ Total Revenue
+        // 2️⃣ Total Revenue (completed orders only)
         $totalRevenue = (float) $em->createQueryBuilder()
             ->select('COALESCE(SUM(o.totalAmount), 0)')
             ->from('App\Entity\Order', 'o')
+            ->where('o.status = :status')
+            ->setParameter('status', 'Completed')
             ->getQuery()
             ->getSingleScalarResult();
 
@@ -81,6 +87,8 @@ final class AnalyticController extends AbstractController
             ->select('g.title AS title, COUNT(o.id) AS orderCount, SUM(o.totalAmount) AS totalRevenue')
             ->from('App\Entity\Order', 'o')
             ->join('o.game', 'g')
+            ->where('o.status = :status')
+            ->setParameter('status', 'Completed')
             ->groupBy('g.id')
             ->orderBy('totalRevenue', 'DESC')
             ->setMaxResults(5)
@@ -100,6 +108,8 @@ final class AnalyticController extends AbstractController
             'totalOrders' => $totalOrders,
             'totalStocks' => $totalStocks,
             'totalLicenseKeys' => $totalLicenseKeys,
+            'availableLicenseKeys' => $availableLicenseKeys,
+            'soldLicenseKeys' => $soldLicenseKeys,
             'totalRevenue' => $totalRevenue,
             'ordersByStatus' => $ordersByStatus,
             'lowStockGames' => $lowStockData,

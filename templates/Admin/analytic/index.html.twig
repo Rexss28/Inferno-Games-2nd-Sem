@@ -53,6 +53,10 @@
                 <div class="stat-content">
                     <p class="stat-label">License Keys</p>
                     <p class="stat-value">{{ totalLicenseKeys }}</p>
+                    <div class="license-breakdown">
+                        <span class="license-available">✓ {{ availableLicenseKeys }} Available</span>
+                        <span class="license-sold">🔒 {{ soldLicenseKeys }} Sold</span>
+                    </div>
                 </div>
                 <div class="card-gradient"></div>
             </div>
@@ -68,7 +72,7 @@
                     <h3 class="card-title">Total Revenue</h3>
                 </div>
                 <div class="revenue-display">
-                    <span class="currency-symbol">$</span>
+                    <span class="currency-symbol">₱</span>
                     <span class="revenue-amount">{{ totalRevenue|number_format(2, '.', ',') }}</span>
                 </div>
                 <div class="revenue-accent"></div>
@@ -118,7 +122,7 @@
                     <table class="data-table">
                         <thead>
                             <tr>
-                                <th>Stock ID</th>
+                                <th>Game</th>
                                 <th>Available</th>
                                 <th>Total</th>
                                 <th>Status</th>
@@ -127,7 +131,7 @@
                         <tbody>
                             {% for stock in lowStockGames %}
                                 <tr>
-                                    <td><span class="text-primary font-semibold">{{ stock.id }}</span></td>
+                                    <td><span class="text-primary font-semibold">{{ stock.game }}</span></td>
                                     <td><span class="text-alert font-bold">{{ stock.availableQuantity }}</span></td>
                                     <td>{{ stock.totalQuantity }}</td>
                                     <td><span class="badge badge-destructive">{{ stock.status }}</span></td>
@@ -167,7 +171,7 @@
                                 <tr>
                                     <td>{{ game.title }}</td>
                                     <td>{{ game.orderCount }}</td>
-                                    <td><span class="text-primary font-bold">${{ game.totalRevenue|number_format(2, '.', ',') }}</span></td>
+                                    <td><span class="text-primary font-bold">₱{{ game.totalRevenue|number_format(2, '.', ',') }}</span></td>
                                 </tr>
                             {% endfor %}
                         </tbody>
