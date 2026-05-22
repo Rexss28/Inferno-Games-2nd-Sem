@@ -54,10 +54,10 @@ class CustomerOrderController extends AbstractController
             
             if ($existingOrder) {
                 $alreadyPurchased[] = $game->getTitle();
-                continue; // Skip this game
+                continue;
             }
             
-            // ✅ FIND AN AVAILABLE LICENSE KEY FOR THIS GAME
+            // Find available license key
             $licenseKey = $em->getRepository(LicenseKey::class)->findOneBy([
                 'game' => $game,
                 'status' => 'Available'
@@ -67,7 +67,7 @@ class CustomerOrderController extends AbstractController
                 return $this->json(['error' => "No license keys available for {$game->getTitle()}"], 400);
             }
             
-            // Create a separate order for EACH game
+            // Create a separate order for each game
             $order = new Order();
             $order->setOrderNumber('INF-' . time() . '-' . $user->getId() . '-' . $game->getId());
             $order->setQuantity(1);
@@ -78,7 +78,7 @@ class CustomerOrderController extends AbstractController
             
             $em->persist($order);
             
-            // ✅ ASSIGN THE LICENSE KEY TO THIS ORDER
+            // Assign license key to order
             $licenseKey->setOrder($order);
             $licenseKey->setStatus('Sold');
             $em->persist($licenseKey);
@@ -155,6 +155,61 @@ class CustomerOrderController extends AbstractController
         return $this->json($orderData);
     }
 
+    // ✅ MOVED UP - /library route must come BEFORE /{id} route
+    #[Route('/library', name: 'api_user_library', methods: ['GET'])]
+    #[IsGranted('ROLE_USER')]
+    public function getUserLibrary(EntityManagerInterface $em): JsonResponse
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+        
+        $orders = $em->getRepository(Order::class)->findBy([
+            'customer' => $user,
+            'status' => 'Completed'
+        ]);
+        
+        $library = [];
+        $gameIds = [];
+        
+        foreach ($orders as $order) {
+            $game = $order->getGame();
+            if ($game && !in_array($game->getId(), $gameIds)) {
+                $gameIds[] = $game->getId();
+                
+                $library[] = [
+                    'id' => $game->getId(),
+                    'title' => $game->getTitle(),
+                    'description' => $game->getDescription(),
+                    'image' => $game->getImage(),
+                    'price' => $game->getPrice(),
+                    'orderNumber' => $order->getOrderNumber(),
+                ];
+            }
+        }
+        
+        return $this->json($library);
+    }
+
+    // Check if user already owns a game
+    #[Route('/check-owned/{gameId}', name: 'api_check_game_owned', methods: ['GET'])]
+    #[IsGranted('ROLE_USER')]
+    public function checkGameOwned(int $gameId, EntityManagerInterface $em): JsonResponse
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+        
+        $existingOrder = $em->getRepository(Order::class)->findOneBy([
+            'customer' => $user,
+            'game' => $gameId,
+            'status' => 'Completed'
+        ]);
+        
+        return $this->json([
+            'owned' => $existingOrder !== null
+        ]);
+    }
+
+    // WILDCARD ROUTE - Must be LAST (catches /{id})
     #[Route('/{id}', name: 'api_orders_detail', methods: ['GET'])]
     public function getOrderDetail(int $id, EntityManagerInterface $em): JsonResponse
     {
@@ -201,44 +256,6 @@ class CustomerOrderController extends AbstractController
             'licenseKeys' => $licenseKeys,
         ]);
     }
-
-    // Check if user already owns a game
-    #[Route('/check-owned/{gameId}', name: 'api_check_game_owned', methods: ['GET'])]
-    #[IsGranted('ROLE_USER')]
-    public function checkGameOwned(int $gameId, EntityManagerInterface $em): JsonResponse
-    {
-        /** @var User $user */
-        $user = $this->getUser();
-        
-        $existingOrder = $em->getRepository(Order::class)->findOneBy([
-            'customer' => $user,
-            'game' => $gameId,
-            'status' => 'Completed'
-        ]);
-        
-        return $this->json([
-            'owned' => $existingOrder !== null
-        ]);
-    }
-
-    // ✅ UPDATED: Get user's library with error handling
-#[Route('/library', name: 'api_user_library', methods: ['GET'])]
-#[IsGranted('ROLE_USER')]
-public function getUserLibrary(EntityManagerInterface $em): JsonResponse
-{
-
-    file_put_contents('debug.txt', 'Method was called at ' . date('Y-m-d H:i:s') . "\n", FILE_APPEND);
-    
-    /** @var User $user */
-    $user = $this->getUser();
-    
-    // Just return a simple test response first
-    return $this->json([
-        'test' => 'Library endpoint is working',
-        'user_id' => $user->getId(),
-        'user_username' => $user->getUsername()
-    ]);
-}
 
     #[Route('/logout', name: 'api_logout', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
