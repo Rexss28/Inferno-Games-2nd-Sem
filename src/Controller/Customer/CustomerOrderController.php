@@ -155,13 +155,16 @@ class CustomerOrderController extends AbstractController
         return $this->json($orderData);
     }
 
-    // ✅ MOVED UP - /library route must come BEFORE /{id} route
+    // ✅ Updated: /library route with full image URLs and license keys
     #[Route('/library', name: 'api_user_library', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
-    public function getUserLibrary(EntityManagerInterface $em): JsonResponse
+    public function getUserLibrary(EntityManagerInterface $em, Request $request): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
+        
+        // Get the base URL for full image paths
+        $baseUrl = $request->getSchemeAndHttpHost();
         
         $orders = $em->getRepository(Order::class)->findBy([
             'customer' => $user,
@@ -176,13 +179,25 @@ class CustomerOrderController extends AbstractController
             if ($game && !in_array($game->getId(), $gameIds)) {
                 $gameIds[] = $game->getId();
                 
+                // Build full image URL
+                $imageFilename = $game->getImage();
+                $imageUrl = $imageFilename ? $baseUrl . '/images/games/' . $imageFilename : null;
+                
+                // Get license key from this order
+                $licenseKey = null;
+                foreach ($order->getLicenseKeys() as $key) {
+                    $licenseKey = $key->getCode();
+                    break; // Take the first license key
+                }
+                
                 $library[] = [
                     'id' => $game->getId(),
                     'title' => $game->getTitle(),
                     'description' => $game->getDescription(),
-                    'image' => $game->getImage(),
+                    'image' => $imageUrl,
                     'price' => $game->getPrice(),
                     'orderNumber' => $order->getOrderNumber(),
+                    'licenseKey' => $licenseKey,
                 ];
             }
         }
