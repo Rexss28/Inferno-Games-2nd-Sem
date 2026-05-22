@@ -45,6 +45,12 @@ class CustomerOrderController extends AbstractController
                 return $this->json(['error' => "Game {$item['gameId']} not found"], 404);
             }
             
+            // ✅ CHECK STOCK AVAILABILITY
+            $stock = $game->getStock();
+            if (!$stock || $stock->getAvailableQuantity() < $item['quantity']) {
+                return $this->json(['error' => "Not enough stock for {$game->getTitle()}"], 400);
+            }
+            
             // Check if user already purchased this game
             $existingOrder = $em->getRepository(Order::class)->findOneBy([
                 'customer' => $user,
@@ -67,11 +73,17 @@ class CustomerOrderController extends AbstractController
                 return $this->json(['error' => "No license keys available for {$game->getTitle()}"], 400);
             }
             
+            // ✅ DECREASE STOCK
+            $newQuantity = $stock->getAvailableQuantity() - $item['quantity'];
+            $stock->setAvailableQuantity($newQuantity);
+            $stock->updateStatusAutomatically();
+            $em->persist($stock);
+            
             // Create a separate order for each game
             $order = new Order();
             $order->setOrderNumber('INF-' . time() . '-' . $user->getId() . '-' . $game->getId());
-            $order->setQuantity(1);
-            $order->setTotalAmount((string) $game->getPrice());
+            $order->setQuantity($item['quantity']);
+            $order->setTotalAmount((string) ($game->getPrice() * $item['quantity']));
             $order->setStatus('Completed');
             $order->setCustomer($user);
             $order->setGame($game);
@@ -84,8 +96,8 @@ class CustomerOrderController extends AbstractController
             $em->persist($licenseKey);
             
             $createdOrders[] = $order;
-            $totalAmount += (float) $game->getPrice();
-            $purchasedGames[] = $game->getTitle();
+            $totalAmount += (float) $game->getPrice() * $item['quantity'];
+            $purchasedGames[] = $game->getTitle() . ' (x' . $item['quantity'] . ')';
         }
 
         // If user tried to purchase already-owned games only
