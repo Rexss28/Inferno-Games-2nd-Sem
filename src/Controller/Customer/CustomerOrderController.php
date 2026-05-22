@@ -223,9 +223,8 @@ class CustomerOrderController extends AbstractController
 
     // ✅ UPDATED: Get user's library with error handling
     #[Route('/library', name: 'api_user_library', methods: ['GET'])]
-    #[IsGranted('ROLE_USER')]
-    public function getUserLibrary(EntityManagerInterface $em): JsonResponse
-    public function getUserLibrary(EntityManagerInterface $em): JsonResponse
+#[IsGranted('ROLE_USER')]
+public function getUserLibrary(EntityManagerInterface $em): JsonResponse
 {
     /** @var User $user */
     $user = $this->getUser();
