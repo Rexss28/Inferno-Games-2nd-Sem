@@ -44,7 +44,8 @@ class Order
     /**
      * @var Collection<int, LicenseKey>
      */
-    #[ORM\OneToMany(targetEntity: LicenseKey::class, mappedBy: 'orders')]
+    // ✅ FIXED: Changed mappedBy from 'orders' to 'order' to match LicenseKey property
+    #[ORM\OneToMany(targetEntity: LicenseKey::class, mappedBy: 'order')]
     private Collection $licenseKeys;
 
     #[ORM\ManyToOne(inversedBy: 'orders')]

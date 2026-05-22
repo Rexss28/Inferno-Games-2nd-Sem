@@ -4,6 +4,7 @@ namespace App\Controller\Customer;
 
 use App\Entity\Order;
 use App\Entity\GameManagement;
+use App\Entity\LicenseKey;
 use App\Entity\User;
 use App\Service\ActivityLogger;
 use Doctrine\ORM\EntityManagerInterface;
@@ -56,7 +57,17 @@ class CustomerOrderController extends AbstractController
                 continue; // Skip this game
             }
             
-            // Create a separate order for EACH game (fix for bulk buying)
+            // ✅ FIND AN AVAILABLE LICENSE KEY FOR THIS GAME
+            $licenseKey = $em->getRepository(LicenseKey::class)->findOneBy([
+                'game' => $game,
+                'status' => 'Available'
+            ]);
+            
+            if (!$licenseKey) {
+                return $this->json(['error' => "No license keys available for {$game->getTitle()}"], 400);
+            }
+            
+            // Create a separate order for EACH game
             $order = new Order();
             $order->setOrderNumber('INF-' . time() . '-' . $user->getId() . '-' . $game->getId());
             $order->setQuantity(1);
@@ -66,6 +77,12 @@ class CustomerOrderController extends AbstractController
             $order->setGame($game);
             
             $em->persist($order);
+            
+            // ✅ ASSIGN THE LICENSE KEY TO THIS ORDER
+            $licenseKey->setOrder($order);
+            $licenseKey->setStatus('Sold');
+            $em->persist($licenseKey);
+            
             $createdOrders[] = $order;
             $totalAmount += (float) $game->getPrice();
             $purchasedGames[] = $game->getTitle();
