@@ -57,38 +57,40 @@ security:
         ROLE_ADMIN: [ROLE_STAFF, ROLE_USER]
 
     access_control:
+    # API Platform UI routes
+    - { path: ^/api/docs, roles: PUBLIC_ACCESS }
+    - { path: ^/api/contexts, roles: PUBLIC_ACCESS }
+    - { path: ^/api/graphql, roles: PUBLIC_ACCESS }
+    - { path: ^/api/.jsonld, roles: PUBLIC_ACCESS }
 
-        # ===== API PLATFORM UI ROUTES (Make documentation publicly accessible) =====
-        - { path: ^/api/docs, roles: PUBLIC_ACCESS }
-        - { path: ^/api/contexts, roles: PUBLIC_ACCESS }
-        - { path: ^/api/graphql, roles: PUBLIC_ACCESS }  
-        - { path: ^/api/.jsonld, roles: PUBLIC_ACCESS }   
-
-        # PUBLIC API ROUTES 
-        - { path: ^/api/register, roles: PUBLIC_ACCESS }
-        - { path: ^/api/verify-email, roles: PUBLIC_ACCESS }
-        - { path: ^/api/login, roles: PUBLIC_ACCESS }
-        - { path: ^/api/auth/google, roles: PUBLIC_ACCESS } 
-        - { path: ^/api/orders, roles: PUBLIC_ACCESS } 
-        
-        # PROTECTED API ROUTES 
-        # - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
-        
-        # ADMIN/STAFF ROUTES
-        - { path: ^/staff/google, roles: PUBLIC_ACCESS }
-        - { path: ^/admin/analytics, roles: ROLE_STAFF }
-        - { path: ^/admin/games, roles: ROLE_STAFF }
-        - { path: ^/admin/stocks, roles: ROLE_STAFF }
-        - { path: ^/admin/license-keys, roles: ROLE_STAFF }
-        - { path: ^/admin/orders, roles: ROLE_STAFF }
-        - { path: ^/admin, roles: ROLE_ADMIN }
-        - { path: ^/activity-logs, roles: ROLE_ADMIN }
-        
-        # WEB ROUTES
-        - { path: ^/login$, roles: PUBLIC_ACCESS }
-        - { path: ^/logout$, roles: IS_AUTHENTICATED_FULLY }
-        - { path: ^/profile, roles: IS_AUTHENTICATED_FULLY }
-        - { path: ^/verify-email, roles: PUBLIC_ACCESS }
+    # PUBLIC API ROUTES
+    - { path: ^/api/register, roles: PUBLIC_ACCESS }
+    - { path: ^/api/verify-email, roles: PUBLIC_ACCESS }
+    - { path: ^/api/login, roles: PUBLIC_ACCESS }
+    - { path: ^/api/auth/google, roles: PUBLIC_ACCESS }
+    - { path: ^/api/games, roles: PUBLIC_ACCESS }
+    
+    # PROTECTED API ROUTES (Remove the catch-all PUBLIC_ACCESS for /api/orders)
+    - { path: ^/api/cart, roles: IS_AUTHENTICATED_FULLY }
+    - { path: ^/api/customer, roles: IS_AUTHENTICATED_FULLY }
+    - { path: ^/api/orders, roles: IS_AUTHENTICATED_FULLY }
+    - { path: ^/api/orders/, roles: IS_AUTHENTICATED_FULLY }
+    
+    # ADMIN/STAFF ROUTES
+    - { path: ^/staff/google, roles: PUBLIC_ACCESS }
+    - { path: ^/admin/analytics, roles: ROLE_STAFF }
+    - { path: ^/admin/games, roles: ROLE_STAFF }
+    - { path: ^/admin/stocks, roles: ROLE_STAFF }
+    - { path: ^/admin/license-keys, roles: ROLE_STAFF }
+    - { path: ^/admin/orders, roles: ROLE_STAFF }
+    - { path: ^/admin, roles: ROLE_ADMIN }
+    - { path: ^/activity-logs, roles: ROLE_ADMIN }
+    
+    # WEB ROUTES
+    - { path: ^/login$, roles: PUBLIC_ACCESS }
+    - { path: ^/logout$, roles: IS_AUTHENTICATED_FULLY }
+    - { path: ^/profile, roles: IS_AUTHENTICATED_FULLY }
+    - { path: ^/verify-email, roles: PUBLIC_ACCESS }
 
 when@test:
     security:
