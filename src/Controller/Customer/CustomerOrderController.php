@@ -225,56 +225,18 @@ class CustomerOrderController extends AbstractController
     #[Route('/library', name: 'api_user_library', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function getUserLibrary(EntityManagerInterface $em): JsonResponse
-    {
-        try {
-            /** @var User $user */
-            $user = $this->getUser();
-            
-            if (!$user) {
-                return $this->json(['error' => 'User not found'], 401);
-            }
-            
-            // Get all completed orders for this user
-            $orders = $em->getRepository(Order::class)->findBy([
-                'customer' => $user,
-                'status' => 'Completed'
-            ]);
-            
-            // Get unique games from orders
-            $library = [];
-            $gameIds = [];
-            
-            foreach ($orders as $order) {
-                $game = $order->getGame();
-                if ($game && !in_array($game->getId(), $gameIds)) {
-                    $gameIds[] = $game->getId();
-                    
-                    // Simplified library data - no license keys to avoid relationship issues
-                    $library[] = [
-                        'id' => $game->getId(),
-                        'title' => $game->getTitle(),
-                        'description' => $game->getDescription(),
-                        'image' => $game->getImage(),
-                        'price' => $game->getPrice(),
-                        'orderNumber' => $order->getOrderNumber(),
-                    ];
-                }
-            }
-            
-            return $this->json($library);
-            
-        } catch (\Exception $e) {
-            // Log the error to help debugging
-            error_log('LIBRARY API ERROR: ' . $e->getMessage());
-            error_log('LIBRARY API TRACE: ' . $e->getTraceAsString());
-            
-            return $this->json([
-                'error' => $e->getMessage(),
-                'file' => $e->getFile(),
-                'line' => $e->getLine()
-            ], 500);
-        }
-    }
+    public function getUserLibrary(EntityManagerInterface $em): JsonResponse
+{
+    /** @var User $user */
+    $user = $this->getUser();
+    
+    // Just return a simple test response first
+    return $this->json([
+        'test' => 'Library endpoint is working',
+        'user_id' => $user->getId(),
+        'user_username' => $user->getUsername()
+    ]);
+}
 
     #[Route('/logout', name: 'api_logout', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
