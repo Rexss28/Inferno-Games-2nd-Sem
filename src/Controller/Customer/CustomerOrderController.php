@@ -95,6 +95,16 @@ class CustomerOrderController extends AbstractController
             $licenseKey->setStatus('Sold');
             $em->persist($licenseKey);
             
+            // ✅ SEND PUSH NOTIFICATION TO USER (if they have an FCM token)
+            if ($user->getFcmToken()) {
+                $this->sendPushNotification(
+                    $user->getFcmToken(),
+                    'Order Confirmed! 🎮',
+                    "Your order #{$order->getOrderNumber()} for {$game->getTitle()} has been placed successfully.",
+                    ['order_id' => $order->getId(), 'type' => 'order_confirmation']
+                );
+            }
+            
             $createdOrders[] = $order;
             $totalAmount += (float) $game->getPrice() * $item['quantity'];
             $purchasedGames[] = $game->getTitle() . ' (x' . $item['quantity'] . ')';
@@ -297,5 +307,39 @@ class CustomerOrderController extends AbstractController
             'success' => true,
             'message' => 'Successfully logged out'
         ]);
+    }
+
+    // ✅ NEW: Send push notification helper method
+    private function sendPushNotification(string $fcmToken, string $title, string $body, array $data = []): void
+    {
+        $serverKey = $_ENV['FCM_SERVER_KEY'] ?? '';
+        
+        if (empty($serverKey) || empty($fcmToken)) {
+            return;
+        }
+        
+        $payload = [
+            'to' => $fcmToken,
+            'notification' => [
+                'title' => $title,
+                'body' => $body,
+                'sound' => 'default',
+            ],
+            'data' => $data,
+            'priority' => 'high',
+        ];
+        
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, 'https://fcm.googleapis.com/fcm/send');
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Authorization: key=' . $serverKey,
+            'Content-Type: application/json',
+        ]);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
+        
+        $response = curl_exec($ch);
+        curl_close($ch);
     }
 }

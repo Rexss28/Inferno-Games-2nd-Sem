@@ -123,6 +123,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $verificationToken = null;
 
+    #[ORM\Column(type: 'text', nullable: true)]
+    private ?string $fcmToken = null;
+
     #[ORM\Column(length: 255, nullable: true, unique: true)]
     private ?string $googleId = null;
 
@@ -146,6 +149,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getUsername(): ?string
     {
         return $this->username;
+    }
+
+    public function getFcmToken(): ?string
+    {
+        return $this->fcmToken;
+    }
+
+    public function setFcmToken(?string $fcmToken): static
+    {
+        $this->fcmToken = $fcmToken;
+        return $this;
     }
 
     public function setUsername(string $username): static
