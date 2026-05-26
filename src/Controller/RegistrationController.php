@@ -60,7 +60,7 @@ class RegistrationController extends AbstractController
             // Generate verification token
             $verificationToken = $emailVerificationService->generateVerificationToken();
             $user->setVerificationToken($verificationToken);
-            $user->setIsVerified(true);
+            $user->setIsVerified(false);
             $user->setRoles(['ROLE_USER']);
 
             $entityManager->persist($user);
@@ -85,13 +85,14 @@ class RegistrationController extends AbstractController
         ]);
     }
 
-    // ✅ NEW: API endpoint for mobile app registration
+    // ✅ API endpoint for mobile app registration with email verification
     #[Route('/api/register', name: 'api_register', methods: ['POST'])]
     public function apiRegister(
         Request $request,
         UserPasswordHasherInterface $passwordHasher,
         EntityManagerInterface $entityManager,
-        ValidatorInterface $validator
+        ValidatorInterface $validator,
+        EmailVerificationService $emailVerificationService
     ): JsonResponse {
         $data = json_decode($request->getContent(), true);
         
@@ -129,7 +130,11 @@ class RegistrationController extends AbstractController
         $user->setPassword($passwordHasher->hashPassword($user, $password));
         $user->setRoles(['ROLE_USER']);
         $user->setStatus(User::STATUS_ACTIVE);
-        $user->setIsVerified(true);
+        $user->setIsVerified(false);
+        
+        // ✅ Generate verification token
+        $verificationToken = $emailVerificationService->generateVerificationToken();
+        $user->setVerificationToken($verificationToken);
         
         // Validate the user entity
         $errors = $validator->validate($user);
@@ -144,8 +149,21 @@ class RegistrationController extends AbstractController
         $entityManager->persist($user);
         $entityManager->flush();
         
+        // ✅ Send verification email
+        try {
+            $verificationUrl = $this->generateUrl(
+                'app_verify_email',
+                ['token' => $verificationToken],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            );
+            $emailVerificationService->sendVerificationEmail($user, $verificationUrl);
+        } catch (\Exception $e) {
+            // Log error but don't fail registration
+            error_log('Failed to send verification email: ' . $e->getMessage());
+        }
+        
         return $this->json([
-            'message' => 'User registered successfully',
+            'message' => 'User registered successfully. Please check your email to verify your account.',
             'user' => [
                 'id' => $user->getId(),
                 'username' => $user->getUsername(),
