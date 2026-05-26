@@ -28,4 +28,5 @@ yarn-error.log
 
 ###> lexik/jwt-authentication-bundle ###
 # /config/jwt/*.pem
+/config/jwt/inferno-games-app-firebase-adminsdk-fbsvc-8c633a20b6.json
 ###< lexik/jwt-authentication-bundle ###

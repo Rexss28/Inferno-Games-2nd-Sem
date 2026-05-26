@@ -5,6 +5,7 @@
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
     games_image_directory: '%kernel.project_dir%/public/images/games'
+    firebase_service_account_path: '%kernel.project_dir%/config/jwt/inferno-games-app-firebase-adminsdk-fbsvc-8c633a20b6.json'
 
 services:
     # default configuration for services in *this* file

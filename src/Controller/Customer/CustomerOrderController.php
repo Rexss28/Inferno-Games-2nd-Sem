@@ -95,13 +95,13 @@ class CustomerOrderController extends AbstractController
             $licenseKey->setStatus('Sold');
             $em->persist($licenseKey);
             
-            // ✅ SEND PUSH NOTIFICATION TO USER (if they have an FCM token)
+            // ✅ SEND PUSH NOTIFICATION TO USER (using FCM V1 API)
             if ($user->getFcmToken()) {
-                $this->sendPushNotification(
+                $this->sendPushNotificationV1(
                     $user->getFcmToken(),
                     'Order Confirmed! 🎮',
                     "Your order #{$order->getOrderNumber()} for {$game->getTitle()} has been placed successfully.",
-                    ['order_id' => $order->getId(), 'type' => 'order_confirmation']
+                    ['order_id' => (string) $order->getId(), 'type' => 'order_confirmation']
                 );
             }
             
@@ -209,7 +209,7 @@ class CustomerOrderController extends AbstractController
                 $licenseKey = null;
                 foreach ($order->getLicenseKeys() as $key) {
                     $licenseKey = $key->getCode();
-                    break; // Take the first license key
+                    break;
                 }
                 
                 $library[] = [
@@ -309,37 +309,119 @@ class CustomerOrderController extends AbstractController
         ]);
     }
 
-    // ✅ NEW: Send push notification helper method
-    private function sendPushNotification(string $fcmToken, string $title, string $body, array $data = []): void
+    // ✅ FCM V1 API: Send push notification using service account JSON
+    private function sendPushNotificationV1(string $fcmToken, string $title, string $body, array $data = []): void
     {
-        $serverKey = $_ENV['FCM_SERVER_KEY'] ?? '';
-        
-        if (empty($serverKey) || empty($fcmToken)) {
+        if (empty($fcmToken)) {
             return;
         }
         
+        // Path to your Firebase service account JSON file
+        $serviceAccountPath = $this->getParameter('kernel.project_dir') . '/config/jwt/inferno-games-app-firebase-adminsdk-fbsvc-8c633a20b6.json';
+        
+        if (!file_exists($serviceAccountPath)) {
+            error_log('FCM Error: Service account JSON file not found at ' . $serviceAccountPath);
+            return;
+        }
+        
+        // Get Firebase Project ID from the JSON file
+        $serviceAccount = json_decode(file_get_contents($serviceAccountPath), true);
+        $projectId = $serviceAccount['project_id'] ?? null;
+        
+        if (!$projectId) {
+            error_log('FCM Error: Could not extract project_id from service account JSON');
+            return;
+        }
+        
+        // Generate OAuth2 token using JWT
+        $accessToken = $this->getAccessTokenFromServiceAccount($serviceAccountPath);
+        
+        if (!$accessToken) {
+            error_log('FCM Error: Failed to generate access token');
+            return;
+        }
+        
+        // Prepare FCM V1 API payload
+        $url = "https://fcm.googleapis.com/v1/projects/{$projectId}/messages:send";
+        
         $payload = [
-            'to' => $fcmToken,
-            'notification' => [
-                'title' => $title,
-                'body' => $body,
-                'sound' => 'default',
+            'message' => [
+                'token' => $fcmToken,
+                'notification' => [
+                    'title' => $title,
+                    'body' => $body,
+                ],
+                'data' => $data,
+                'android' => [
+                    'priority' => 'high',
+                ],
+                'apns' => [
+                    'headers' => [
+                        'apns-priority' => '10',
+                    ],
+                ],
             ],
-            'data' => $data,
-            'priority' => 'high',
         ];
         
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, 'https://fcm.googleapis.com/fcm/send');
+        curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            'Authorization: key=' . $serverKey,
+            'Authorization: Bearer ' . $accessToken,
             'Content-Type: application/json',
         ]);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
         
         $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
+        
+        if ($httpCode !== 200) {
+            error_log('FCM Error: HTTP ' . $httpCode . ' - ' . $response);
+        }
+    }
+    
+    // Helper method to generate OAuth2 access token from service account JSON
+    private function getAccessTokenFromServiceAccount(string $jsonPath): ?string
+    {
+        try {
+            $serviceAccount = json_decode(file_get_contents($jsonPath), true);
+            
+            $now = time();
+            $jwtHeader = base64_encode(json_encode(['alg' => 'RS256', 'typ' => 'JWT']));
+            $jwtPayload = base64_encode(json_encode([
+                'iss' => $serviceAccount['client_email'],
+                'scope' => 'https://www.googleapis.com/auth/firebase.messaging',
+                'aud' => 'https://oauth2.googleapis.com/token',
+                'exp' => $now + 3600,
+                'iat' => $now,
+            ]));
+            
+            $signature = '';
+            $privateKey = openssl_get_privatekey($serviceAccount['private_key']);
+            openssl_sign($jwtHeader . '.' . $jwtPayload, $signature, $privateKey, 'SHA256');
+            $jwt = $jwtHeader . '.' . $jwtPayload . '.' . base64_encode($signature);
+            
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, 'https://oauth2.googleapis.com/token');
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
+                'grant_type' => 'urn:ietf:params:oauth:grant-type:jwt-bearer',
+                'assertion' => $jwt,
+            ]));
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            
+            $response = curl_exec($ch);
+            curl_close($ch);
+            
+            $tokenData = json_decode($response, true);
+            
+            return $tokenData['access_token'] ?? null;
+            
+        } catch (\Exception $e) {
+            error_log('FCM Token Error: ' . $e->getMessage());
+            return null;
+        }
     }
 }
