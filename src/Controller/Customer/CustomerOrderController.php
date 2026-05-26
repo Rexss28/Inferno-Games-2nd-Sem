@@ -95,7 +95,7 @@ class CustomerOrderController extends AbstractController
             $licenseKey->setStatus('Sold');
             $em->persist($licenseKey);
             
-            // ✅ SEND PUSH NOTIFICATION TO USER (using FCM V1 API)
+            // ✅ SEND PUSH NOTIFICATION TO USER (using FCM V1 API from env variable)
             if ($user->getFcmToken()) {
                 $this->sendPushNotificationV1(
                     $user->getFcmToken(),
@@ -309,32 +309,36 @@ class CustomerOrderController extends AbstractController
         ]);
     }
 
-    // ✅ FCM V1 API: Send push notification using service account JSON
+    // ✅ FCM V1 API: Send push notification using service account from environment variable
     private function sendPushNotificationV1(string $fcmToken, string $title, string $body, array $data = []): void
     {
         if (empty($fcmToken)) {
             return;
         }
         
-        // Path to your Firebase service account JSON file
-        $serviceAccountPath = $this->getParameter('kernel.project_dir') . '/config/jwt/inferno-games-app-firebase-adminsdk-fbsvc-8c633a20b6.json';
+        // Get service account JSON from environment variable
+        $serviceAccountJson = $_ENV['FIREBASE_SERVICE_ACCOUNT_JSON'] ?? null;
         
-        if (!file_exists($serviceAccountPath)) {
-            error_log('FCM Error: Service account JSON file not found at ' . $serviceAccountPath);
+        if (!$serviceAccountJson) {
+            error_log('FCM Error: FIREBASE_SERVICE_ACCOUNT_JSON environment variable not set');
             return;
         }
         
-        // Get Firebase Project ID from the JSON file
-        $serviceAccount = json_decode(file_get_contents($serviceAccountPath), true);
+        $serviceAccount = json_decode($serviceAccountJson, true);
+        if (!$serviceAccount) {
+            error_log('FCM Error: Invalid JSON in FIREBASE_SERVICE_ACCOUNT_JSON');
+            return;
+        }
+        
         $projectId = $serviceAccount['project_id'] ?? null;
         
         if (!$projectId) {
-            error_log('FCM Error: Could not extract project_id from service account JSON');
+            error_log('FCM Error: Could not extract project_id from service account');
             return;
         }
         
-        // Generate OAuth2 token using JWT
-        $accessToken = $this->getAccessTokenFromServiceAccount($serviceAccountPath);
+        // Generate OAuth2 token from service account array
+        $accessToken = $this->getAccessTokenFromServiceAccountArray($serviceAccount);
         
         if (!$accessToken) {
             error_log('FCM Error: Failed to generate access token');
@@ -382,12 +386,10 @@ class CustomerOrderController extends AbstractController
         }
     }
     
-    // Helper method to generate OAuth2 access token from service account JSON
-    private function getAccessTokenFromServiceAccount(string $jsonPath): ?string
+    // Helper method to generate OAuth2 access token from service account array
+    private function getAccessTokenFromServiceAccountArray(array $serviceAccount): ?string
     {
         try {
-            $serviceAccount = json_decode(file_get_contents($jsonPath), true);
-            
             $now = time();
             $jwtHeader = base64_encode(json_encode(['alg' => 'RS256', 'typ' => 'JWT']));
             $jwtPayload = base64_encode(json_encode([
@@ -400,6 +402,10 @@ class CustomerOrderController extends AbstractController
             
             $signature = '';
             $privateKey = openssl_get_privatekey($serviceAccount['private_key']);
+            if (!$privateKey) {
+                error_log('FCM Error: Invalid private key');
+                return null;
+            }
             openssl_sign($jwtHeader . '.' . $jwtPayload, $signature, $privateKey, 'SHA256');
             $jwt = $jwtHeader . '.' . $jwtPayload . '.' . base64_encode($signature);
             
