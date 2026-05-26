@@ -60,7 +60,7 @@ class RegistrationController extends AbstractController
             // Generate verification token
             $verificationToken = $emailVerificationService->generateVerificationToken();
             $user->setVerificationToken($verificationToken);
-            $user->setIsVerified(false);
+            $user->setIsVerified(true);
             $user->setRoles(['ROLE_USER']);
 
             $entityManager->persist($user);
@@ -129,7 +129,7 @@ class RegistrationController extends AbstractController
         $user->setPassword($passwordHasher->hashPassword($user, $password));
         $user->setRoles(['ROLE_USER']);
         $user->setStatus(User::STATUS_ACTIVE);
-        $user->setIsVerified(false);
+        $user->setIsVerified(true);
         
         // Validate the user entity
         $errors = $validator->validate($user);
