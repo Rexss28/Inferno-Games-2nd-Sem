@@ -85,14 +85,14 @@ class RegistrationController extends AbstractController
         ]);
     }
 
-    // ✅ API endpoint for mobile app registration with email verification
+    // ✅ API endpoint for mobile app registration
     #[Route('/api/register', name: 'api_register', methods: ['POST'])]
     public function apiRegister(
         Request $request,
         UserPasswordHasherInterface $passwordHasher,
         EntityManagerInterface $entityManager,
         ValidatorInterface $validator,
-        EmailVerificationService $emailVerificationService
+        EmailVerificationService $emailVerificationService  // ✅ Added for email sending
     ): JsonResponse {
         $data = json_decode($request->getContent(), true);
         
@@ -130,11 +130,20 @@ class RegistrationController extends AbstractController
         $user->setPassword($passwordHasher->hashPassword($user, $password));
         $user->setRoles(['ROLE_USER']);
         $user->setStatus(User::STATUS_ACTIVE);
-        $user->setIsVerified(false);
         
-        // ✅ Generate verification token
-        $verificationToken = $emailVerificationService->generateVerificationToken();
-        $user->setVerificationToken($verificationToken);
+        // ✅ Set to true to skip email verification (for faster testing)
+        // Set to false if you want email verification
+        $skipEmailVerification = true;  // Change to false to require email verification
+        
+        if ($skipEmailVerification) {
+            $user->setIsVerified(true);
+            $user->setVerificationToken(null);
+        } else {
+            // Generate verification token
+            $verificationToken = $emailVerificationService->generateVerificationToken();
+            $user->setVerificationToken($verificationToken);
+            $user->setIsVerified(false);
+        }
         
         // Validate the user entity
         $errors = $validator->validate($user);
@@ -149,21 +158,26 @@ class RegistrationController extends AbstractController
         $entityManager->persist($user);
         $entityManager->flush();
         
-        // ✅ Send verification email
-        try {
-            $verificationUrl = $this->generateUrl(
-                'app_verify_email',
-                ['token' => $verificationToken],
-                UrlGeneratorInterface::ABSOLUTE_URL
-            );
-            $emailVerificationService->sendVerificationEmail($user, $verificationUrl);
-        } catch (\Exception $e) {
-            // Log error but don't fail registration
-            error_log('Failed to send verification email: ' . $e->getMessage());
+        // ✅ Send verification email only if not skipped
+        if (!$skipEmailVerification) {
+            try {
+                $verificationUrl = $this->generateUrl(
+                    'app_verify_email',
+                    ['token' => $verificationToken],
+                    UrlGeneratorInterface::ABSOLUTE_URL
+                );
+                $emailVerificationService->sendVerificationEmail($user, $verificationUrl);
+            } catch (\Exception $e) {
+                error_log('Failed to send verification email: ' . $e->getMessage());
+            }
         }
         
+        $responseMessage = $skipEmailVerification 
+            ? 'User registered successfully' 
+            : 'User registered successfully. Please check your email to verify your account.';
+        
         return $this->json([
-            'message' => 'User registered successfully. Please check your email to verify your account.',
+            'message' => $responseMessage,
             'user' => [
                 'id' => $user->getId(),
                 'username' => $user->getUsername(),
