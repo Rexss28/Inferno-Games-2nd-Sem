@@ -22,7 +22,7 @@ Encore
     .addEntry('app', './assets/app.js')
     .addEntry('store_landing', './assets/store_landing.js')
     // .addStyleEntry('app', './assets/styles/global/app.css')
-    .addStyleEntry('login', './assets/styles/global/login.css')
+    // .addStyleEntry('login', './assets/styles/global/login.css')
     .addStyleEntry('home', './assets/styles/User/home.css')
     .addStyleEntry('library', './assets/styles/User/library.css')
     .addStyleEntry('base', './assets/styles/global/base.css')
