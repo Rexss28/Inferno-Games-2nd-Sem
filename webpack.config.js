@@ -56,7 +56,7 @@ Encore
     .addStyleEntry('user_show', './assets/styles/Admin/user/user_show.css')
     .addStyleEntry('activity_logs', './assets/styles/Admin/activity_logs.css')
 
-    .addEntry('login', './assets/styles/login.js')
+    // .addEntry('login', './assets/styles/login.js')
     // .addEntry('home', './assets/styles/home.js')
 
 
