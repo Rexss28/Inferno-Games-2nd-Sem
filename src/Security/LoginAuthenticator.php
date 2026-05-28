@@ -3,7 +3,7 @@
 namespace App\Security;
 
 use App\Repository\UserRepository;
-use App\Service\ActivityLogger;
+// REMOVE: use App\Service\ActivityLogger;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -28,8 +28,8 @@ class LoginAuthenticator extends AbstractLoginFormAuthenticator
 
     public function __construct(
         private UrlGeneratorInterface $urlGenerator,
-        private UserRepository $userRepository,
-        private ActivityLogger $activityLogger  // ✅ ADDED
+        private UserRepository $userRepository
+        // REMOVE: private ActivityLogger $activityLogger
     ) {
     }
 
@@ -99,11 +99,12 @@ class LoginAuthenticator extends AbstractLoginFormAuthenticator
         error_log('=== LOGIN SUCCESS ===');
         error_log('User logged in successfully');
         
-        // ✅ LOG WEB LOGIN ACTIVITY
-        $user = $token->getUser();
-        if ($user) {
-            $this->activityLogger->log('LOGIN', $user);
-        }
+        // ✅ REMOVE THIS - LOGIN LOGGING IS HANDLED BY JWTAuthenticationSuccessHandler FOR MOBILE
+        // AND NOT NEEDED FOR WEB LOGINS (or handle separately if needed)
+        // $user = $token->getUser();
+        // if ($user) {
+        //     $this->activityLogger->log('LOGIN', $user);
+        // }
         
         if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
             error_log('Redirecting to target path: ' . $targetPath);

@@ -12,6 +12,10 @@ use Symfony\Bundle\SecurityBundle\Security;
 
 class ActivityLogger
 {
+    // Duplicate prevention properties
+    private $lastLoggedKey = '';
+    private $lastLoggedTime = 0;
+
     public function __construct(
         private EntityManagerInterface $em,
         private Security $security
@@ -20,6 +24,26 @@ class ActivityLogger
     public function log(string $action, mixed $target = null): void
     {
         $user = $this->security->getUser();
+        $userId = $user instanceof User ? $user->getId() : 0;
+        
+        // Create a unique key for this log
+        $targetHash = '';
+        if (is_object($target)) {
+            $targetHash = spl_object_hash($target);
+        } elseif (is_string($target)) {
+            $targetHash = md5($target);
+        }
+        $logKey = $userId . '_' . $action . '_' . $targetHash;
+        $now = microtime(true);
+        
+        // Prevent duplicate logs within the same second for the same user/action/target
+        if ($this->lastLoggedKey === $logKey && ($now - $this->lastLoggedTime) < 1) {
+            error_log("ActivityLogger: Skipping duplicate log for {$action} (user: {$userId})");
+            return;
+        }
+        
+        $this->lastLoggedKey = $logKey;
+        $this->lastLoggedTime = $now;
         
         $log = new ActivityLog();
         
