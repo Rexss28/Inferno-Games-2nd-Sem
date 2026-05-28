@@ -12,9 +12,11 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationSuccessHandlerI
 
 class JWTAuthenticationSuccessHandler implements AuthenticationSuccessHandlerInterface
 {
+    private static $loggedUsers = []; // Track already logged users for this request
+
     public function __construct(
         private JWTTokenManagerInterface $jwtManager,
-        private ActivityLogger $activityLogger  // ✅ ADDED
+        private ActivityLogger $activityLogger
     ) {}
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token): JsonResponse
@@ -22,8 +24,15 @@ class JWTAuthenticationSuccessHandler implements AuthenticationSuccessHandlerInt
         /** @var User $user */
         $user = $token->getUser();
         
-        // ✅ LOG MOBILE LOGIN ACTIVITY (UNCOMMENTED)
-        $this->activityLogger->log('LOGIN', $user);
+        // ✅ LOG MOBILE LOGIN ACTIVITY - CHECK FOR DUPLICATE
+        $userId = $user->getId();
+        $requestId = spl_object_hash($request); // Unique request identifier
+        
+        // Only log if not already logged in this request
+        if (!isset(self::$loggedUsers[$userId][$requestId])) {
+            self::$loggedUsers[$userId][$requestId] = true;
+            $this->activityLogger->log('LOGIN', $user);
+        }
         
         // ✅ CHECK FOR ADMIN/STAFF ROLES - BLOCK FROM MOBILE APP
         $roles = $user->getRoles();
@@ -53,7 +62,7 @@ class JWTAuthenticationSuccessHandler implements AuthenticationSuccessHandlerInt
                 'id' => $user->getId(),
                 'username' => $user->getUserIdentifier(),
                 'email' => $user->getEmail(),
-                'roles' => $user->getDisplayRoles(), // This excludes ROLE_USER for display
+                'roles' => $user->getDisplayRoles(),
                 'isVerified' => $user->isVerified()
             ]
         ]);
