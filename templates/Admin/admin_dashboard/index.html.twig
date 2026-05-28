@@ -533,7 +533,7 @@
                 reconnectAttempts = 0;
             };
             
-            ws.onmessage = function(event) {
+           ws.onmessage = function(event) {
                 try {
                     const data = JSON.parse(event.data);
                     console.log('📨 WebSocket received:', data);
@@ -542,15 +542,25 @@
                         console.log('✅ Admin authenticated for dashboard');
                     }
                     
-                    // When a new order comes in, fetch the latest activity logs
+                    // Handle new orders (from CustomerOrderController)
                     if (data.type === 'new_order') {
                         console.log('🛒 New order detected! Refreshing activity logs...');
-                        // Small delay to ensure the log is saved in database
                         setTimeout(() => {
                             fetchNewLogs();
-                            // Optionally update revenue
                             if (data.amount) {
                                 updateRevenue(data.amount);
+                            }
+                        }, 500);
+                    }
+                    
+                    // Handle new activities (LOGIN, LOGOUT, CHECKOUT from ActivityLogger)
+                    if (data.type === 'new_activity') {
+                        console.log(`🔔 New ${data.action} activity detected! Refreshing activity logs...`);
+                        setTimeout(() => {
+                            fetchNewLogs();
+                            // Show toast for login activities too
+                            if (data.action === 'LOGIN') {
+                                showToast(`${data.username} logged in`, data.action);
                             }
                         }, 500);
                     }

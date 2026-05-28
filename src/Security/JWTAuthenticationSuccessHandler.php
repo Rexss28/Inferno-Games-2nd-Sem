@@ -22,8 +22,8 @@ class JWTAuthenticationSuccessHandler implements AuthenticationSuccessHandlerInt
         /** @var User $user */
         $user = $token->getUser();
         
-        // ✅ LOG MOBILE LOGIN ACTIVITY
-        // $this->activityLogger->log('MOBILE_LOGIN', $user);
+        // ✅ LOG MOBILE LOGIN ACTIVITY (UNCOMMENTED)
+        $this->activityLogger->log('LOGIN', $user);
         
         // ✅ CHECK FOR ADMIN/STAFF ROLES - BLOCK FROM MOBILE APP
         $roles = $user->getRoles();
