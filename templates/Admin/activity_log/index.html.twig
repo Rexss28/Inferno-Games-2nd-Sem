@@ -10,15 +10,97 @@
     
     <!-- ✅ DataTables CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/jquery.dataTables.min.css">
+    
+    <style>
+        /* WebSocket Real-time Styles */
+        .ws-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            background: rgba(108, 117, 125, 0.2);
+            color: #6c757d;
+        }
+        
+        .ws-status.connected {
+            background: rgba(40, 167, 69, 0.2);
+            color: #28a745;
+        }
+        
+        .ws-status.connected .ws-dot {
+            background: #28a745;
+            box-shadow: 0 0 5px #28a745;
+        }
+        
+        .ws-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            background: #6c757d;
+        }
+        
+        @keyframes highlightRow {
+            0% { background-color: rgba(40, 167, 69, 0); }
+            30% { background-color: rgba(40, 167, 69, 0.3); }
+            100% { background-color: rgba(40, 167, 69, 0); }
+        }
+        
+        .new-log-row {
+            animation: highlightRow 1.5s ease;
+        }
+        
+        .real-time-badge {
+            font-size: 10px;
+            background: #28a745;
+            color: white;
+            border-radius: 12px;
+            padding: 2px 8px;
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+        
+        .header-badges {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        .toast-notification {
+            animation: slideIn 0.3s ease;
+        }
+        
+        .filter-select option[value="CHECKOUT"] {
+            background-color: #28a745;
+            color: white;
+        }
+    </style>
 {% endblock %}
 
 {% block content %}
 <div class="activity-logs-container">
-    <!-- Header Section -->
+    <!-- Header Section with WebSocket Status -->
     <div class="header-section">
         <div class="header-content">
-            <h1 class="page-title">Activity Logs</h1>
-            <p class="page-subtitle">Monitor and track user activities in the system</p>
+            <h1 class="page-title">
+                Activity Logs 
+                <span class="real-time-badge">REAL-TIME</span>
+            </h1>
+            <p class="page-subtitle">Monitor and track user activities in the system - new logs appear instantly</p>
+        </div>
+        <div class="header-badges">
+            <span id="wsStatus" class="ws-status">
+                <span class="ws-dot"></span>
+                <span id="wsStatusText">Connecting...</span>
+            </span>
         </div>
     </div>
 
@@ -31,7 +113,7 @@
             Filter Logs
         </h3>
         
-        <form method="get" class="filter-form">
+        <form method="get" class="filter-form" id="filterForm">
             <div class="filter-group">
                 <label class="filter-label">Username</label>
                 <input type="text" 
@@ -39,18 +121,20 @@
                        class="filter-input" 
                        placeholder="Enter username" 
                        value="{{ filters.user }}"
+                       id="filterUser"
                        title="Filter by username">
             </div>
             
             <div class="filter-group">
                 <label class="filter-label">Action</label>
-                <select name="action" class="filter-select">
+                <select name="action" class="filter-select" id="filterAction">
                     <option value="">All Actions</option>
                     <option value="LOGIN" {{ filters.action == 'LOGIN' ? 'selected' : '' }}>Login</option>
                     <option value="LOGOUT" {{ filters.action == 'LOGOUT' ? 'selected' : '' }}>Logout</option>
                     <option value="CREATE" {{ filters.action == 'CREATE' ? 'selected' : '' }}>Create</option>
                     <option value="UPDATE" {{ filters.action == 'UPDATE' ? 'selected' : '' }}>Update</option>
                     <option value="DELETE" {{ filters.action == 'DELETE' ? 'selected' : '' }}>Delete</option>
+                    <option value="CHECKOUT" {{ filters.action == 'CHECKOUT' ? 'selected' : '' }}>CHECKOUT</option>
                 </select>
             </div>
             
@@ -60,6 +144,7 @@
                        name="date" 
                        class="filter-input" 
                        value="{{ filters.date }}"
+                       id="filterDate"
                        title="Filter by specific date">
             </div>
             
@@ -118,12 +203,12 @@
 
     <!-- Logs Table Card -->
     <div class="table-card">
-        {# <div class="table-header">Activity Logs</div> #}
         <div class="table-container">
             <div class="table-wrapper">
                 <table id="logsTable" class="logs-table display">
                     <thead>
                         <tr>
+                            <th>ID</th>
                             <th>User ID</th>
                             <th>Username</th>
                             <th>Role</th>
@@ -132,20 +217,21 @@
                             <th>Date/Time</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="logsTableBody">
                         {% for log in logs %}
-                        <tr>
+                        <tr data-log-id="{{ log.id }}">
+                            <td data-sort="{{ log.id }}">{{ log.id }}</td>
                             <td data-sort="{{ log.userId }}">{{ log.userId }}</td>
                             <td data-search="{{ log.username|lower }}">
                                 {{ log.username }}
                             </td>
                             <td data-search="{{ log.role|lower }}">
                                 <span class="badge {% if log.role == 'ROLE_ADMIN' %}bg-danger{% elseif log.role == 'ROLE_STAFF' %}bg-warning{% else %}bg-secondary{% endif %}">
-                                    {{ log.role }}
+                                    {{ log.role|replace({'ROLE_': ''}) }}
                                 </span>
                             </td>
                             <td data-search="{{ log.action|lower }}">
-                                <span class="badge {% if log.action == 'CREATE' %}bg-success{% elseif log.action == 'UPDATE' %}bg-info{% elseif log.action == 'DELETE' %}bg-danger{% elseif log.action == 'LOGIN' %}bg-primary{% else %}bg-secondary{% endif %}">
+                                <span class="badge {% if log.action == 'CREATE' %}bg-success{% elseif log.action == 'UPDATE' %}bg-info{% elseif log.action == 'DELETE' %}bg-danger{% elseif log.action == 'LOGIN' %}bg-primary{% elseif log.action == 'CHECKOUT' %}bg-success{% else %}bg-secondary{% endif %}">
                                     {{ log.action }}
                                 </span>
                             </td>
@@ -158,7 +244,7 @@
                         </tr>
                         {% else %}
                         <tr>
-                            <td colspan="6" class="text-center text-muted">No logs found</td>
+                            <td colspan="7" class="text-center text-muted">No logs found</td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -167,6 +253,9 @@
         </div>
     </div>
 </div>
+
+<!-- Toast Container for notifications -->
+<div id="toastContainer" style="position: fixed; top: 80px; right: 20px; z-index: 9999; max-width: 380px;"></div>
 {% endblock %}
 
 {% block javascripts %}
@@ -179,47 +268,287 @@
     <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
 
     <script>
-        $(document).ready(function () {
-            // Initialize DataTable
-            if (!$.fn.DataTable.isDataTable('#logsTable')) {
-                $('#logsTable').DataTable({
-                    pageLength: 25,
-                    responsive: true,
-                    language: {
-                        search: "_INPUT_",
-                        searchPlaceholder: "Search logs...",
-                        lengthMenu: "Show _MENU_ entries",
-                        info: "Showing _START_ to _END_ of _TOTAL_ entries",
-                        paginate: {
-                            first: "First",
-                            last: "Last",
-                            next: "Next",
-                            previous: "Previous"
-                        }
-                    },
-                    columnDefs: [
-                        { targets: 0, type: 'num' },
-                        { targets: 1, type: 'string' },
-                        { targets: 2, type: 'string' },
-                        { targets: 3, type: 'string' },
-                        { targets: 4, type: 'string' },
-                        { 
-                            targets: 5,
-                            type: 'date',
-                            render: function(data, type, row) {
-                                if (type === 'sort' || type === 'type') {
-                                    return new Date(data).getTime();
-                                }
-                                return data;
-                            }
-                        }
-                    ],
-                    order: [[5, 'desc']],
-                    initComplete: function() {
-                        console.log("✅ DataTable initialized successfully for Activity Logs!");
-                    }
-                });
+        let dataTable = null;
+        let ws = null;
+        let reconnectAttempts = 0;
+        let highestLogId = {{ logs|length > 0 ? logs|first.id : 0 }};
+        let currentFilters = {
+            user: '{{ filters.user }}',
+            action: '{{ filters.action }}',
+            date: '{{ filters.date }}'
+        };
+        
+        // Initialize DataTable
+        function initDataTable() {
+            if ($.fn.DataTable.isDataTable('#logsTable')) {
+                $('#logsTable').DataTable().destroy();
             }
+            
+            dataTable = $('#logsTable').DataTable({
+                pageLength: 25,
+                responsive: true,
+                order: [[0, 'desc']],
+                language: {
+                    search: "_INPUT_",
+                    searchPlaceholder: "Search logs...",
+                    lengthMenu: "Show _MENU_ entries",
+                    info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                    paginate: {
+                        first: "First",
+                        last: "Last",
+                        next: "Next",
+                        previous: "Previous"
+                    }
+                },
+                columnDefs: [
+                    { targets: 0, type: 'num', visible: true },
+                    { targets: 1, type: 'num', visible: false },
+                    { targets: 2, type: 'string' },
+                    { targets: 3, type: 'string' },
+                    { targets: 4, type: 'string' },
+                    { targets: 5, type: 'string' },
+                    { 
+                        targets: 6,
+                        type: 'date',
+                        render: function(data, type, row) {
+                            if (type === 'sort' || type === 'type') {
+                                return new Date(data).getTime();
+                            }
+                            return data;
+                        }
+                    }
+                ],
+                initComplete: function() {
+                    console.log("✅ DataTable initialized for Activity Logs!");
+                }
+            });
+        }
+        
+        // Escape HTML to prevent XSS
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/[&<>]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                return m;
+            });
+        }
+        
+        // Show toast notification
+        function showToast(message, action) {
+            const toastContainer = document.getElementById('toastContainer');
+            if (!toastContainer) return;
+            
+            const bgColor = action === 'CHECKOUT' ? '#28a745' : '#17a2b8';
+            const icon = action === 'CHECKOUT' ? '🛒' : '📋';
+            
+            const toast = document.createElement('div');
+            toast.className = 'toast-notification';
+            toast.innerHTML = `
+                <div style="background: linear-gradient(135deg, ${bgColor}, ${bgColor}dd); color: white; padding: 12px 16px; border-radius: 8px; margin-bottom: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.2);">
+                    <strong>${icon} New Activity!</strong><br>
+                    ${escapeHtml(message)}<br>
+                    <small>${new Date().toLocaleTimeString()}</small>
+                </div>
+            `;
+            toastContainer.prepend(toast);
+            setTimeout(() => toast.remove(), 5000);
+        }
+        
+        // Add new log to table
+        function addNewLog(log) {
+            // Check if log already exists
+            if ($(`#logsTableBody tr[data-log-id="${log.id}"]`).length > 0) {
+                return;
+            }
+            
+            // Get role badge class
+            let roleClass = 'bg-secondary';
+            let roleDisplay = log.role.replace('ROLE_', '');
+            if (log.role === 'ROLE_ADMIN') roleClass = 'bg-danger';
+            else if (log.role === 'ROLE_STAFF') roleClass = 'bg-warning';
+            
+            // Get action badge class
+            let actionClass = 'bg-secondary';
+            if (log.action === 'CREATE') actionClass = 'bg-success';
+            else if (log.action === 'UPDATE') actionClass = 'bg-info';
+            else if (log.action === 'DELETE') actionClass = 'bg-danger';
+            else if (log.action === 'LOGIN') actionClass = 'bg-primary';
+            else if (log.action === 'CHECKOUT') actionClass = 'bg-success';
+            
+            // Create new row
+            const newRow = `
+                <tr data-log-id="${log.id}" class="new-log-row">
+                    <td data-sort="${log.id}">${log.id}</td>
+                    <td data-sort="${log.userId}">${log.userId}</td>
+                    <td data-search="${escapeHtml(log.username).toLowerCase()}">${escapeHtml(log.username)}</td>
+                    <td data-search="${log.role.toLowerCase()}">
+                        <span class="badge ${roleClass}">${escapeHtml(roleDisplay)}</span>
+                    </td>
+                    <td data-search="${log.action.toLowerCase()}">
+                        <span class="badge ${actionClass}">${escapeHtml(log.action)}</span>
+                    </td>
+                    <td data-search="${escapeHtml(log.targetData).toLowerCase()}">${escapeHtml(log.targetData || '')}</td>
+                    <td data-sort="${new Date(log.createdAt).getTime()}">${log.createdAt}</td>
+                </tr>
+            `;
+            
+            // Add to top of table body
+            $('#logsTableBody').prepend(newRow);
+            
+            // Update highest ID
+            if (log.id > highestLogId) {
+                highestLogId = log.id;
+            }
+            
+            // Refresh DataTable
+            if (dataTable) {
+                dataTable.destroy();
+                initDataTable();
+                dataTable.order([[0, 'desc']]).draw();
+            }
+            
+            // Show toast for CHECKOUT actions
+            if (log.action === 'CHECKOUT') {
+                showToast(log.targetData || `New purchase by ${log.username}`, log.action);
+            }
+        }
+        
+        // Fetch new logs via API
+        async function fetchNewLogs() {
+            try {
+                let url = '{{ path('activity_log_api_latest') }}?afterId=' + highestLogId;
+                if (currentFilters.user) url += '&user=' + encodeURIComponent(currentFilters.user);
+                if (currentFilters.action) url += '&action=' + encodeURIComponent(currentFilters.action);
+                if (currentFilters.date) url += '&date=' + encodeURIComponent(currentFilters.date);
+                
+                const response = await fetch(url);
+                const logs = await response.json();
+                
+                logs.forEach(log => addNewLog(log));
+            } catch (err) {
+                console.log('Error fetching new logs:', err);
+            }
+        }
+        
+        // WebSocket Connection
+        function connectWebSocket() {
+            // For Railway production
+            const wsUrl = 'wss://inferno-games-2nd-sem-production.up.railway.app/ws';
+            // For local development (uncomment for local testing)
+            // const wsUrl = 'ws://localhost:8080';
+            
+            console.log('🔌 Connecting WebSocket for Activity Logs...');
+            
+            try {
+                ws = new WebSocket(wsUrl);
+                
+                ws.onopen = function() {
+                    console.log('✅ Activity Logs WebSocket Connected!');
+                    const wsStatus = document.getElementById('wsStatus');
+                    const wsStatusText = document.getElementById('wsStatusText');
+                    if (wsStatus) {
+                        wsStatus.className = 'ws-status connected';
+                        wsStatusText.textContent = 'Live';
+                    }
+                    
+                    // Authenticate as admin
+                    ws.send(JSON.stringify({ type: 'auth', userId: 'admin' }));
+                    reconnectAttempts = 0;
+                };
+                
+                ws.onmessage = function(event) {
+                    try {
+                        const data = JSON.parse(event.data);
+                        console.log('📨 WebSocket received:', data);
+                        
+                        if (data.type === 'authenticated') {
+                            console.log('✅ Admin authenticated for activity logs');
+                        }
+                        
+                        // When a new order comes in, fetch the latest activity logs
+                        if (data.type === 'new_order') {
+                            console.log('🛒 New order detected! Refreshing activity logs...');
+                            // Small delay to ensure the log is saved in database
+                            setTimeout(() => {
+                                fetchNewLogs();
+                            }, 500);
+                        }
+                    } catch (err) {
+                        console.error('Error parsing message:', err);
+                    }
+                };
+                
+                ws.onerror = function(error) {
+                    console.error('WebSocket error:', error);
+                    const wsStatus = document.getElementById('wsStatus');
+                    if (wsStatus) {
+                        wsStatus.className = 'ws-status';
+                        const wsStatusText = document.getElementById('wsStatusText');
+                        if (wsStatusText) wsStatusText.textContent = 'Error';
+                    }
+                };
+                
+                ws.onclose = function() {
+                    console.log('WebSocket disconnected');
+                    const wsStatus = document.getElementById('wsStatus');
+                    if (wsStatus) {
+                        wsStatus.className = 'ws-status';
+                        const wsStatusText = document.getElementById('wsStatusText');
+                        if (wsStatusText) wsStatusText.textContent = 'Reconnecting...';
+                    }
+                    
+                    if (reconnectAttempts < 10) {
+                        reconnectAttempts++;
+                        const delay = Math.min(3000 * reconnectAttempts, 30000);
+                        setTimeout(connectWebSocket, delay);
+                    }
+                };
+            } catch (err) {
+                console.error('Failed to create WebSocket:', err);
+            }
+        }
+        
+        // Poll as fallback (every 10 seconds)
+        let pollingInterval;
+        function startPolling() {
+            pollingInterval = setInterval(() => {
+                if (!ws || ws.readyState !== WebSocket.OPEN) {
+                    fetchNewLogs();
+                }
+            }, 10000);
+        }
+        
+        // Update highest log ID from existing rows
+        function updateHighestLogId() {
+            const firstRow = document.querySelector('#logsTableBody tr[data-log-id]');
+            if (firstRow) {
+                const id = parseInt(firstRow.dataset.logId);
+                if (id > highestLogId) {
+                    highestLogId = id;
+                }
+            }
+        }
+        
+        // Handle filter form submission without page reload (optional)
+        document.getElementById('filterForm')?.addEventListener('submit', function(e) {
+            // Let it submit normally - page will reload with filters
+            updateHighestLogId();
+        });
+        
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            initDataTable();
+            updateHighestLogId();
+            connectWebSocket();
+            startPolling();
+        });
+        
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', function() {
+            if (pollingInterval) clearInterval(pollingInterval);
+            if (ws) ws.close();
         });
     </script>
 {% endblock %}
