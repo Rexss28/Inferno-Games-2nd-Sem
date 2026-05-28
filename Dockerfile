@@ -36,6 +36,16 @@ RUN npm install
 RUN npm run build
 # --------------------------------------------------
 
+# --- NEW: WEBSOCKET SERVER SETUP ---
+WORKDIR /app/websocket
+COPY websocket/package.json websocket/package-lock.json* ./
+RUN npm install --production
+COPY websocket/server.js .
+RUN echo '#!/bin/bash\ncd /app/websocket\nnode server.js &' > /usr/local/bin/start-websocket.sh && \
+    chmod +x /usr/local/bin/start-websocket.sh
+WORKDIR /app
+# ------------------------------------
+
 # 1. Force creation of missing directories so the permissions command won't crash
 RUN mkdir -p /app/var /app/public/uploads
 
@@ -55,6 +65,6 @@ RUN chmod +x /usr/local/bin/entrypoint.sh
 HEALTHCHECK --interval=10s --timeout=3s --start-period=10s --retries=3 \
     CMD curl -f http://localhost/ || exit 1
 
-EXPOSE 80
+EXPOSE 80 8080
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]

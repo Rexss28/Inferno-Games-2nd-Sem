@@ -3,6 +3,12 @@ set -e
 
 echo "=== Starting Container ==="
 
+# --- NEW: Start WebSocket server ---
+echo "Starting WebSocket server on port 8080..."
+/usr/local/bin/start-websocket.sh
+sleep 2
+# -----------------------------------
+
 # Create and set permissions for image upload directory
 echo "Creating games image directory..."
 mkdir -p /app/public/images/games

@@ -1,3 +1,4 @@
+// websocket/server.js
 const WebSocket = require('ws');
 const http = require('http');
 
@@ -31,7 +32,6 @@ wss.on('connection', (ws, req) => {
       const message = JSON.parse(data);
       console.log(`Received from ${clientId}:`, message);
 
-      // Handle authentication
       if (message.type === 'auth') {
         clients.set(clientId, { ws, userId: message.userId });
         ws.send(JSON.stringify({
@@ -39,6 +39,7 @@ wss.on('connection', (ws, req) => {
           userId: message.userId,
           timestamp: new Date().toISOString()
         }));
+        console.log(`Client ${clientId} authenticated as user ${message.userId}`);
       }
 
       // Echo back for testing
@@ -63,15 +64,6 @@ wss.on('connection', (ws, req) => {
   });
 });
 
-// Broadcast to all clients
-function broadcast(message, excludeClientId = null) {
-  clients.forEach((client, id) => {
-    if (id !== excludeClientId && client.ws.readyState === WebSocket.OPEN) {
-      client.ws.send(JSON.stringify(message));
-    }
-  });
-}
-
 // Broadcast to specific user
 function broadcastToUser(userId, message) {
   clients.forEach((client, id) => {
@@ -81,20 +73,34 @@ function broadcastToUser(userId, message) {
   });
 }
 
-// HTTP endpoint to trigger broadcasts (for Symfony to call)
+// HTTP endpoint for Symfony to trigger broadcasts
 server.on('request', (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  if (req.method === 'OPTIONS') {
+    res.writeHead(200);
+    res.end();
+    return;
+  }
+
   if (req.url === '/broadcast' && req.method === 'POST') {
     let body = '';
     req.on('data', chunk => body += chunk);
     req.on('end', () => {
       try {
         const data = JSON.parse(body);
-        broadcastToUser(data.userId, {
-          type: data.type || 'notification',
-          message: data.message,
-          data: data.data,
-          timestamp: new Date().toISOString()
-        });
+        
+        if (data.userId) {
+          broadcastToUser(data.userId, {
+            type: data.type || 'notification',
+            message: data.message,
+            data: data.data,
+            timestamp: new Date().toISOString()
+          });
+        }
+        
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ status: 'sent' }));
       } catch (err) {
@@ -108,8 +114,7 @@ server.on('request', (req, res) => {
   }
 });
 
-server.listen(PORT, () => {
+server.listen(PORT, '0.0.0.0', () => {
   console.log(`✅ WebSocket server running on port ${PORT}`);
-  console.log(`   WebSocket URL: ws://localhost:${PORT}`);
-  console.log(`   HTTP broadcast endpoint: http://localhost:${PORT}/broadcast`);
+  console.log(`   WebSocket URL: ws://0.0.0.0:${PORT}`);
 });
