@@ -55,11 +55,6 @@
     
     .toast-notification {
         animation: slideIn 0.3s ease;
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        z-index: 10000;
-        min-width: 300px;
     }
     
     .real-time-badge {
@@ -73,6 +68,10 @@
     
     .activity-logs-table tbody tr {
         transition: all 0.2s ease;
+    }
+    
+    .revenue-update {
+        animation: highlightRow 0.5s ease;
     }
   </style>
 {% endblock %}
@@ -374,6 +373,31 @@
         });
     }
     
+    // Get role badge class
+    function getRoleBadgeClass(role) {
+        if (role === 'ROLE_ADMIN') return 'badge-danger';
+        if (role === 'ROLE_STAFF') return 'badge-warning';
+        return 'badge-secondary';
+    }
+    
+    // Get role display text
+    function getRoleDisplay(role) {
+        return role.replace('ROLE_', '');
+    }
+    
+    // Get action badge class
+    function getActionBadgeClass(action) {
+        switch(action) {
+            case 'CREATE': return 'badge-success';
+            case 'UPDATE': return 'badge-info';
+            case 'DELETE': return 'badge-danger';
+            case 'LOGIN': return 'badge-primary';
+            case 'CHECKOUT': return 'badge-success';
+            case 'LOGOUT': return 'badge-secondary';
+            default: return 'badge-light';
+        }
+    }
+    
     // Show toast notification
     function showToast(message, action) {
         const toastContainer = document.getElementById('toastContainer');
@@ -384,6 +408,7 @@
         
         const toast = document.createElement('div');
         toast.className = 'toast-notification';
+        toast.style.cssText = 'animation: slideIn 0.3s ease;';
         toast.innerHTML = `
             <div style="background: linear-gradient(135deg, ${bgColor}, ${bgColor}dd); color: white; padding: 12px 16px; border-radius: 8px; margin-bottom: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.2);">
                 <strong>${icon} New Activity!</strong><br>
@@ -395,10 +420,11 @@
         setTimeout(() => toast.remove(), 5000);
     }
     
-    // Add new log to the recent activity logs table
+    // Add new log to the recent activity logs table (PURE JS - NO JQUERY)
     function addNewLogToDashboard(log) {
         // Check if log already exists
-        if ($(`#recentActivityLogsBody tr[data-log-id="${log.id}"]`).length > 0) {
+        const existingRow = document.querySelector(`#recentActivityLogsBody tr[data-log-id="${log.id}"]`);
+        if (existingRow) {
             return;
         }
         
@@ -408,42 +434,33 @@
             noLogsRow.remove();
         }
         
-        // Get role badge class
-        let roleClass = 'badge-secondary';
-        let roleDisplay = log.role.replace('ROLE_', '');
-        if (log.role === 'ROLE_ADMIN') roleClass = 'badge-danger';
-        else if (log.role === 'ROLE_STAFF') roleClass = 'badge-warning';
-        
-        // Get action badge class
-        let actionClass = 'badge-light';
-        if (log.action === 'CREATE') actionClass = 'badge-success';
-        else if (log.action === 'UPDATE') actionClass = 'badge-info';
-        else if (log.action === 'DELETE') actionClass = 'badge-danger';
-        else if (log.action === 'LOGIN') actionClass = 'badge-primary';
-        else if (log.action === 'CHECKOUT') actionClass = 'badge-success';
+        const tbody = document.getElementById('recentActivityLogsBody');
+        if (!tbody) return;
         
         // Truncate target data if too long
         let targetData = log.targetData || '';
         let truncatedTarget = targetData.length > 50 ? targetData.substring(0, 50) + '...' : targetData;
         
         // Create new row
-        const newRow = `
-            <tr data-log-id="${log.id}" class="table-row-hover new-log-row">
-                <td><span class="user-name">${escapeHtml(log.username)}</span></td>
-                <td><span class="badge ${roleClass}">${escapeHtml(roleDisplay)}</span></td>
-                <td><span class="badge ${actionClass}">${escapeHtml(log.action)}</span></td>
-                <td class="log-target">${escapeHtml(truncatedTarget)}</td>
-                <td><span class="log-time">${log.createdAt}</span></td>
-            </tr>
+        const newRow = document.createElement('tr');
+        newRow.setAttribute('data-log-id', log.id);
+        newRow.className = 'table-row-hover new-log-row';
+        
+        newRow.innerHTML = `
+            <td><span class="user-name">${escapeHtml(log.username)}</span></td>
+            <td><span class="badge ${getRoleBadgeClass(log.role)}">${escapeHtml(getRoleDisplay(log.role))}</span></td>
+            <td><span class="badge ${getActionBadgeClass(log.action)}">${escapeHtml(log.action)}</span></td>
+            <td class="log-target">${escapeHtml(truncatedTarget)}</td>
+            <td><span class="log-time">${log.createdAt}</span></td>
         `;
         
         // Add to top of table body
-        $('#recentActivityLogsBody').prepend(newRow);
+        tbody.insertBefore(newRow, tbody.firstChild);
         
         // Keep only last 10 logs in dashboard view
-        const rows = $('#recentActivityLogsBody tr');
+        const rows = tbody.querySelectorAll('tr');
         if (rows.length > 10) {
-            $(rows[10]).remove();
+            rows[10].remove();
         }
         
         // Update highest ID
@@ -462,9 +479,15 @@
         try {
             const url = '{{ path('activity_log_api_latest') }}?afterId=' + highestLogId + '&limit=5';
             const response = await fetch(url);
+            if (!response.ok) {
+                throw new Error('HTTP error ' + response.status);
+            }
             const logs = await response.json();
             
-            logs.forEach(log => addNewLogToDashboard(log));
+            if (logs && logs.length > 0) {
+                console.log(`📋 Found ${logs.length} new logs`);
+                logs.forEach(log => addNewLogToDashboard(log));
+            }
         } catch (err) {
             console.log('Error fetching new logs:', err);
         }
@@ -472,6 +495,7 @@
     
     // Update revenue (optional - if you want real-time revenue updates)
     function updateRevenue(amount) {
+        if (isNaN(amount)) return;
         currentRevenue += parseFloat(amount);
         const revenueElement = document.getElementById('totalRevenue');
         if (revenueElement) {
@@ -570,6 +594,7 @@
     function startPolling() {
         pollingInterval = setInterval(() => {
             if (!ws || ws.readyState !== WebSocket.OPEN) {
+                console.log('🔄 Polling for new logs (fallback)...');
                 fetchNewLogs();
             }
         }, 15000);
