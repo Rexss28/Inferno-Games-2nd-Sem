@@ -20,6 +20,7 @@ use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
 use Symfony\Component\Security\Http\EntryPoint\AuthenticationEntryPointInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface; // Add this
 
 class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationEntryPointInterface
 {
@@ -47,7 +48,8 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
         private EntityManagerInterface $entityManager,
         private UserRepository $userRepository,
         private RouterInterface $router,
-        private JWTTokenManagerInterface $jwtManager
+        private JWTTokenManagerInterface $jwtManager,
+        private UserPasswordHasherInterface $passwordHasher // Add this parameter
     ) {}
 
     public function supports(Request $request): ?bool
@@ -107,6 +109,11 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
                 } else {
                     $user->setRoles(['ROLE_USER']);
                 }
+                
+                // Set a dummy password for database constraint (Google users don't need password login)
+                $dummyPassword = 'google_user_' . bin2hex(random_bytes(8)); // Generate unique dummy password
+                $hashedPassword = $this->passwordHasher->hashPassword($user, $dummyPassword);
+                $user->setPassword($hashedPassword);
                 
                 $this->entityManager->persist($user);
                 $this->entityManager->flush();

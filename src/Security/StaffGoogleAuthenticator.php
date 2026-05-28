@@ -19,6 +19,7 @@ use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
 use Symfony\Component\Security\Http\EntryPoint\AuthenticationEntryPointInterface;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface; // Add this
 
 class StaffGoogleAuthenticator extends OAuth2Authenticator implements AuthenticationEntryPointInterface
 {
@@ -33,7 +34,8 @@ class StaffGoogleAuthenticator extends OAuth2Authenticator implements Authentica
         private EntityManagerInterface $entityManager,
         private UserRepository $userRepository,
         private RouterInterface $router,
-        private LoggerInterface $logger
+        private LoggerInterface $logger,
+        private UserPasswordHasherInterface $passwordHasher // Add this parameter
     ) {}
 
     public function supports(Request $request): ?bool
@@ -96,7 +98,7 @@ class StaffGoogleAuthenticator extends OAuth2Authenticator implements Authentica
                     return $userByEmail;
                 }
                 
-                // Create new staff user
+                // Create new staff user with dummy password
                 $this->logger->info('Creating new staff user', ['email' => $email]);
                 $user = new User();
                 $user->setEmail($email);
@@ -105,6 +107,11 @@ class StaffGoogleAuthenticator extends OAuth2Authenticator implements Authentica
                 $user->setIsVerified(true);
                 $user->setStatus(User::STATUS_ACTIVE);
                 $user->setRoles(['ROLE_STAFF']);
+                
+                // Set a dummy password for database constraint
+                $dummyPassword = 'staff123'; // Dummy password for staff Google users
+                $hashedPassword = $this->passwordHasher->hashPassword($user, $dummyPassword);
+                $user->setPassword($hashedPassword);
                 
                 $this->entityManager->persist($user);
                 $this->entityManager->flush();
