@@ -5,6 +5,76 @@
 {% block stylesheets %}
   {{ parent() }}
   {{ encore_entry_link_tags('admin_dashboard') }}
+  
+  <style>
+    /* WebSocket Real-time Styles */
+    .ws-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 600;
+        background: rgba(108, 117, 125, 0.2);
+        color: #6c757d;
+    }
+    
+    .ws-status.connected {
+        background: rgba(40, 167, 69, 0.2);
+        color: #28a745;
+    }
+    
+    .ws-status.connected .ws-dot {
+        background: #28a745;
+        box-shadow: 0 0 5px #28a745;
+    }
+    
+    .ws-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        display: inline-block;
+        background: #6c757d;
+    }
+    
+    @keyframes highlightRow {
+        0% { background-color: rgba(40, 167, 69, 0); }
+        30% { background-color: rgba(40, 167, 69, 0.3); }
+        100% { background-color: rgba(40, 167, 69, 0); }
+    }
+    
+    .new-log-row {
+        animation: highlightRow 1.5s ease;
+    }
+    
+    @keyframes slideIn {
+        from { transform: translateX(100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+    
+    .toast-notification {
+        animation: slideIn 0.3s ease;
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 10000;
+        min-width: 300px;
+    }
+    
+    .real-time-badge {
+        font-size: 10px;
+        background: #28a745;
+        color: white;
+        border-radius: 12px;
+        padding: 2px 8px;
+        margin-left: 10px;
+    }
+    
+    .activity-logs-table tbody tr {
+        transition: all 0.2s ease;
+    }
+  </style>
 {% endblock %}
 
 {% block content %}
@@ -12,10 +82,17 @@
     <!-- Header Section -->
     <div class="dashboard-header">
         <div>
-            <h1 class="dashboard-title">Admin Dashboard</h1>
+            <h1 class="dashboard-title">
+                Admin Dashboard 
+                <span class="real-time-badge">REAL-TIME</span>
+            </h1>
             <p class="dashboard-subtitle">Welcome back, {{ app.user.name ?? app.user.email }}</p>
         </div>
         <div class="header-badge">
+            <span id="wsStatus" class="ws-status">
+                <span class="ws-dot"></span>
+                <span id="wsStatusText">Connecting...</span>
+            </span>
             <span class="pulse-dot"></span>
             Live Dashboard
         </div>
@@ -27,7 +104,7 @@
             <div class="kpi-icon">🎮</div>
             <div class="kpi-content">
                 <p class="kpi-label">Total Games</p>
-                <p class="kpi-value">{{ totalGames }}</p>
+                <p id="totalGames" class="kpi-value">{{ totalGames }}</p>
                 <div class="kpi-trend">
                     <span class="trend-up">↑ Active Games</span>
                 </div>
@@ -38,7 +115,7 @@
             <div class="kpi-icon">👥</div>
             <div class="kpi-content">
                 <p class="kpi-label">Total Users</p>
-                <p class="kpi-value">{{ totalUsers }}</p>
+                <p id="totalUsers" class="kpi-value">{{ totalUsers }}</p>
                 <div class="kpi-trend">
                     <span class="trend-up">↑ Registered</span>
                 </div>
@@ -60,7 +137,7 @@
             <div class="kpi-icon">💰</div>
             <div class="kpi-content">
                 <p class="kpi-label">Total Revenue</p>
-                <p class="kpi-value">${{ totalRevenue|number_format(2, '.', ',') }}</p>
+                <p id="totalRevenue" class="kpi-value">${{ totalRevenue|number_format(2, '.', ',') }}</p>
                 <div class="kpi-trend">
                     <span class="trend-up">↑ Growing</span>
                 </div>
@@ -96,80 +173,77 @@
         </div>
     </div>
 
-    <!-- RECENT ACTIVITY LOGS (FULL WIDTH) -->
+    <!-- RECENT ACTIVITY LOGS (FULL WIDTH) - WITH REAL-TIME UPDATES -->
     <div class="alert-section">
         <div class="section-header">
             <div>
                 <h2 class="section-title section-title-blue">📋 Recent Activity Logs</h2>
-                <p class="section-subtitle">Latest system activities</p>
+                <p class="section-subtitle">Latest system activities - updates appear <strong>instantly</strong> without refresh</p>
             </div>
             <a href="{{ path('activity_log_index') }}" class="view-all-link">
                 View All Logs →
             </a>
         </div>
         
-        {% if recentActivityLogs is not empty %}
-            <div class="table-container">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>User</th>
-                            <th>Role</th>
-                            <th>Action</th>
-                            <th>Target Data</th>
-                            <th>Date/Time</th>
+        <div class="table-container">
+            <table class="data-table activity-logs-table">
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Role</th>
+                        <th>Action</th>
+                        <th>Target Data</th>
+                        <th>Date/Time</th>
+                    </tr>
+                </thead>
+                <tbody id="recentActivityLogsBody">
+                    {% for log in recentActivityLogs %}
+                        <tr data-log-id="{{ log.id }}" class="table-row-hover">
+                            <td>
+                                <span class="user-name">{{ log.username }}</span>
+                            </td>
+                            <td>
+                                <span class="badge 
+                                    {% if log.role == 'ROLE_ADMIN' %}badge-danger
+                                    {% elseif log.role == 'ROLE_STAFF' %}badge-warning
+                                    {% else %}badge-secondary{% endif %}">
+                                    {{ log.role|replace({'ROLE_': ''}) }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge 
+                                    {% if log.action == 'CREATE' %}badge-success
+                                    {% elseif log.action == 'UPDATE' %}badge-info
+                                    {% elseif log.action == 'DELETE' %}badge-danger
+                                    {% elseif log.action == 'LOGIN' %}badge-primary
+                                    {% elseif log.action == 'LOGOUT' %}badge-secondary
+                                    {% elseif log.action == 'CHECKOUT' %}badge-success
+                                    {% else %}badge-light{% endif %}">
+                                    {{ log.action }}
+                                </span>
+                            </td>
+                            <td class="log-target">
+                                {{ log.targetData|length > 50 ? log.targetData|slice(0, 50) ~ '...' : log.targetData }}
+                            </td>
+                            <td>
+                                <span class="log-time">
+                                    {{ log.createdAt|date('Y-m-d H:i:s') }}
+                                </span>
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        {% for log in recentActivityLogs %}
-                            <tr class="table-row-hover">
-                                <td>
-                                    <span class="user-name">{{ log.username }}</span>
-                                </td>
-                                <td>
-                                    <span class="badge 
-                                        {% if log.role == 'ROLE_ADMIN' %}badge-danger
-                                        {% elseif log.role == 'ROLE_STAFF' %}badge-warning
-                                        {% else %}badge-secondary{% endif %}">
-                                        {{ log.role|replace({'ROLE_': ''}) }}
-                                    </span>
-                                </td>
-                                <td>
-                                    <span class="badge 
-                                        {% if log.action == 'CREATE' %}badge-success
-                                        {% elseif log.action == 'UPDATE' %}badge-info
-                                        {% elseif log.action == 'DELETE' %}badge-danger
-                                        {% elseif log.action == 'LOGIN' %}badge-primary
-                                        {% elseif log.action == 'LOGOUT' %}badge-secondary
-                                        {% else %}badge-light{% endif %}">
-                                        {{ log.action }}
-                                    </span>
-                                </td>
-                                <td class="log-target">
-                                    {{ log.targetData|length > 50 ? log.targetData|slice(0, 50) ~ '...' : log.targetData }}
-                                </td>
-                                <td>
-                                    <span class="log-time">
-                                        {{ log.createdAt|date('Y-m-d H:i:s') }}
-                                    </span>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-            <div class="text-center mt-3">
-                <a href="{{ path('activity_log_index') }}" class="btn btn-outline-primary">
-                    View All Activity Logs →
-                </a>
-            </div>
-        {% else %}
-            <div class="empty-state">
-                <div class="empty-icon">📊</div>
-                <p class="empty-text">No activity logs yet</p>
-                <p class="empty-subtext">System activities will appear here</p>
-            </div>
-        {% endif %}
+                    {% else %}
+                        <tr id="noLogsRow">
+                            <td colspan="5" class="text-center text-muted">No activity logs yet</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="text-center mt-3">
+            <a href="{{ path('activity_log_index') }}" class="btn btn-outline-primary">
+                View All Activity Logs →
+            </a>
+        </div>
     </div>
 
     <!-- TWO COLUMN GRID FOR LOW STOCK & RECENT GAMES -->
@@ -275,16 +349,254 @@
         </div>
     </div>
 </div>
+
+<!-- Toast Container for notifications -->
+<div id="toastContainer" style="position: fixed; top: 80px; right: 20px; z-index: 9999; max-width: 380px;"></div>
 {% endblock %}
 
 {% block javascripts %}
 {{ parent() }}
+
 <script>
-    // Optional: Auto-refresh dashboard data every 30 seconds
-    if (typeof window.autoRefreshEnabled !== 'undefined' && window.autoRefreshEnabled) {
-        setInterval(function() {
-            location.reload();
-        }, 30000);
+    let ws = null;
+    let reconnectAttempts = 0;
+    let highestLogId = {{ recentActivityLogs|length > 0 ? recentActivityLogs|first.id : 0 }};
+    let currentRevenue = {{ totalRevenue|default(0) }};
+    
+    // Helper function to escape HTML
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
     }
+    
+    // Show toast notification
+    function showToast(message, action) {
+        const toastContainer = document.getElementById('toastContainer');
+        if (!toastContainer) return;
+        
+        const bgColor = action === 'CHECKOUT' ? '#28a745' : '#17a2b8';
+        const icon = action === 'CHECKOUT' ? '🛒' : '📋';
+        
+        const toast = document.createElement('div');
+        toast.className = 'toast-notification';
+        toast.innerHTML = `
+            <div style="background: linear-gradient(135deg, ${bgColor}, ${bgColor}dd); color: white; padding: 12px 16px; border-radius: 8px; margin-bottom: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.2);">
+                <strong>${icon} New Activity!</strong><br>
+                ${escapeHtml(message)}<br>
+                <small>${new Date().toLocaleTimeString()}</small>
+            </div>
+        `;
+        toastContainer.prepend(toast);
+        setTimeout(() => toast.remove(), 5000);
+    }
+    
+    // Add new log to the recent activity logs table
+    function addNewLogToDashboard(log) {
+        // Check if log already exists
+        if ($(`#recentActivityLogsBody tr[data-log-id="${log.id}"]`).length > 0) {
+            return;
+        }
+        
+        // Remove "no logs" row if it exists
+        const noLogsRow = document.getElementById('noLogsRow');
+        if (noLogsRow) {
+            noLogsRow.remove();
+        }
+        
+        // Get role badge class
+        let roleClass = 'badge-secondary';
+        let roleDisplay = log.role.replace('ROLE_', '');
+        if (log.role === 'ROLE_ADMIN') roleClass = 'badge-danger';
+        else if (log.role === 'ROLE_STAFF') roleClass = 'badge-warning';
+        
+        // Get action badge class
+        let actionClass = 'badge-light';
+        if (log.action === 'CREATE') actionClass = 'badge-success';
+        else if (log.action === 'UPDATE') actionClass = 'badge-info';
+        else if (log.action === 'DELETE') actionClass = 'badge-danger';
+        else if (log.action === 'LOGIN') actionClass = 'badge-primary';
+        else if (log.action === 'CHECKOUT') actionClass = 'badge-success';
+        
+        // Truncate target data if too long
+        let targetData = log.targetData || '';
+        let truncatedTarget = targetData.length > 50 ? targetData.substring(0, 50) + '...' : targetData;
+        
+        // Create new row
+        const newRow = `
+            <tr data-log-id="${log.id}" class="table-row-hover new-log-row">
+                <td><span class="user-name">${escapeHtml(log.username)}</span></td>
+                <td><span class="badge ${roleClass}">${escapeHtml(roleDisplay)}</span></td>
+                <td><span class="badge ${actionClass}">${escapeHtml(log.action)}</span></td>
+                <td class="log-target">${escapeHtml(truncatedTarget)}</td>
+                <td><span class="log-time">${log.createdAt}</span></td>
+            </tr>
+        `;
+        
+        // Add to top of table body
+        $('#recentActivityLogsBody').prepend(newRow);
+        
+        // Keep only last 10 logs in dashboard view
+        const rows = $('#recentActivityLogsBody tr');
+        if (rows.length > 10) {
+            $(rows[10]).remove();
+        }
+        
+        // Update highest ID
+        if (log.id > highestLogId) {
+            highestLogId = log.id;
+        }
+        
+        // Show toast for important actions
+        if (log.action === 'CHECKOUT') {
+            showToast(log.targetData || `New purchase by ${log.username}`, log.action);
+        }
+    }
+    
+    // Fetch new logs via API
+    async function fetchNewLogs() {
+        try {
+            const url = '{{ path('activity_log_api_latest') }}?afterId=' + highestLogId + '&limit=5';
+            const response = await fetch(url);
+            const logs = await response.json();
+            
+            logs.forEach(log => addNewLogToDashboard(log));
+        } catch (err) {
+            console.log('Error fetching new logs:', err);
+        }
+    }
+    
+    // Update revenue (optional - if you want real-time revenue updates)
+    function updateRevenue(amount) {
+        currentRevenue += parseFloat(amount);
+        const revenueElement = document.getElementById('totalRevenue');
+        if (revenueElement) {
+            revenueElement.classList.add('revenue-update');
+            revenueElement.textContent = '$' + currentRevenue.toFixed(2);
+            setTimeout(() => {
+                revenueElement.classList.remove('revenue-update');
+            }, 500);
+        }
+    }
+    
+    // WebSocket Connection
+    function connectWebSocket() {
+        // For Railway production
+        const wsUrl = 'wss://inferno-games-2nd-sem-production.up.railway.app/ws';
+        // For local development (uncomment for local testing)
+        // const wsUrl = 'ws://localhost:8080';
+        
+        console.log('🔌 Connecting WebSocket for Admin Dashboard...');
+        
+        try {
+            ws = new WebSocket(wsUrl);
+            
+            ws.onopen = function() {
+                console.log('✅ Admin Dashboard WebSocket Connected!');
+                const wsStatus = document.getElementById('wsStatus');
+                const wsStatusText = document.getElementById('wsStatusText');
+                if (wsStatus) {
+                    wsStatus.className = 'ws-status connected';
+                    wsStatusText.textContent = 'Live';
+                }
+                
+                // Authenticate as admin
+                ws.send(JSON.stringify({ type: 'auth', userId: 'admin' }));
+                reconnectAttempts = 0;
+            };
+            
+            ws.onmessage = function(event) {
+                try {
+                    const data = JSON.parse(event.data);
+                    console.log('📨 WebSocket received:', data);
+                    
+                    if (data.type === 'authenticated') {
+                        console.log('✅ Admin authenticated for dashboard');
+                    }
+                    
+                    // When a new order comes in, fetch the latest activity logs
+                    if (data.type === 'new_order') {
+                        console.log('🛒 New order detected! Refreshing activity logs...');
+                        // Small delay to ensure the log is saved in database
+                        setTimeout(() => {
+                            fetchNewLogs();
+                            // Optionally update revenue
+                            if (data.amount) {
+                                updateRevenue(data.amount);
+                            }
+                        }, 500);
+                    }
+                } catch (err) {
+                    console.error('Error parsing message:', err);
+                }
+            };
+            
+            ws.onerror = function(error) {
+                console.error('WebSocket error:', error);
+                const wsStatus = document.getElementById('wsStatus');
+                if (wsStatus) {
+                    wsStatus.className = 'ws-status';
+                    const wsStatusText = document.getElementById('wsStatusText');
+                    if (wsStatusText) wsStatusText.textContent = 'Error';
+                }
+            };
+            
+            ws.onclose = function() {
+                console.log('WebSocket disconnected');
+                const wsStatus = document.getElementById('wsStatus');
+                if (wsStatus) {
+                    wsStatus.className = 'ws-status';
+                    const wsStatusText = document.getElementById('wsStatusText');
+                    if (wsStatusText) wsStatusText.textContent = 'Reconnecting...';
+                }
+                
+                if (reconnectAttempts < 10) {
+                    reconnectAttempts++;
+                    const delay = Math.min(3000 * reconnectAttempts, 30000);
+                    setTimeout(connectWebSocket, delay);
+                }
+            };
+        } catch (err) {
+            console.error('Failed to create WebSocket:', err);
+        }
+    }
+    
+    // Poll as fallback (every 15 seconds)
+    let pollingInterval;
+    function startPolling() {
+        pollingInterval = setInterval(() => {
+            if (!ws || ws.readyState !== WebSocket.OPEN) {
+                fetchNewLogs();
+            }
+        }, 15000);
+    }
+    
+    // Update highest log ID from existing rows
+    function updateHighestLogId() {
+        const firstRow = document.querySelector('#recentActivityLogsBody tr[data-log-id]');
+        if (firstRow) {
+            const id = parseInt(firstRow.dataset.logId);
+            if (id > highestLogId) {
+                highestLogId = id;
+            }
+        }
+    }
+    
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        updateHighestLogId();
+        connectWebSocket();
+        startPolling();
+    });
+    
+    // Cleanup on page unload
+    window.addEventListener('beforeunload', function() {
+        if (pollingInterval) clearInterval(pollingInterval);
+        if (ws) ws.close();
+    });
 </script>
 {% endblock %}
