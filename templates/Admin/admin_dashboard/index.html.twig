@@ -5,17 +5,136 @@
 {% block stylesheets %}
   {{ parent() }}
   {{ encore_entry_link_tags('admin_dashboard') }}
+  
+  <style>
+    /* WebSocket Toast Notifications */
+    .toast-container {
+        position: fixed;
+        top: 80px;
+        right: 20px;
+        z-index: 9999;
+        max-width: 380px;
+    }
+    
+    .order-toast {
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        border-left: 4px solid #4CAF50;
+        border-radius: 12px;
+        padding: 14px 18px;
+        margin-bottom: 12px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        animation: slideInRight 0.3s ease;
+        color: white;
+    }
+    
+    .order-toast.success {
+        border-left-color: #4CAF50;
+    }
+    
+    .order-toast-title {
+        font-weight: bold;
+        font-size: 15px;
+        margin-bottom: 5px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .order-toast-message {
+        font-size: 13px;
+        opacity: 0.9;
+        margin-bottom: 5px;
+    }
+    
+    .order-toast-time {
+        font-size: 10px;
+        opacity: 0.6;
+    }
+    
+    @keyframes slideInRight {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+    
+    @keyframes highlightPulse {
+        0% { background-color: rgba(76, 175, 80, 0); }
+        50% { background-color: rgba(76, 175, 80, 0.3); }
+        100% { background-color: rgba(76, 175, 80, 0); }
+    }
+    
+    .new-order-row {
+        animation: highlightPulse 1.5s ease;
+    }
+    
+    .ws-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 600;
+    }
+    
+    .ws-status.connected {
+        background: rgba(76, 175, 80, 0.2);
+        color: #4CAF50;
+    }
+    
+    .ws-status.disconnected {
+        background: rgba(244, 67, 54, 0.2);
+        color: #f44336;
+    }
+    
+    .ws-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        display: inline-block;
+    }
+    
+    .ws-status.connected .ws-dot {
+        background: #4CAF50;
+        box-shadow: 0 0 5px #4CAF50;
+    }
+    
+    .ws-status.disconnected .ws-dot {
+        background: #f44336;
+    }
+    
+    /* Recent orders table - make it ready for dynamic updates */
+    .recent-orders-table tbody tr {
+        transition: all 0.2s ease;
+    }
+    
+    .revenue-update {
+        animation: highlightPulse 0.5s ease;
+    }
+  </style>
 {% endblock %}
 
 {% block content %}
 <div class="dashboard-container">
-    <!-- Header Section -->
+    <!-- Toast container for real-time notifications -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <!-- Header Section with WebSocket Status -->
     <div class="dashboard-header">
         <div>
             <h1 class="dashboard-title">Admin Dashboard</h1>
             <p class="dashboard-subtitle">Welcome back, {{ app.user.name ?? app.user.email }}</p>
         </div>
         <div class="header-badge">
+            <span id="wsStatus" class="ws-status disconnected">
+                <span class="ws-dot"></span>
+                <span id="wsStatusText">Connecting...</span>
+            </span>
             <span class="pulse-dot"></span>
             Live Dashboard
         </div>
@@ -27,7 +146,7 @@
             <div class="kpi-icon">🎮</div>
             <div class="kpi-content">
                 <p class="kpi-label">Total Games</p>
-                <p class="kpi-value">{{ totalGames }}</p>
+                <p id="totalGames" class="kpi-value">{{ totalGames }}</p>
                 <div class="kpi-trend">
                     <span class="trend-up">↑ Active Games</span>
                 </div>
@@ -38,7 +157,7 @@
             <div class="kpi-icon">👥</div>
             <div class="kpi-content">
                 <p class="kpi-label">Total Users</p>
-                <p class="kpi-value">{{ totalUsers }}</p>
+                <p id="totalUsers" class="kpi-value">{{ totalUsers }}</p>
                 <div class="kpi-trend">
                     <span class="trend-up">↑ Registered</span>
                 </div>
@@ -60,7 +179,7 @@
             <div class="kpi-icon">💰</div>
             <div class="kpi-content">
                 <p class="kpi-label">Total Revenue</p>
-                <p class="kpi-value">${{ totalRevenue|number_format(2, '.', ',') }}</p>
+                <p id="totalRevenue" class="kpi-value">${{ totalRevenue|number_format(2, '.', ',') }}</p>
                 <div class="kpi-trend">
                     <span class="trend-up">↑ Growing</span>
                 </div>
@@ -96,7 +215,40 @@
         </div>
     </div>
 
-    <!-- RECENT ACTIVITY LOGS (FULL WIDTH) -->
+    <!-- RECENT ORDERS SECTION - ADD THIS NEW SECTION -->
+    <div class="alert-section" style="margin-bottom: 24px;">
+        <div class="section-header">
+            <div>
+                <h2 class="section-title section-title-blue">🛒 Real-Time Orders</h2>
+                <p class="section-subtitle">New orders appear instantly without refresh</p>
+            </div>
+            <a href="{{ path('app_order_index') }}" class="view-all-link">
+                View All Orders →
+            </a>
+        </div>
+        
+        <div class="table-container">
+            <table class="data-table recent-orders-table" id="recentOrdersTable">
+                <thead>
+                    <tr>
+                        <th>Order #</th>
+                        <th>Customer</th>
+                        <th>Game</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                        <th>Time</th>
+                    </tr>
+                </thead>
+                <tbody id="recentOrdersList">
+                    <tr>
+                        <td colspan="6" class="text-center">Loading recent orders...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- RECENT ACTIVITY LOGS -->
     <div class="alert-section">
         <div class="section-header">
             <div>
@@ -158,23 +310,16 @@
                     </tbody>
                 </table>
             </div>
-            <div class="text-center mt-3">
-                <a href="{{ path('activity_log_index') }}" class="btn btn-outline-primary">
-                    View All Activity Logs →
-                </a>
-            </div>
         {% else %}
             <div class="empty-state">
                 <div class="empty-icon">📊</div>
                 <p class="empty-text">No activity logs yet</p>
-                <p class="empty-subtext">System activities will appear here</p>
             </div>
         {% endif %}
     </div>
 
     <!-- TWO COLUMN GRID FOR LOW STOCK & RECENT GAMES -->
     <div class="activity-grid">
-        <!-- Low Stock Alert Card -->
         <div class="activity-card">
             <div class="section-header">
                 <div>
@@ -200,16 +345,10 @@
                         <tbody>
                             {% for stock in lowStockGames %}
                                 <tr class="table-row-hover">
-                                    <td>
-                                        <span class="stock-id">#{{ stock.id }}</span>
-                                    </td>
-                                    <td>
-                                        <span class="badge badge-danger">{{ stock.availableQuantity }}</span>
-                                    </td>
+                                    <td>#{{ stock.id }}</td>
+                                    <td><span class="badge badge-danger">{{ stock.availableQuantity }}</span></td>
                                     <td>{{ stock.totalQuantity }}</td>
-                                    <td>
-                                        <span class="status-badge status-low">{{ stock.status }}</span>
-                                    </td>
+                                    <td><span class="status-badge status-low">{{ stock.status }}</span></td>
                                 </tr>
                             {% endfor %}
                         </tbody>
@@ -217,14 +356,11 @@
                 </div>
             {% else %}
                 <div class="empty-state-compact">
-                    <div class="empty-icon">✅</div>
-                    <p class="empty-text">All stocks are sufficient</p>
-                    <p class="empty-subtext">No action required</p>
+                    <p class="empty-text">✅ All stocks are sufficient</p>
                 </div>
             {% endif %}
         </div>
 
-        <!-- Recent Games Card -->
         <div class="activity-card">
             <div class="section-header">
                 <div>
@@ -243,18 +379,9 @@
                             <div class="game-info-wrapper">
                                 <div class="game-thumb">
                                     {% if game.image %}
-                                        <img 
-                                            src="{{ asset('images/games/' ~ game.image) }}" 
-                                            alt="{{ game.title }}"
-                                            loading="lazy"
-                                        >
+                                        <img src="{{ asset('images/games/' ~ game.image) }}" alt="{{ game.title }}" loading="lazy">
                                     {% else %}
-                                        <div class="image-placeholder">
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20">
-                                                <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                                            </svg>
-                                        </div>
+                                        <div class="image-placeholder">🎮</div>
                                     {% endif %}
                                 </div>
                                 <div class="game-info">
@@ -269,7 +396,6 @@
             {% else %}
                 <div class="empty-state-compact">
                     <p class="empty-text">No recent games added</p>
-                    <p class="empty-subtext">Click "Add New Game" to get started</p>
                 </div>
             {% endif %}
         </div>
@@ -279,12 +405,206 @@
 
 {% block javascripts %}
 {{ parent() }}
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
 <script>
-    // Optional: Auto-refresh dashboard data every 30 seconds
-    if (typeof window.autoRefreshEnabled !== 'undefined' && window.autoRefreshEnabled) {
-        setInterval(function() {
-            location.reload();
-        }, 30000);
+// WebSocket Real-Time Connection
+let ws = null;
+let reconnectAttempts = 0;
+let currentRevenue = {{ totalRevenue|default(0) }};
+
+// Function to show toast notification
+function showOrderToast(orderData) {
+    const toastContainer = document.getElementById('toastContainer');
+    if (!toastContainer) return;
+    
+    const toast = document.createElement('div');
+    toast.className = 'order-toast success';
+    toast.innerHTML = `
+        <div class="order-toast-title">
+            🛒 New Order Received!
+        </div>
+        <div class="order-toast-message">
+            <strong>${orderData.customer || 'Customer'}</strong> purchased<br>
+            <strong>${orderData.game || 'Game'}</strong> for <strong>$${parseFloat(orderData.amount || 0).toFixed(2)}</strong>
+        </div>
+        <div class="order-toast-time">
+            ${new Date().toLocaleTimeString()}
+        </div>
+    `;
+    
+    toastContainer.prepend(toast);
+    
+    // Auto-remove after 5 seconds
+    setTimeout(() => {
+        if (toast && toast.remove) toast.remove();
+    }, 5000);
+}
+
+// Function to update revenue
+function updateRevenue(amount) {
+    currentRevenue += parseFloat(amount);
+    const revenueElement = document.getElementById('totalRevenue');
+    if (revenueElement) {
+        revenueElement.classList.add('revenue-update');
+        revenueElement.textContent = '$' + currentRevenue.toFixed(2);
+        setTimeout(() => {
+            revenueElement.classList.remove('revenue-update');
+        }, 500);
     }
+}
+
+// Function to add order to recent orders table
+function addToRecentOrders(orderData) {
+    const tbody = document.getElementById('recentOrdersList');
+    if (!tbody) return;
+    
+    const row = document.createElement('tr');
+    row.className = 'new-order-row';
+    row.innerHTML = `
+        <td><strong>${orderData.order_number || 'N/A'}</strong></td>
+        <td>${orderData.customer || 'Unknown'}</td>
+        <td>${orderData.game || 'Unknown'}</td>
+        <td><strong>$${parseFloat(orderData.amount || 0).toFixed(2)}</strong></td>
+        <td><span class="badge badge-success">Completed</span></td>
+        <td>Just now</td>
+    `;
+    
+    tbody.prepend(row);
+    
+    // Keep only last 10 orders
+    while (tbody.children.length > 10) {
+        tbody.removeChild(tbody.lastChild);
+    }
+}
+
+// Function to fetch recent orders (initial load)
+function fetchRecentOrders() {
+    fetch('{{ path('app_order_index') }}?ajax=1&limit=10')
+        .then(response => response.json())
+        .then(data => {
+            const tbody = document.getElementById('recentOrdersList');
+            if (tbody && data.orders) {
+                tbody.innerHTML = '';
+                data.orders.forEach(order => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${order.orderNumber}</td>
+                        <td>${order.customerName}</td>
+                        <td>${order.gameTitle}</td>
+                        <td>$${parseFloat(order.totalAmount).toFixed(2)}</td>
+                        <td><span class="badge badge-success">${order.status}</span></td>
+                        <td>${order.createdAt}</td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            }
+        })
+        .catch(err => console.log('Could not fetch recent orders:', err));
+}
+
+// Connect to WebSocket
+function connectWebSocket() {
+    // For Railway production
+    const wsUrl = 'wss://inferno-games-2nd-sem-production.up.railway.app/ws';
+    // For local development (uncomment for local testing)
+    // const wsUrl = 'ws://localhost:8080';
+    
+    console.log('🔌 Connecting to WebSocket:', wsUrl);
+    
+    try {
+        ws = new WebSocket(wsUrl);
+        
+        ws.onopen = function() {
+            console.log('✅ Admin WebSocket Connected!');
+            
+            // Update status indicator
+            const wsStatus = document.getElementById('wsStatus');
+            const wsStatusText = document.getElementById('wsStatusText');
+            if (wsStatus) {
+                wsStatus.className = 'ws-status connected';
+                wsStatusText.textContent = 'Live';
+            }
+            
+            // Authenticate as admin
+            ws.send(JSON.stringify({ type: 'auth', userId: 'admin' }));
+            
+            reconnectAttempts = 0;
+        };
+        
+        ws.onmessage = function(event) {
+            try {
+                const data = JSON.parse(event.data);
+                console.log('📨 WebSocket received:', data);
+                
+                if (data.type === 'authenticated') {
+                    console.log('✅ Admin authenticated successfully');
+                }
+                
+                if (data.type === 'new_order') {
+                    console.log('🛒 NEW ORDER RECEIVED!', data);
+                    
+                    // Show toast notification
+                    showOrderToast({
+                        customer: data.customer,
+                        game: data.game,
+                        amount: data.amount,
+                        order_number: data.order_number
+                    });
+                    
+                    // Update revenue
+                    if (data.amount) {
+                        updateRevenue(data.amount);
+                    }
+                    
+                    // Add to recent orders list
+                    addToRecentOrders(data);
+                    
+                    // Play sound (optional - uncomment to enable)
+                    // const audio = new Audio('/sounds/ding.mp3');
+                    // audio.play().catch(e => console.log('Audio not supported'));
+                }
+            } catch (err) {
+                console.error('Error parsing WebSocket message:', err);
+            }
+        };
+        
+        ws.onerror = function(error) {
+            console.error('WebSocket error:', error);
+            const wsStatus = document.getElementById('wsStatus');
+            const wsStatusText = document.getElementById('wsStatusText');
+            if (wsStatus) {
+                wsStatus.className = 'ws-status disconnected';
+                wsStatusText.textContent = 'Error';
+            }
+        };
+        
+        ws.onclose = function() {
+            console.log('WebSocket disconnected');
+            const wsStatus = document.getElementById('wsStatus');
+            const wsStatusText = document.getElementById('wsStatusText');
+            if (wsStatus) {
+                wsStatus.className = 'ws-status disconnected';
+                wsStatusText.textContent = 'Reconnecting...';
+            }
+            
+            // Auto-reconnect
+            if (reconnectAttempts < 10) {
+                reconnectAttempts++;
+                const delay = Math.min(3000 * reconnectAttempts, 30000);
+                console.log(`Reconnecting in ${delay}ms (attempt ${reconnectAttempts})`);
+                setTimeout(connectWebSocket, delay);
+            }
+        };
+    } catch (err) {
+        console.error('Failed to create WebSocket:', err);
+    }
+}
+
+// Load recent orders when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    fetchRecentOrders();
+    connectWebSocket();
+});
 </script>
 {% endblock %}

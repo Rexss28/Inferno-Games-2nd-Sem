@@ -120,6 +120,23 @@ class CustomerOrderController extends AbstractController
         // Flush all orders to database
         $em->flush();
         
+        // ✅ BROADCAST TO WEBSOCKET FOR REAL-TIME ADMIN DASHBOARD
+        foreach ($createdOrders as $order) {
+            $this->broadcastToWebSocket(
+                'new_order',
+                "New order #{$order->getOrderNumber()} from {$user->getUsername()}",
+                [
+                    'userId' => 'admin',
+                    'order_id' => $order->getId(),
+                    'order_number' => $order->getOrderNumber(),
+                    'customer' => $user->getUsername(),
+                    'game' => $order->getGame()->getTitle(),
+                    'amount' => (float) $order->getTotalAmount(),
+                    'data' => ['order' => $order->getId()]
+                ]
+            );
+        }
+        
         // Clear cart after order
         $session->set('user_cart_' . $user->getId(), []);
 
@@ -428,6 +445,44 @@ class CustomerOrderController extends AbstractController
         } catch (\Exception $e) {
             error_log('FCM Token Error: ' . $e->getMessage());
             return null;
+        }
+    }
+
+    /**
+     * ✅ Broadcast order to WebSocket for real-time admin dashboard updates
+     */
+    private function broadcastToWebSocket(string $type, string $message, array $data = []): void
+    {
+        // For local development
+        $webSocketUrl = 'http://127.0.0.1:8080/broadcast';
+        
+        // For Railway production (WebSocket runs internally on port 8080)
+        // $webSocketUrl = 'http://localhost:8080/broadcast';
+        
+        $payload = json_encode(array_merge([
+            'type' => $type,
+            'message' => $message,
+            'timestamp' => (new \DateTime())->format('c'),
+        ], $data));
+        
+        try {
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $webSocketUrl);
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 1); // Don't block the response
+            curl_exec($ch);
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            curl_close($ch);
+            
+            if ($httpCode !== 200) {
+                error_log('WebSocket broadcast warning: HTTP ' . $httpCode);
+            }
+        } catch (\Exception $e) {
+            // Don't let WebSocket errors break the order flow
+            error_log('WebSocket broadcast failed: ' . $e->getMessage());
         }
     }
 }
